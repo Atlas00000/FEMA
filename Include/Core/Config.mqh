@@ -1,0 +1,71 @@
+//+------------------------------------------------------------------+
+//| Config.mqh — Phase 1 input parameters                            |
+//+------------------------------------------------------------------+
+#ifndef FEMA_CONFIG_MQH
+#define FEMA_CONFIG_MQH
+
+#include "Types.mqh"
+
+input group "=== Indicators ==="
+input int    InpEmaFastPeriod   = 20;
+input int    InpEmaTrendPeriod  = 100;
+input int    InpAtrPeriod       = 14;
+input double InpAtrMultiplier   = 1.0;
+
+input group "=== Grid ==="
+input int    InpGridLevels      = 5;
+input double InpGridRebuildAtr  = 0.25;
+
+input group "=== Basket & Exit ==="
+input double InpBasketTp        = 10.0;
+
+input group "=== Phase 2A: Failure Containment ==="
+input bool   InpUsePerTradeSl   = true;
+input double InpSlAtrMultiplier = 1.5;
+input bool   InpSlUseGridStructure = true;
+input bool   InpUseBasketSl     = true;
+input double InpBasketSl        = 20.0;
+input int    InpMaxBasketBars   = 72;
+input int    InpMaxEntryDepth   = 5;
+input int    InpCooldownBarsAfterSl = 10;
+
+input group "=== Phase 2B: HTF Filter ==="
+input bool   InpUseHtfFilter    = false;
+input ENUM_TIMEFRAMES InpHtfTimeframe = PERIOD_H1;
+input int    InpHtfEmaPeriod    = 200;
+input bool   InpHtfRequireSlope = false;
+
+input group "=== Phase 2C: Regime Gates ==="
+input bool   InpUseAdxGate          = false;
+input double InpAdxMax              = 25.0;
+input int    InpAdxPeriod           = 14;
+input bool   InpUseAtrPercentileGate = false;
+input double InpAtrPercentileMax    = 70.0;
+input int    InpAtrPercentileLookback = 100;
+input bool   InpUseEmaSepGate        = false;
+input double InpEmaSepAtrMult       = 3.0;
+input bool   InpUseEmaSlopeGate      = false;
+input bool   InpUseBreakoutSuspend   = false;
+input double InpBreakoutAtrMult     = 3.0;
+
+input group "=== Position Sizing ==="
+input double InpBaseLot         = 0.01;
+input double InpRiskPercent     = 0.0;
+
+input group "=== Risk Filters ==="
+input bool   InpSpreadFilter    = true;
+input int    InpMaxSpreadPoints = 30;
+input int    InpSlippagePoints  = 5;
+input int    InpCooldownBars    = 1;
+input int    InpMaxOpenTrades   = 5;
+input double InpMinEquity       = 0.0;
+
+input group "=== Trade Control ==="
+input ulong  InpMagicNumber     = 20260707;
+input ENUM_FEMA_TRADE_PERMISSION InpTradePermission = FEMA_PERM_BOTH;
+input bool   InpManualSuspend   = false;
+
+input group "=== Logging ==="
+input ENUM_FEMA_LOG_MODE InpLogMode = FEMA_LOG_DETAILED;
+
+#endif
