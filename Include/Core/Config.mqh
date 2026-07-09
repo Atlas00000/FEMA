@@ -20,14 +20,14 @@ input group "=== Basket & Exit ==="
 input double InpBasketTp        = 10.0;
 
 input group "=== Phase 2A: Failure Containment ==="
-input bool   InpUsePerTradeSl   = true;
+input bool   InpUsePerTradeSl   = false;
 input double InpSlAtrMultiplier = 1.5;
 input bool   InpSlUseGridStructure = true;
 input bool   InpUseBasketSl     = true;
-input double InpBasketSl        = 20.0;
-input int    InpMaxBasketBars   = 72;
+input double InpBasketSl        = 25.0;
+input int    InpMaxBasketBars   = 0;
 input int    InpMaxEntryDepth   = 5;
-input int    InpCooldownBarsAfterSl = 10;
+input int    InpCooldownBarsAfterSl = 1;
 
 input group "=== Phase 2B: HTF Filter ==="
 input bool   InpUseHtfFilter    = false;
@@ -36,8 +36,8 @@ input int    InpHtfEmaPeriod    = 200;
 input bool   InpHtfRequireSlope = false;
 
 input group "=== Phase 2C: Regime Gates ==="
-input bool   InpUseAdxGate          = false;
-input double InpAdxMax              = 25.0;
+input bool   InpUseAdxGate          = true;
+input double InpAdxMax              = 30.0;
 input int    InpAdxPeriod           = 14;
 input bool   InpUseAtrPercentileGate = false;
 input double InpAtrPercentileMax    = 70.0;

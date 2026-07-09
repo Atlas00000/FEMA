@@ -343,6 +343,7 @@ public:
 
       m_logger.LogInfo("Init v" + FEMA_VERSION + " symbol=" + symbol + " tf=" + EnumToString(timeframe) +
                        " bsl=" + DoubleToString(InpBasketSl, 0) +
+                       " adx_gate=" + (InpUseAdxGate ? "on" : "off") +
                        " atr_gate=" + (InpUseAtrPercentileGate ? "on" : "off") +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),
