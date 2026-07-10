@@ -1,5 +1,6 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2D-002 | Block new baskets after Friday 20:00
+; Base: PRODUCTION | One change: InpUseSessionBlockFriClose=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2D-002_SES_NOFRI.ini
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -32,19 +33,9 @@ InpUseEmaSlopeGate=false
 InpUseBreakoutSuspend=false
 InpBreakoutAtrMult=3.0
 InpUseSessionBlockNo23=false
-InpUseSessionBlockFriClose=false
+InpUseSessionBlockFriClose=true
 InpUseSessionBlockSunOpen=false
 InpUseSessionWhitelistLdnNy=false
-InpUseExitRte=false
-InpRteMinProfit=0.0
-InpUseBasketTrail=false
-InpBasketTrailActivatePct=50.0
-InpBasketTrailGivebackPct=50.0
-InpUseCandleConfirm=false
-InpUseRsiExhaustionFilter=false
-InpRsiPeriod=14
-InpRsiBuyMax=70.0
-InpRsiSellMin=30.0
 InpBaseLot=0.01
 InpRiskPercent=0.0
 InpSpreadFilter=true

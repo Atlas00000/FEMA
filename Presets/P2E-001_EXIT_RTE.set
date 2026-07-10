@@ -1,5 +1,8 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2E-001 | Return-to-EMA basket exit
+; Base: PRODUCTION | One change: InpUseExitRte=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2E-001_EXIT_RTE.ini
+; Compare vs PRODUCTION: PF 1.36 | +$221 | 18% DD | 424 trades
+; Journal MUST show: exit=rte | v1.19+
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -35,16 +38,11 @@ InpUseSessionBlockNo23=false
 InpUseSessionBlockFriClose=false
 InpUseSessionBlockSunOpen=false
 InpUseSessionWhitelistLdnNy=false
-InpUseExitRte=false
+InpUseExitRte=true
 InpRteMinProfit=0.0
 InpUseBasketTrail=false
 InpBasketTrailActivatePct=50.0
 InpBasketTrailGivebackPct=50.0
-InpUseCandleConfirm=false
-InpUseRsiExhaustionFilter=false
-InpRsiPeriod=14
-InpRsiBuyMax=70.0
-InpRsiSellMin=30.0
 InpBaseLot=0.01
 InpRiskPercent=0.0
 InpSpreadFilter=true

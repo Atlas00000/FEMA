@@ -43,10 +43,12 @@ enum ENUM_FEMA_TRADE_PERMISSION
 
 enum ENUM_FEMA_EXIT_REASON
   {
-   FEMA_EXIT_NONE        = 0,
-   FEMA_EXIT_BASKET_TP   = 1,
-   FEMA_EXIT_BASKET_SL   = 2,
-   FEMA_EXIT_BASKET_TIME = 3
+   FEMA_EXIT_NONE         = 0,
+   FEMA_EXIT_BASKET_TP    = 1,
+   FEMA_EXIT_BASKET_SL    = 2,
+   FEMA_EXIT_BASKET_TIME  = 3,
+   FEMA_EXIT_RTE          = 4,
+   FEMA_EXIT_BASKET_TRAIL = 5
   };
 
 struct SFemaGridLevel
@@ -107,6 +109,8 @@ string FemaExitReasonToString(const ENUM_FEMA_EXIT_REASON reason)
       case FEMA_EXIT_BASKET_TP:   return "BASKET_TP";
       case FEMA_EXIT_BASKET_SL:   return "BASKET_SL";
       case FEMA_EXIT_BASKET_TIME: return "BASKET_TIME";
+      case FEMA_EXIT_RTE:         return "RTE";
+      case FEMA_EXIT_BASKET_TRAIL: return "BASKET_TRAIL";
      }
    return "NONE";
   }

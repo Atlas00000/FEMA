@@ -16,6 +16,7 @@
 #include "../Trading/TradeManager.mqh"
 #include "../Risk/Exposure.mqh"
 #include "../Risk/Filters.mqh"
+#include "../Risk/SessionFilter.mqh"
 #include "../Risk/LotSizing.mqh"
 #include "../Broker/SymbolInfo.mqh"
 #include "../Broker/Validation.mqh"
@@ -41,6 +42,7 @@ private:
    CFemaTradeManager     m_trade_manager;
    CFemaExposure         m_exposure;
    CFemaFilters          m_filters;
+   CFemaSessionFilter    m_session;
    CFemaLotSizing        m_lot_sizing;
    CFemaSymbolInfo       m_symbol_info;
    CFemaValidation       m_validation;
@@ -70,6 +72,7 @@ private:
          return;
 
       m_basket.OnBasketClosed();
+      m_exit.ResetTrailState();
       m_grid.ResetFiredFlags();
 
       if(apply_sl_cooldown)
@@ -137,7 +140,16 @@ private:
                          m_basket.PositionCount(),
                          m_state.GetState());
 
-      const ENUM_FEMA_EXIT_REASON reason = m_exit.GetCloseReason(m_basket);
+      const double profit = m_basket.FloatingProfit();
+      m_exit.UpdateTrail(profit);
+
+      const double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+      const double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+      const ENUM_FEMA_EXIT_REASON reason = m_exit.GetCloseReason(m_basket,
+                                                                 m_exposure.PrimaryDirection(),
+                                                                 m_indicators.EmaFast(),
+                                                                 bid,
+                                                                 ask);
       if(reason == FEMA_EXIT_NONE)
          return;
 
@@ -146,10 +158,10 @@ private:
          m_basket.OnBasketClosed();
          m_grid.ResetFiredFlags();
 
-         if(reason == FEMA_EXIT_BASKET_TP)
-            m_filters.StartCooldownAfterTp();
-         else
+         if(reason == FEMA_EXIT_BASKET_SL)
             m_filters.StartCooldownAfterSl();
+         else
+            m_filters.StartCooldownAfterTp();
 
          m_state.StartCooldown(iTime(_Symbol, _Period, 0));
         }
@@ -173,7 +185,8 @@ private:
          return;
 
       // Regime gates filter new basket opens only — grid add-ons must complete.
-      if(m_exposure.CountOpenPositions() == 0)
+      const bool is_new_basket = (m_exposure.CountOpenPositions() == 0);
+      if(is_new_basket)
         {
          string regime_reason = "";
          if(!m_regime.AllowsDirection(signal.direction, m_indicators, regime_reason))
@@ -182,6 +195,14 @@ private:
                m_logger.LogInfo("Entry blocked: " + regime_reason);
             return;
            }
+        }
+
+      string session_reason = "";
+      if(!m_session.AllowsEntry(is_new_basket, session_reason))
+        {
+         if(session_reason != "" && m_logger.IsDetailed())
+            m_logger.LogInfo("Entry blocked: " + session_reason);
+         return;
         }
 
       const int spread = CFemaHelpers::SpreadPoints(_Symbol);
@@ -241,7 +262,10 @@ private:
       if(ok)
         {
          if(m_exposure.CountOpenPositions() == 1)
+           {
+            m_exit.ResetTrailState();
             m_basket.OnBasketStart(iTime(_Symbol, _Period, 0));
+           }
 
          const int level_index = m_entry.FindLevelArrayIndex(m_grid, signal);
          if(level_index >= 0)
@@ -292,7 +316,8 @@ public:
          return INIT_FAILED;
         }
 
-      if(!m_indicators.Init(symbol, timeframe, InpEmaFastPeriod, InpEmaTrendPeriod, InpAtrPeriod))
+      if(!m_indicators.Init(symbol, timeframe, InpEmaFastPeriod, InpEmaTrendPeriod, InpAtrPeriod,
+                            InpUseRsiExhaustionFilter, InpRsiPeriod, InpRsiBuyMax, InpRsiSellMin))
         {
          m_logger.LogError("Failed to initialize indicators");
          return INIT_FAILED;
@@ -318,16 +343,20 @@ public:
       m_grid.Init(symbol, InpGridLevels, InpAtrMultiplier, InpGridRebuildAtr);
       m_grid.BuildInitial(m_indicators);
 
-      m_entry.Init(symbol, InpTradePermission, InpMaxEntryDepth);
+      m_entry.Init(symbol, timeframe, InpTradePermission, InpMaxEntryDepth, InpUseCandleConfirm);
       m_exposure.Init(symbol, InpMagicNumber);
       m_trade_manager.Init(symbol, InpMagicNumber);
       m_basket.Init(symbol, timeframe, m_exposure, m_trade_manager);
       m_filters.Init(symbol, timeframe, InpSpreadFilter, InpMaxSpreadPoints,
                      InpCooldownBars, InpCooldownBarsAfterSl,
                      InpMaxOpenTrades, InpMinEquity);
+      m_session.Init(InpUseSessionBlockNo23, InpUseSessionBlockFriClose,
+                     InpUseSessionBlockSunOpen, InpUseSessionWhitelistLdnNy);
       m_lot_sizing.Init(InpBaseLot, InpRiskPercent);
       m_execution.Init(symbol, InpMagicNumber, InpSlippagePoints, m_symbol_info);
-      m_exit.Init(InpBasketTp, InpUseBasketSl, InpBasketSl, InpMaxBasketBars);
+      m_exit.Init(InpBasketTp, InpUseBasketSl, InpBasketSl, InpMaxBasketBars,
+                  InpUseExitRte, InpRteMinProfit,
+                  InpUseBasketTrail, InpBasketTrailActivatePct, InpBasketTrailGivebackPct);
       if(!m_regime.Update(m_indicators))
         {
          m_logger.LogWarn("Regime filter update failed on init");
@@ -341,10 +370,21 @@ public:
       else
          m_state.SetReady();
 
+      string entry_summary = "";
+      if(InpUseCandleConfirm)
+         entry_summary = "candle";
+      if(InpUseRsiExhaustionFilter)
+         entry_summary += (entry_summary == "" ? "" : "+") + "rsi";
+      if(entry_summary == "")
+         entry_summary = "off";
+
       m_logger.LogInfo("Init v" + FEMA_VERSION + " symbol=" + symbol + " tf=" + EnumToString(timeframe) +
                        " bsl=" + DoubleToString(InpBasketSl, 0) +
                        " adx_gate=" + (InpUseAdxGate ? "on" : "off") +
                        " atr_gate=" + (InpUseAtrPercentileGate ? "on" : "off") +
+                       " ses=" + m_session.ActiveSummary() +
+                       " exit=" + m_exit.ActiveSummary() +
+                       " entry=" + entry_summary +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),
                              m_indicators.EmaFast(),

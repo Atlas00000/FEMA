@@ -1,5 +1,7 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2F-002 | One entry per level (verify existing)
+; Base: PRODUCTION | No input change — control run
+; LOAD: Settings -> FEMA_EURUSD_M5_P2F-002_1PERLEVEL.ini
+; Expect: ~identical to PRODUCTION row 22
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100

@@ -18,6 +18,11 @@ private:
    int               m_handle_ema_fast;
    int               m_handle_ema_trend;
    int               m_handle_atr;
+   int               m_handle_rsi;
+   int               m_rsi_period;
+   bool              m_use_rsi;
+   double            m_rsi_buy_max;
+   double            m_rsi_sell_min;
    double            m_ema_fast;
    double            m_ema_trend;
    double            m_atr;
@@ -59,6 +64,11 @@ public:
                      m_handle_ema_fast(INVALID_HANDLE),
                      m_handle_ema_trend(INVALID_HANDLE),
                      m_handle_atr(INVALID_HANDLE),
+                     m_handle_rsi(INVALID_HANDLE),
+                     m_rsi_period(14),
+                     m_use_rsi(false),
+                     m_rsi_buy_max(70.0),
+                     m_rsi_sell_min(30.0),
                      m_ema_fast(0.0),
                      m_ema_trend(0.0),
                      m_atr(0.0),
@@ -72,17 +82,36 @@ public:
                           const ENUM_TIMEFRAMES timeframe,
                           const int ema_fast_period,
                           const int ema_trend_period,
-                          const int atr_period)
+                          const int atr_period,
+                          const bool use_rsi = false,
+                          const int rsi_period = 14,
+                          const double rsi_buy_max = 70.0,
+                          const double rsi_sell_min = 30.0)
      {
       m_symbol = symbol;
       m_timeframe = timeframe;
       m_ema_fast_period = ema_fast_period;
       m_ema_trend_period = ema_trend_period;
       m_atr_period = atr_period;
+      m_use_rsi = use_rsi;
+      m_rsi_period = MathMax(2, rsi_period);
+      m_rsi_buy_max = rsi_buy_max;
+      m_rsi_sell_min = rsi_sell_min;
 
       m_handle_ema_fast = iMA(m_symbol, m_timeframe, m_ema_fast_period, 0, MODE_EMA, PRICE_CLOSE);
       m_handle_ema_trend = iMA(m_symbol, m_timeframe, m_ema_trend_period, 0, MODE_EMA, PRICE_CLOSE);
       m_handle_atr = iATR(m_symbol, m_timeframe, m_atr_period);
+      m_handle_rsi = INVALID_HANDLE;
+      if(m_use_rsi)
+        {
+         m_handle_rsi = iRSI(m_symbol, m_timeframe, m_rsi_period, PRICE_CLOSE);
+         if(m_handle_rsi == INVALID_HANDLE)
+           {
+            if(m_log != NULL)
+               m_log.LogError("Failed to create RSI handle");
+            return false;
+           }
+        }
 
       if(m_handle_ema_fast == INVALID_HANDLE ||
          m_handle_ema_trend == INVALID_HANDLE ||
@@ -103,9 +132,12 @@ public:
          IndicatorRelease(m_handle_ema_trend);
       if(m_handle_atr != INVALID_HANDLE)
          IndicatorRelease(m_handle_atr);
+      if(m_handle_rsi != INVALID_HANDLE)
+         IndicatorRelease(m_handle_rsi);
       m_handle_ema_fast = INVALID_HANDLE;
       m_handle_ema_trend = INVALID_HANDLE;
       m_handle_atr = INVALID_HANDLE;
+      m_handle_rsi = INVALID_HANDLE;
      }
 
    bool              Update()
@@ -126,6 +158,22 @@ public:
    double            EmaTrend() const { return m_ema_trend; }
    double            Atr() const { return m_atr; }
    ENUM_FEMA_TREND   Trend() const { return m_trend; }
+
+   bool              RsiAllowsDirection(const ENUM_FEMA_DIRECTION dir) const
+     {
+      if(!m_use_rsi || m_handle_rsi == INVALID_HANDLE)
+         return true;
+
+      double rsi = 0.0;
+      if(!ReadValue(m_handle_rsi, rsi))
+         return true;
+
+      if(dir == FEMA_DIR_BUY && rsi > m_rsi_buy_max)
+         return false;
+      if(dir == FEMA_DIR_SELL && rsi < m_rsi_sell_min)
+         return false;
+      return true;
+     }
 
    bool              ReadEmaFastAt(const int shift, double &value) const
      {

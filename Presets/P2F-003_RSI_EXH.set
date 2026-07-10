@@ -1,5 +1,7 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2F-003 | RSI exhaustion filter
+; Base: PRODUCTION | One change: InpUseRsiExhaustionFilter=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2F-003_RSI_EXH.ini
+; Journal: entry=rsi | v1.20+
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -41,7 +43,7 @@ InpUseBasketTrail=false
 InpBasketTrailActivatePct=50.0
 InpBasketTrailGivebackPct=50.0
 InpUseCandleConfirm=false
-InpUseRsiExhaustionFilter=false
+InpUseRsiExhaustionFilter=true
 InpRsiPeriod=14
 InpRsiBuyMax=70.0
 InpRsiSellMin=30.0

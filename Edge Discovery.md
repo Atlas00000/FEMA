@@ -58,6 +58,8 @@ Presets that show merit but are not the current production candidate. Keep testi
 
 | Preset                             | Task ID | Role                   | PF   | Net P/L | Max DD | Win % | Trades | Why alternate                          |
 | ---------------------------------- | ------- | ---------------------- | ---- | ------- | ------ | ----- | ------ | -------------------------------------- |
+| `FEMA_EURUSD_M5_P2D-001_SES_NO23`  | P2D-001 | **Strong alternate** | **1.40** | **+$237** | 19% / 22% | 72%   | 416    | PF+net beat PRODUCTION; DD fails G1 (+1%) |
+| `FEMA_EURUSD_M5_P2D-002_SES_NOFRI` | P2D-002 | **Near-miss**        | **1.38** | **+$229** | 18.14% / 21.19% | 71% | 426 | Closest P2D so far; DD fails G1 (+0.1%) |
 | `FEMA_EURUSD_M5_P2A-002_BSL_25`    | P2A-002 | **2026 control**       | 1.27 | +$176   | ~18%   | 70%   | 424    | Same stack as candidate; PF slightly lower |
 | `FEMA_EURUSD_M5_P2C-002_REG_ATRP70`| P2C-002 | **2025 slice only**    | 1.34 | +$181   | 18%    | 73%   | 349    | Fails 2026 (PF 0.94) — do not deploy   |
 | `FEMA_EURUSD_M5_P2A-001_PSL_ATR15` | P2A-001 | Prev. candidate        | 1.02 | +$39    | 26%    | 42%   | 1,819  | Structure SL; superseded by BSL_25     |
@@ -65,10 +67,41 @@ Presets that show merit but are not the current production candidate. Keep testi
 | `FEMA_EURUSD_M5_P2A-001_PSL_ATR20` | P2A-001 | Low-DD R:R             | 0.91 | −$56    | 22%    | 21%   | 1,229  | Strong R:R; unprofitable Jan–Feb       |
 
 
-**Next:** P2D session filters on **BSL_25 / ADX30** base (PF 1.36 benchmark).
+**Next:** Phase 3 or portfolio scale (P2F closed — no promotion).
 
 ```
-1. FEMA_EURUSD_M5_P2D-001_SES_NO23          ← next
+1. FEMA_EURUSD_M5_P2F-001_GRID_ATR15       ← done (row 29) — ❌ PF 1.08
+2. FEMA_EURUSD_M5_P2F-001_GRID_ATR20       ← done (row 30) — ❌ PF 0.93
+3. FEMA_EURUSD_M5_P2F-002_1PERLEVEL        ← done (row 31) — ✅ control
+4. FEMA_EURUSD_M5_P2F-003_RSI_EXH          ← done (row 32) — inert
+5. FEMA_EURUSD_M5_P2F-004_CONFIRM          ← done (row 33) — ❌ PF 0.94, DD 51%
+```
+
+**P2F verdict (2026 Jan–Jul):** No promotion. **PRODUCTION stays locked.** Wider grid and candle confirm harm edge; RSI inert; 1-per-level verified.
+
+Completed (P2F):
+
+```
+    P2F-001 GRID_ATR15/20  ← ❌ rejected (rows 29–30) — wider spacing fails
+    P2F-002 1PERLEVEL      ← ✅ control (row 31)
+    P2F-003 RSI_EXH        ← inert (row 32)
+    P2F-004 CONFIRM        ← ❌ rejected (row 33) — PF 0.94, DD 51%
+```
+
+Completed (P2E):
+
+```
+    P2E-001 EXIT_RTE      ← ❌ rejected (row 27) — PF 0.54, churn + scalp
+    P2E-003 TRAIL_50      ← ❌ rejected (row 28) — PF 1.10, +$64 vs +$221
+```
+
+Completed (P2D):
+
+```
+    P2D-001 SES_NO23      ← ⭐ alternate (row 23) — PF 1.40, G1 fail DD
+    P2D-002 SES_NOFRI     ← ⭐ near-miss (row 24) — PF 1.38, G1 fail DD +0.1%
+    P2D-003 SES_NOSUN     ← inert (row 25)
+    P2D-004 SES_LDN_NY    ← ❌ rejected (row 26) — PF 1.05, DD 40%
 ```
 
 Completed (P2C — 2026 verdict):
@@ -140,22 +173,34 @@ Fill in as reports are uploaded. Keep date range consistent across rows.
 | 19  | `P2C-004_REG_SLOPE`       | P2C-004 | ❌ Rejected        | 1.15     | +28      | 8%           | 68%     | +5.73 | −10.85 | −23.78    | 57     | EMA20 slope; **57 trades** — check date range      |
 | 20  | `P2C-005_BRK_SUSPEND`     | P2C-005 | ❌ Rejected        | 1.10     | +112     | 17% / 21% eq | 72%     | +2.22 | −5.24  | −27.04    | 753    | Breakout >3×ATR; PF fails vs ATRP70                |
 | 21  | `P2C002_ATRP70`           | P2C-002 | ❌ Rejected 2026   | 0.94     | −38      | ~32% / ~35% eq | 65%     | —     | —      | —         | 376    | 2026 — ATR gate hurts edge vs BSL_25                 |
-| 22  | `P2C-001_REG_ADX30`       | P2C-001 | 🏆 **Candidate**   | **1.36** | **+221** | **18% / 21% eq** | **71%** | +2.77 | −5.04  | −8.65     | 424    | **2026 canonical** — PF ~1.3 target met              |
+| 22  | `PRODUCTION` / `P2C-001_REG_ADX30` | PRODUCTION | 🏆 **Candidate**   | **1.36** | **+221** | **18% / 21% eq** | **71%** | +2.77 | −5.04  | −8.65     | 424    | **2026 canonical** — PF ~1.3 target met              |
+| 23  | `P2D-001_SES_NO23`        | P2D-001 | ⭐ **Alternate**   | **1.40** | **+237** | 19% / 22% eq | 72%     | +2.78 | −5.01  | −11.02    | 416    | Block h22-0; −8 trades; **G1 fail** (DD +1%) — filter works |
+| 24  | `P2D-002_SES_NOFRI`       | P2D-002 | ⭐ **Alternate**   | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | No new baskets Fri ≥20:00; **G1 fail** (DD +0.1%) — marginal |
+| 25  | `P2D-003_SES_NOSUN`       | P2D-003 | ❌ **Inert**       | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | Block Sun h0–1; **≈ identical to row 24** — filter works, no edge |
+| 26  | `P2D-004_SES_LDN_NY`      | P2D-004 | ❌ **Rejected**    | 1.05     | +27      | 38% / 41% eq | 63%     | +3.14 | −5.03  | −15.98    | 287    | Whitelist 08–12, 13–17; −137 trades; Asia edge lost |
+| 27  | `P2E-001_EXIT_RTE`        | P2E-001 | ❌ **Rejected**    | 0.54     | −107     | 31% / 32% eq | 75%     | +0.32 | −1.80  | −12.61    | 522    | RTE scalp; avg win 5× smaller than loss; **Jan–Feb only** ⚠️ |
+| 28  | `P2E-003_TRAIL_50`        | P2E-003 | ❌ **Rejected**    | 1.10     | +64      | 19% / 20% eq | 74%     | +1.68 | −4.42  | −8.83     | 589    | Trail cuts winners; +165 trades vs PRODUCTION; **G1 fail** |
+| 29  | `P2F-001_GRID_ATR15`      | P2F-001 | ❌ **Rejected**    | 1.08     | +40      | 28% / 29% eq | 66%     | +3.07 | −5.37  | −12.84    | 258    | ATR mult 1.5; −166 trades; deeper pullbacks miss edge |
+| 30  | `P2F-001_GRID_ATR20`      | P2F-001 | ❌ **Rejected**    | 0.93     | −35      | 34% / 36% eq | 60%     | +3.09 | −4.99  | −13.15    | 253    | ATR mult 2.0; worse than ATR15; long WR 49% — grid closed |
+| 31  | `P2F-002_1PERLEVEL`       | P2F-002 | ✅ **Control**     | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | No input change; ≈ PRODUCTION — 1-per-level verified |
+| 32  | `P2F-003_RSI_EXH`         | P2F-003 | ❌ **Inert**       | **1.38** | **+229** | 18.17% / 21.22% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | RSI block >70/<30; **≈ identical to row 31** — filter inert |
+| 33  | `P2F-004_CONFIRM`         | P2F-004 | ❌ **Rejected**    | 0.94     | −40      | 46% / 51% eq | 63%     | +2.70 | −4.93  | −15.63    | 350    | Candle confirm; long WR 49%; −74 trades; delays good entries |
 
 
 ---
 
 ## Remaining Test Queue
 
-**P2A ✅ · P2B ✅ · P2C ✅ (2026).** Candidate: **`P2C-001_REG_ADX30` / BSL_25** · PF 1.36. ATRP70 closed.
+**P2A ✅ · P2B ✅ · P2C ✅ · P2D ✅ · P2E ✅ · P2F ✅ (2026).** Candidate: **`PRODUCTION`** · PF 1.36.
 
 
 | Phase     | Next action                                       |
 | --------- | ------------------------------------------------- |
-| **P2C**   | ✅ Closed — BSL_25 wins 2026; ATRP70 rejected      |
-| **P2D**   | Session filters on **BSL_25** base                |
-| **P2E/F** | Only if G2 not yet met after filters              |
-| **P3/P4** | After G3                                          |
+| **P2C**   | ✅ Closed — BSL_25 + ADX30 wins 2026               |
+| **P2D**   | ✅ Closed — no promotion                           |
+| **P2E**   | ✅ Closed — basket TP + BSL locked                 |
+| **P2F**   | ✅ Closed — no promotion; PRODUCTION stays           |
+| **P3/P4** | Next — execution expansion / multi-symbol (G2/G3)  |
 
 
 ---
@@ -787,33 +832,35 @@ Historical row 17. **Not valid for 2026 deployment.** See row 21.
 ### Phase 2D — Session & Time Filters
 
 > **Objective:** Block entries in windows where basket TP rate drops or −$25 SL rate rises. Session filters do not change exit logic — they prevent bad baskets from opening.  
-> **Base preset:** BSL_25 (`P2A-002_BSL_25` / row 22 benchmark PF 1.36).
+> **Base preset:** PRODUCTION (`FEMA_EURUSD_M5_PRODUCTION`) · PF 1.36 · v1.18+
 
 
-| ID          | Task                | Module(s) | Description                                           | Test preset          | Priority            |
-| ----------- | ------------------- | --------- | ----------------------------------------------------- | -------------------- | ------------------- |
-| **P2D-001** | Block rollover hour | `Filters` | No new legs 22:00–00:00 broker time (hour 23 losses). | `P2D-001_SES_NO23`   | **1**               |
-| **P2D-002** | Friday close block  | `Filters` | No new baskets after Friday 20:00.                    | `P2D-002_SES_NOFRI`  | 2                   |
-| **P2D-003** | Sunday open block   | `Filters` | No entries first 2 hours Sunday.                      | `P2D-003_SES_NOSUN`  | 3                   |
-| **P2D-004** | Session whitelist   | `Filters` | London (08–12) + NY (13–17) only.                     | `P2D-004_SES_LDN_NY` | 4 — may over-filter |
+| ID          | Task                | Module(s)       | Description                                           | Test preset          | Status        |
+| ----------- | ------------------- | --------------- | ----------------------------------------------------- | -------------------- | ------------- |
+| **P2D-001** | Block rollover hour | `SessionFilter` | No entries hours 22, 23, 0 (broker time).             | `P2D-001_SES_NO23`   | ⭐ Tested — PF 1.40, G1 fail DD |
+| **P2D-002** | Friday close block  | `SessionFilter` | No new baskets Fri ≥ 20:00 (add-ons allowed).         | `P2D-002_SES_NOFRI`  | ⭐ Tested — PF 1.38, G1 fail DD (marginal) |
+| **P2D-003** | Sunday open block   | `SessionFilter` | No entries Sun hours 0–1.                             | `P2D-003_SES_NOSUN`  | ❌ Inert — ≈ row 24, zero Sun entries |
+| **P2D-004** | Session whitelist   | `SessionFilter` | Entries only 08–12 and 13–17 (London + NY).           | `P2D-004_SES_LDN_NY` | ❌ Rejected — PF 1.05, DD 40% |
+
+**P2D closed:** No preset beat PRODUCTION on PF **and** DD together. Session blocking (NO23, NOFRI) marginally improves PF but not DD. LDN/NY whitelist is harmful — Asia/overnight hours (esp. h0–1) carry real edge.
+
+**Gate G1:** Beat PRODUCTION on **PF and max DD together** (not win rate alone).
 
 
 ---
 
 ### Phase 2E — Exit Mode Expansion
 
-> **Objective:** Tune basket exit asymmetry. **Caution:** BSL_25 already optimises TP/SL balance — new exit modes must beat it on PF + DD, not just reduce avg loss.  
-> **Base preset:** BSL_25 + promoted P2B/C/D stack.
+> **Objective:** Tune basket exit asymmetry. **Caution:** BSL_25 already optimises TP/SL balance — new exit modes must beat PRODUCTION on PF **and** DD together (Gate G1).  
+> **Base preset:** PRODUCTION (`FEMA_EURUSD_M5_PRODUCTION`) · PF 1.36 · **v1.19+**
 
 
-| ID          | Task                   | Module(s)              | Description                                                            | Test preset            | Priority                 |
-| ----------- | ---------------------- | ---------------------- | ---------------------------------------------------------------------- | ---------------------- | ------------------------ |
-| **P2E-001** | Return-to-EMA exit     | `ExitEngine`           | Close basket when price returns to EMA20 (natural mean-revert target). | `P2E-001_EXIT_RTE`     | **1 — aligns with edge** |
-| **P2E-003** | Basket trailing profit | `ExitEngine`           | Trail after basket profit > 50% of TP; exit on giveback.               | `P2E-003_TRAIL_50`     | 2                        |
-| **P2E-002** | Per-trade ATR TP       | `ExitEngine`           | TP each leg at 0.5–1.0× ATR — **conflicts with basket model**.         | `P2E-002_TPT_ATR05`    | Low — test last          |
-| **P2E-004** | Partial basket close   | `ExitEngine`           | Close best leg at 1× ATR; rest to basket TP.                           | `P2E-004_PARTIAL_1LEG` | Low                      |
-| **P2E-005** | Exit mode selector     | `Config`, `ExitEngine` | Enum: BasketTP / RTE / Trail.                                          | `P2E-005_MODE_{name}`  | After isolates           |
+| ID          | Task                   | Module(s)              | Description                                                            | Test preset            | Status        |
+| ----------- | ---------------------- | ---------------------- | ---------------------------------------------------------------------- | ---------------------- | ------------- |
+| **P2E-001** | Return-to-EMA exit     | `ExitEngine`           | Close basket when price returns to EMA20 (mean-revert target). BSL still applies. | `P2E-001_EXIT_RTE`     | ❌ Rejected — PF 0.54 (Jan–Feb) |
+| **P2E-003** | Basket trailing profit | `ExitEngine`           | Arm trail when profit ≥ 50% of basket TP ($5); exit on 50% giveback from peak. | `P2E-003_TRAIL_50`     | ❌ Rejected — PF 1.10, G1 fail |
 
+**P2E closed:** Fixed basket TP ($10) + BSL ($25) outperforms both overlays. Do not deploy RTE or trail on PRODUCTION stack.
 
 **Deprioritised:** Per-leg TP (P2E-002) breaks the basket-exit model that makes BSL_25 work.
 
@@ -821,17 +868,23 @@ Historical row 17. **Not valid for 2026 deployment.** See row 21.
 
 ### Phase 2F — Entry Quality & Grid Refinement
 
-> **Objective:** Fewer, higher-quality pullback baskets — shallower grids, better spacing, confirmation. Reduces −$25 SL frequency without touching exit stack.  
-> **Base preset:** BSL_25 + promoted filters.
+> **Objective:** Fewer, higher-quality pullback baskets — wider spacing, confirmation, RSI exhaustion. Reduces −$25 SL frequency without touching exit stack.  
+> **Base preset:** PRODUCTION (`FEMA_EURUSD_M5_PRODUCTION`) · PF 1.36 · **v1.20+**
 
 
-| ID          | Task                  | Module(s)                   | Description                                                    | Test preset                                | Priority        |
-| ----------- | --------------------- | --------------------------- | -------------------------------------------------------------- | ------------------------------------------ | --------------- |
-| **P2F-001** | Wider grid spacing    | `GridManager`               | ATR multiplier 1.0 → 1.5 → 2.0 (fewer, deeper pullbacks only). | `P2F-001_GRID_ATR15`, `P2F-001_GRID_ATR20` | **1**           |
-| **P2F-004** | Candle confirmation   | `EntryEngine`               | Level touch + bullish/bearish close.                           | `P2F-004_CONFIRM`                          | 2               |
-| **P2F-003** | RSI exhaustion filter | `Indicators`, `EntryEngine` | No buy RSI > 70; no sell RSI < 30.                             | `P2F-003_RSI_EXH`                          | 3               |
-| **P2F-002** | One entry per level   | `GridManager`               | Enforce no re-fire until basket closes.                        | `P2F-002_1PERLEVEL`                        | Verify existing |
-| **P2F-005** | Risk-based sizing     | `LotSizing`                 | `InpRiskPercent` scaled to basket SL distance.                 | `P2F-005_RISK_1PCT`                        | After G2 pass   |
+| ID          | Task                  | Module(s)                   | Description                                                    | Test preset                                | Status        |
+| ----------- | --------------------- | --------------------------- | -------------------------------------------------------------- | ------------------------------------------ | ------------- |
+| **P2F-001** | Wider grid spacing    | `GridManager`               | ATR multiplier 1.0 → 1.5 → 2.0 (fewer, deeper pullbacks only). | `P2F-001_GRID_ATR15`, `P2F-001_GRID_ATR20` | ❌ Closed — ATR15 PF 1.08, ATR20 PF 0.93 |
+| **P2F-004** | Candle confirmation   | `EntryEngine`               | Level touch + last closed bar bullish/bearish.                   | `P2F-004_CONFIRM`                          | ❌ Rejected — PF 0.94, DD 51% |
+
+**P2F closed:** No preset beat PRODUCTION. Keep 1.0× ATR grid, no candle/RSI filters on deploy stack.
+| **P2F-003** | RSI exhaustion filter | `Indicators`, `EntryEngine` | No buy RSI > 70; no sell RSI < 30.                             | `P2F-003_RSI_EXH`                          | ❌ Inert — ≈ row 31 |
+| **P2F-002** | One entry per level   | `GridManager`               | Enforce no re-fire until basket closes (already default).        | `P2F-002_1PERLEVEL`                        | ✅ Verified (row 31) ≈ PRODUCTION |
+| **P2F-005** | Risk-based sizing     | `LotSizing`                 | `InpRiskPercent` scaled to basket SL distance.                 | `P2F-005_RISK_1PCT`                        | Not implemented |
+
+**Journal check:** `entry=off` / `entry=candle` / `entry=rsi` (PRODUCTION control).
+
+**Gate G1:** Beat PRODUCTION on **PF and max DD together**.
 
 
 ---
@@ -956,9 +1009,12 @@ If **G2 fails** after P2B+C+D: edge may be EURUSD M5-specific — test GBPUSD / 
 | SL cooldown        | ❌           | ✅ P2A-005                           |
 | HTF filter         | ❌           | ✅ P2B-001…003 (v1.12)               |
 | ADX / ATR regime   | ❌           | ✅ P2C-001…005 (v1.13)               |
-| Session filter     | ❌           | P2D-*                               |
-| Return-to-EMA exit | ❌           | P2E-001                             |
-| Trailing basket    | ❌           | P2E-003                             |
+| Session filter     | ✅           | P2D-* (closed — no promotion)       |
+| Return-to-EMA exit | ✅           | P2E-001 (rejected)                  |
+| Trailing basket    | ✅           | P2E-003 (rejected)                  |
+| Candle confirm     | ✅           | P2F-004 (v1.20)                     |
+| RSI exhaustion     | ✅           | P2F-003 (v1.20)                     |
+| Wider grid spacing | ✅           | P2F-001 (preset only)               |
 | Risk % sizing      | Stub only   | P2F-005                             |
 | Auto SUSPENDED     | Manual only | P2C-005                             |
 | Pending grid       | ❌           | P3-001                              |
@@ -973,8 +1029,9 @@ If **G2 fails** after P2B+C+D: edge may be EURUSD M5-specific — test GBPUSD / 
 |                |                                                                                                    |
 | -------------- | -------------------------------------------------------------------------------------------------- |
 | **Candidate**  | **`FEMA_EURUSD_M5_PRODUCTION`** 🏆 · PF **1.36** · +$221 |
-| **P2C**        | ✅ Closed — BSL_25 wins 2026; ATRP70 rejected                                      |
-| **v1.14 fix**  | Grid rebuild deferred while basket open — prevents duplicate L1/L2 on new M5 bar |
-| **Next phase** | **P2D** — session filters on **BSL_25** base                                     |
+| **P2D**        | ✅ Closed — no promotion; PRODUCTION stays locked          |
+| **P2E**        | ✅ Closed — no promotion; PRODUCTION exit stack locked     |
+| **P2F**        | ✅ Closed — no promotion; PRODUCTION entry/grid locked     |
+| **Next phase** | **P3** — execution expansion (pending G2/G3 review)        |
 
 

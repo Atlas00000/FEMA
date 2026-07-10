@@ -1,5 +1,7 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2F-004 | Candle confirmation
+; Base: PRODUCTION | One change: InpUseCandleConfirm=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2F-004_CONFIRM.ini
+; Journal: entry=candle | v1.20+
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -40,7 +42,7 @@ InpRteMinProfit=0.0
 InpUseBasketTrail=false
 InpBasketTrailActivatePct=50.0
 InpBasketTrailGivebackPct=50.0
-InpUseCandleConfirm=false
+InpUseCandleConfirm=true
 InpUseRsiExhaustionFilter=false
 InpRsiPeriod=14
 InpRsiBuyMax=70.0

@@ -96,4 +96,4 @@ Full values: `Presets/PRODUCTION.set`
 
 ## 6. Next Phase
 
-**P2D** — session filters on **PRODUCTION** base. Do not change exit stack until P2D isolate beats PF 1.36 + DD 18% together.
+**P2D** — session filters on **PRODUCTION** base. One filter per preset; promote only if PF **and** DD beat PRODUCTION (1.36 / 18%).

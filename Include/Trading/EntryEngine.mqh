@@ -15,8 +15,10 @@ class CFemaEntryEngine
   {
 private:
    string            m_symbol;
+   ENUM_TIMEFRAMES   m_timeframe;
    ENUM_FEMA_TRADE_PERMISSION m_permission;
    int               m_max_entry_depth;
+   bool              m_use_candle_confirm;
 
    bool              DirectionAllowed(const ENUM_FEMA_DIRECTION dir) const
      {
@@ -47,16 +49,51 @@ private:
       return false;
      }
 
+   bool              IsCandleConfirmed(const ENUM_FEMA_DIRECTION dir) const
+     {
+      if(!m_use_candle_confirm)
+         return true;
+
+      const double open = iOpen(m_symbol, m_timeframe, 1);
+      const double close = iClose(m_symbol, m_timeframe, 1);
+      if(open <= 0.0 || close <= 0.0)
+         return false;
+
+      if(dir == FEMA_DIR_BUY)
+         return close > open;
+      if(dir == FEMA_DIR_SELL)
+         return close < open;
+      return false;
+     }
+
 public:
-                     CFemaEntryEngine() : m_symbol(""), m_permission(FEMA_PERM_BOTH), m_max_entry_depth(5) {}
+                     CFemaEntryEngine() :
+                     m_symbol(""),
+                     m_timeframe(PERIOD_CURRENT),
+                     m_permission(FEMA_PERM_BOTH),
+                     m_max_entry_depth(5),
+                     m_use_candle_confirm(false)
+     {}
 
    void              Init(const string symbol,
+                          const ENUM_TIMEFRAMES timeframe,
                           const ENUM_FEMA_TRADE_PERMISSION permission,
-                          const int max_entry_depth)
+                          const int max_entry_depth,
+                          const bool use_candle_confirm = false)
      {
       m_symbol = symbol;
+      m_timeframe = timeframe;
       m_permission = permission;
       m_max_entry_depth = MathMax(1, max_entry_depth);
+      m_use_candle_confirm = use_candle_confirm;
+     }
+
+   string            ActiveSummary() const
+     {
+      string parts = "";
+      if(m_use_candle_confirm)
+         parts += (parts == "" ? "" : "+") + "candle";
+      return parts == "" ? "off" : parts;
      }
 
    bool              Evaluate(CFemaGridManager &grid,
@@ -91,6 +128,10 @@ public:
          if(!DirectionAllowed(level.direction))
             continue;
          if(!htf.Allows(level.direction))
+            continue;
+         if(!indicators.RsiAllowsDirection(level.direction))
+            continue;
+         if(!IsCandleConfirmed(level.direction))
             continue;
          if(!IsLevelTouched(level))
             continue;

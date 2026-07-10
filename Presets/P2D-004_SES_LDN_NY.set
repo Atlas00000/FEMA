@@ -1,5 +1,6 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2D-004 | London 08-12 + NY 13-17 whitelist only
+; Base: PRODUCTION | One change: InpUseSessionWhitelistLdnNy=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2D-004_SES_LDN_NY.ini
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -34,17 +35,7 @@ InpBreakoutAtrMult=3.0
 InpUseSessionBlockNo23=false
 InpUseSessionBlockFriClose=false
 InpUseSessionBlockSunOpen=false
-InpUseSessionWhitelistLdnNy=false
-InpUseExitRte=false
-InpRteMinProfit=0.0
-InpUseBasketTrail=false
-InpBasketTrailActivatePct=50.0
-InpBasketTrailGivebackPct=50.0
-InpUseCandleConfirm=false
-InpUseRsiExhaustionFilter=false
-InpRsiPeriod=14
-InpRsiBuyMax=70.0
-InpRsiSellMin=30.0
+InpUseSessionWhitelistLdnNy=true
 InpBaseLot=0.01
 InpRiskPercent=0.0
 InpSpreadFilter=true

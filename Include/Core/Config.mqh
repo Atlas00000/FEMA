@@ -48,6 +48,26 @@ input bool   InpUseEmaSlopeGate      = false;
 input bool   InpUseBreakoutSuspend   = false;
 input double InpBreakoutAtrMult     = 3.0;
 
+input group "=== Phase 2D: Session Filters ==="
+input bool   InpUseSessionBlockNo23       = false;
+input bool   InpUseSessionBlockFriClose   = false;
+input bool   InpUseSessionBlockSunOpen    = false;
+input bool   InpUseSessionWhitelistLdnNy  = false;
+
+input group "=== Phase 2E: Exit Modes ==="
+input bool   InpUseExitRte              = false;
+input double InpRteMinProfit            = 0.0;
+input bool   InpUseBasketTrail          = false;
+input double InpBasketTrailActivatePct  = 50.0;
+input double InpBasketTrailGivebackPct  = 50.0;
+
+input group "=== Phase 2F: Entry Quality ==="
+input bool   InpUseCandleConfirm        = false;
+input bool   InpUseRsiExhaustionFilter  = false;
+input int    InpRsiPeriod               = 14;
+input double InpRsiBuyMax               = 70.0;
+input double InpRsiSellMin              = 30.0;
+
 input group "=== Position Sizing ==="
 input double InpBaseLot         = 0.01;
 input double InpRiskPercent     = 0.0;

@@ -1,5 +1,8 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2E-003 | Basket trail — arm at 50% of TP, exit on 50% giveback
+; Base: PRODUCTION | One change: InpUseBasketTrail=true
+; LOAD: Settings -> FEMA_EURUSD_M5_P2E-003_TRAIL_50.ini
+; Compare vs PRODUCTION: PF 1.36 | +$221 | 18% DD | 424 trades
+; Journal MUST show: exit=trail50 | v1.19+
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -37,14 +40,9 @@ InpUseSessionBlockSunOpen=false
 InpUseSessionWhitelistLdnNy=false
 InpUseExitRte=false
 InpRteMinProfit=0.0
-InpUseBasketTrail=false
+InpUseBasketTrail=true
 InpBasketTrailActivatePct=50.0
 InpBasketTrailGivebackPct=50.0
-InpUseCandleConfirm=false
-InpUseRsiExhaustionFilter=false
-InpRsiPeriod=14
-InpRsiBuyMax=70.0
-InpRsiSellMin=30.0
 InpBaseLot=0.01
 InpRiskPercent=0.0
 InpSpreadFilter=true

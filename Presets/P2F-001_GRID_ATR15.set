@@ -1,10 +1,12 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: P2F-001 | Wider grid spacing 1.5x ATR
+; Base: PRODUCTION | One change: InpAtrMultiplier=1.5
+; LOAD: Settings -> FEMA_EURUSD_M5_P2F-001_GRID_ATR15.ini
+; Journal: entry=off | v1.20+
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
 InpAtrPeriod=14
-InpAtrMultiplier=1.0
+InpAtrMultiplier=1.5
 InpGridLevels=5
 InpGridRebuildAtr=0.25
 InpBasketTp=10.0
