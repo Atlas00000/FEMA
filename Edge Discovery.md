@@ -2,6 +2,8 @@
 
 **Status:** **Production verified** — `FEMA_EURUSD_M5_PRODUCTION` · PF **1.36** · +$221 · 18% DD · 424 trades · Sharpe 1.90
 
+**System profile:** [`System Profile EURUSD.md`](System Profile EURUSD.md) — edge, trade, and performance summary for the locked stack.
+
 **Test symbol / TF:** EURUSD M5  
 **Test window (canonical):** `2026.01.01` – `2026.07.31` · $400 · 1:500 · Every tick · `ProfitInPips=0`  
 **Preset location:** `MQL5\Profiles\Tester\`  
@@ -67,7 +69,11 @@ Presets that show merit but are not the current production candidate. Keep testi
 | `FEMA_EURUSD_M5_P2A-001_PSL_ATR20` | P2A-001 | Low-DD R:R             | 0.91 | −$56    | 22%    | 21%   | 1,229  | Strong R:R; unprofitable Jan–Feb       |
 
 
-**Next:** Phase 3 or portfolio scale (P2F closed — no promotion).
+**Next:** G3 cross-symbol — GBPUSD failed (row 34). Per-pair discovery: [`Edge Discovery GBPUSD.md`](Edge Discovery GBPUSD.md) · [`Edge Discovery XAUUSD.md`](Edge Discovery XAUUSD.md)
+
+**G3 status:** ❌ **Fail** — EURUSD PF 1.36 ✅ · GBPUSD PRODUCTION PF 0.80 ❌ · XAUUSD open (P1 row 1 promising, not deployable)
+
+Phase 2 closed — PRODUCTION locked on **EURUSD M5 only**.
 
 ```
 1. FEMA_EURUSD_M5_P2F-001_GRID_ATR15       ← done (row 29) — ❌ PF 1.08
@@ -185,6 +191,7 @@ Fill in as reports are uploaded. Keep date range consistent across rows.
 | 31  | `P2F-002_1PERLEVEL`       | P2F-002 | ✅ **Control**     | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | No input change; ≈ PRODUCTION — 1-per-level verified |
 | 32  | `P2F-003_RSI_EXH`         | P2F-003 | ❌ **Inert**       | **1.38** | **+229** | 18.17% / 21.22% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | RSI block >70/<30; **≈ identical to row 31** — filter inert |
 | 33  | `P2F-004_CONFIRM`         | P2F-004 | ❌ **Rejected**    | 0.94     | −40      | 46% / 51% eq | 63%     | +2.70 | −4.93  | −15.63    | 350    | Candle confirm; long WR 49%; −74 trades; delays good entries |
+| 34  | `PRODUCTION` **GBPUSD**   | G3      | ❌ **G3 fail**     | 0.80     | −172     | 65% eq       | 59%     | +3.08 | −5.41  | —         | 393    | Same preset EURUSD; long WR 48%; **edge EURUSD-specific** |
 
 
 ---
@@ -989,9 +996,11 @@ P4-001     Multi-symbol
 | ---------------------- | --------------------------------------------------- | ------------------------------------ | ------------------ |
 | **G1** — P2A complete  | PF ≥ 0.8, max DD ≤ 35%, largest loss bounded        | ✅ **Pass** (BSL_25: PF 1.15, DD 18%) | Proceed to P2B     |
 | **G2** — After P2B+C+D | PF ≥ 1.0, max DD ≤ 25% on filter stack              | ⏳                                    | Proceed to P2E/F   |
-| **G3** — After P2E+F   | PF ≥ 1.2, Sharpe > 0, 2+ symbols validated          | ⏳                                    | Proceed to Phase 3 |
+| **G3** — After P2E+F   | PF ≥ 1.2, Sharpe > 0, 2+ symbols validated          | ❌ **Fail** — GBPUSD PF 0.80 (row 34) | EURUSD-only deploy; P3/P4 hold |
 | **G4** — Phase 3       | Pending grid improves fill rate without DD increase | ⏳                                    | Proceed to Phase 4 |
 
+
+If **G3 fails** (GBPUSD row 34): edge is **EURUSD M5-specific** — do not port PRODUCTION stack unchanged. Per-symbol retune or abandon multi-symbol until a symbol passes G3.
 
 If **G2 fails** after P2B+C+D: edge may be EURUSD M5-specific — test GBPUSD / XAUUSD on BSL_25 before more complexity.
 
@@ -1032,6 +1041,6 @@ If **G2 fails** after P2B+C+D: edge may be EURUSD M5-specific — test GBPUSD / 
 | **P2D**        | ✅ Closed — no promotion; PRODUCTION stays locked          |
 | **P2E**        | ✅ Closed — no promotion; PRODUCTION exit stack locked     |
 | **P2F**        | ✅ Closed — no promotion; PRODUCTION entry/grid locked     |
-| **Next phase** | **P3** — execution expansion (pending G2/G3 review)        |
+| **Next phase** | **EURUSD demo/live** — G3 failed on GBPUSD; P3/P4 on hold |
 
 
