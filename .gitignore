@@ -2,3 +2,5 @@
 *.ex5
 *.ex4
 AI/data/
+AI/__pycache__/
+**/__pycache__/

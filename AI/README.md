@@ -81,9 +81,8 @@ python AI/replay.py --baskets AI/data/EURUSD_20260707_baskets.csv --baseline AI/
 # Hypothetical soft skip list (one basket_id per line or JSON array)
 python AI/replay.py --baskets AI/data/EURUSD_20260707_baskets.csv --skip-ids AI/data/skip_ids.txt
 
-# Repair pre-v1.23 logs (all basket_id=1) then AI2 failure model
-python AI/repair_basket_ids.py
-python AI/failure_predictor.py --model gbdt
+# AI Edge Contain — EC0 ingest (after 2020-2025 tester collect)
+python AI/ec0_ingest.py --from-agent "PATH/TO/Agent/MQL5/Files/FEMA_AI/EURUSD_*_baskets.csv"
 
 # AI3 edge health (rolling score + stress pause)
 python AI/edge_health.py

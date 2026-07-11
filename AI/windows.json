@@ -11,7 +11,7 @@
   "ai_build_collect": {
     "start": "2020.01.01",
     "end": "2025.12.31",
-    "note": "Single AI0 tester run, then split offline. Confirm last basket open_time is in 2025 before training."
+    "note": "Single AI0 tester run, then split offline. Confirm last basket open_time is in 2025 before training. Larger tester deposit OK (ignore for strategy) — only so equity survives the full span."
   },
   "splits": {
     "train": {

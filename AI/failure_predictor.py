@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""AI2 — Failure predictor (offline, soft-skip, high precision on skips).
+"""EC2 / AI2 — Failure predictor (offline soft-skip, precision on skips > recall).
 
-Train on 2024–2025; lock threshold on a late-train calibration slice;
-evaluate once on 2026 Jan–Jul (AI-G1). Approve by default.
+Contain defaults: train 2020–2023, late-train cal for quantile lock,
+single eval on 2024–2025 holdout. Approve by default.
 """
 
 from __future__ import annotations
@@ -149,6 +149,7 @@ def skip_precision(rows: list[dict], skip_ids: set[str]) -> dict:
 
 
 def ai_g1(base: dict, cand: dict, min_trade_frac: float = 0.85) -> dict:
+    """Legacy beat-baseline gate (ai_enhance). Prefer guardrail_contain for EC2."""
     checks = {
         "pf_ge_baseline": cand["pf"] + 1e-12 >= float(base["pf"]),
         "dd_le_baseline": cand["max_dd_pct"] <= float(base["max_dd_pct"]) + 1e-9,
@@ -158,6 +159,24 @@ def ai_g1(base: dict, cand: dict, min_trade_frac: float = 0.85) -> dict:
     checks["ai_g1_pass"] = (
         checks["pf_ge_baseline"] and checks["dd_le_baseline"] and checks["trades_ge_85pct"]
     )
+    return checks
+
+
+def guardrail_contain(base: dict, cand: dict, skip: dict, max_skip: float = 0.15) -> dict:
+    """Edge Contain bar — precision / damage avoided, not beat-2026 PF."""
+    skip_rate = float(cand.get("skip_rate", 0.0))
+    checks = {
+        "skip_share_le_15pct": skip_rate <= max_skip + 1e-9,
+        "trades_ge_85pct": cand["n"] >= int(math.ceil(float(base["n"]) * 0.85)),
+        "net_avoided_le_0": float(skip.get("net_avoided", 0.0)) <= 0.0 + 1e-9,
+        "precision_majority_bad": (
+            float(skip.get("precision_y_fail", 0.0)) >= 0.50
+            or float(skip.get("precision_loser", 0.0)) >= 0.50
+        )
+        if int(skip.get("n", 0)) > 0
+        else True,  # empty skip = approve-by-default OK
+    }
+    checks["guardrail_pass"] = all(checks.values())
     return checks
 
 
@@ -186,6 +205,7 @@ def select_policy_on_cal(
     max_skip: float,
     min_skip: float,
     deposit: float,
+    require_precision: bool = True,
 ) -> tuple[dict, list[dict]]:
     """Lock a skip *quantile* on calibration (rank policy), not a brittle absolute P cutoff."""
     targets = [0.05, 0.08, 0.10, 0.12, 0.15]
@@ -197,6 +217,15 @@ def select_policy_on_cal(
         ev = evaluate_threshold(rows, p_fail, thr, deposit)
         if ev["skip_n"] == 0:
             continue
+        prec_ok = (
+            ev["skip"]["precision_y_fail"] >= 0.50
+            or ev["skip"]["precision_loser"] >= 0.50
+        )
+        net_ok = ev["skip"]["net_avoided"] <= 0.0
+        if require_precision and not (prec_ok and net_ok):
+            ev["cal_eligible"] = False
+        else:
+            ev["cal_eligible"] = True
         score = (
             100.0 * ev["skip"]["precision_y_fail"]
             + 40.0 * ev["skip"]["precision_loser"]
@@ -206,16 +235,35 @@ def select_policy_on_cal(
         ev["score"] = round(score, 4)
         ev["skip_quantile"] = t
         candidates.append(ev)
-    if not candidates:
-        raise RuntimeError("no calibration policies in skip budget")
-    candidates.sort(key=lambda d: d["score"], reverse=True)
-    return candidates[0], candidates
+    eligible = [c for c in candidates if c.get("cal_eligible")]
+    pool = eligible if eligible else []
+    if not pool:
+        # Approve-by-default: no skip policy locked
+        empty = {
+            "threshold": 1.0,
+            "skip_rate": 0.0,
+            "skip_n": 0,
+            "kept": equity_metrics(rows, set(), deposit),
+            "skip": skip_precision(rows, set()),
+            "skip_ids": [],
+            "score": 0.0,
+            "skip_quantile": 0.0,
+            "cal_eligible": True,
+            "note": "no cal policy met precision+net_avoided; empty skip",
+        }
+        return empty, candidates
+    pool.sort(key=lambda d: d["score"], reverse=True)
+    return pool[0], candidates
 
 
 def evaluate_quantile(
     rows: list[dict], p_fail: np.ndarray, skip_quantile: float, deposit: float
 ) -> dict:
     """Skip the top skip_quantile fraction by P(fail) (rank policy)."""
+    if skip_quantile <= 0:
+        ev = evaluate_threshold(rows, p_fail, 1.0 + 1e-9, deposit)
+        ev["skip_quantile"] = 0.0
+        return ev
     thr = float(np.quantile(p_fail, 1.0 - skip_quantile))
     ev = evaluate_threshold(rows, p_fail, thr, deposit)
     ev["skip_quantile"] = skip_quantile
@@ -246,31 +294,32 @@ def feature_importance(model: Pipeline, names: list[str], kind: str) -> list[dic
 
 
 def write_md(path: Path, report: dict) -> None:
-    best = report["validate_eval"]
+    best = report["holdout_eval"]
     status = report["status"]
     lines = [
-        "# AI2 — Failure predictor report",
+        "# EC2 — Failure / steamroller guardrail",
         "",
         f"**Status:** `{status}`",
-        f"**Model:** `{report['model']}` · **Locked skip quantile (train-cal):** top **{report['locked_skip_quantile']:.0%}** by P(fail)",
-        f"**Skip rate (validate):** {best['skip_rate']:.1%} ({best['skip_n']} baskets)",
-        f"**AI-G1:** {'PASS' if best['ai_g1']['ai_g1_pass'] else 'FAIL'}",
+        f"**Model:** `{report['model']}` · regime features: `{report['use_regime']}`",
+        f"**Locked skip quantile (late-train cal):** top **{report['locked_skip_quantile']:.0%}** by P(fail)",
+        f"**Skip rate (holdout):** {best['skip_rate']:.1%} ({best['skip_n']} baskets)",
+        f"**Contain guardrail:** {'PASS' if best['guardrail']['guardrail_pass'] else 'FAIL'}",
         f"**Skip-precision gate:** {'PASS' if report['skip_precision_pass'] else 'FAIL'}",
-        f"**AUC train / validate:** {report['auc_train']:.3f} / {report['auc_validate']:.3f}",
+        f"**AUC train / holdout:** {report['auc_train']:.3f} / {report['auc_holdout']:.3f}",
         "",
-        "## Validate 2026 Jan–Jul (single eval)",
+        "## Holdout 2024–2025 (single eval — no peek-tune)",
         "",
-        "| Slice | N | PF | Net | DD% | WR | BSL% |",
-        "| ----- | - | -- | --- | --- | -- | ---- |",
+        "| Slice | N | PF | Net | WR | BSL% |",
+        "| ----- | - | -- | --- | -- | ---- |",
     ]
-    b = report["validate_baseline"]
+    b = report["holdout_baseline"]
     k = best["kept"]
     s = best["skip"]
     lines.append(
-        f"| Baseline (all) | {b['n']} | {b['pf']:.2f} | {b['net']:+.1f} | {b['max_dd_pct']:.1f} | {b['wr']:.2%} | {b['bsl_rate']:.1%} |"
+        f"| Baseline (all) | {b['n']} | {b['pf']:.2f} | {b['net']:+.1f} | {b['wr']:.2%} | {b['bsl_rate']:.1%} |"
     )
     lines.append(
-        f"| After soft-skip | {k['n']} | {k['pf']:.2f} | {k['net']:+.1f} | {k['max_dd_pct']:.1f} | {k['wr']:.2%} | {k['bsl_rate']:.1%} |"
+        f"| After soft-skip | {k['n']} | {k['pf']:.2f} | {k['net']:+.1f} | {k['wr']:.2%} | {k['bsl_rate']:.1%} |"
     )
     lines += [
         "",
@@ -280,13 +329,15 @@ def write_md(path: Path, report: dict) -> None:
         f"- Skip precision loser (profit<0): **{s['precision_loser']:.1%}**",
         f"- Skip BSL rate: **{s['bsl_rate']:.1%}**",
         f"- Net PnL of skipped set: **{s['net_avoided']:+.2f}** (negative = good avoidance)",
+        f"- Guardrail: `{json.dumps(best['guardrail'])}`",
         "",
         "## Threshold lock (late-train calibration)",
         "",
     ]
     cal = report["cal_selected"]
     lines.append(
-        f"Cal slice n={report['cal_n']}: skip {cal['skip_rate']:.1%}, "
+        f"Cal slice n={report['cal_n']}: skip_q={report['locked_skip_quantile']:.0%}, "
+        f"skip {cal['skip_rate']:.1%}, "
         f"y_fail prec {cal['skip']['precision_y_fail']:.1%}, "
         f"loser prec {cal['skip']['precision_loser']:.1%}, "
         f"net_avoided {cal['skip']['net_avoided']:+.2f}"
@@ -298,26 +349,32 @@ def write_md(path: Path, report: dict) -> None:
         "",
         "## Policy",
         "",
-        "Shadow only. Wire only if status is `promote_candidate` (AI-G1 + majority-fail skips).",
-        "Approve by default; skip only when P(fail) ≥ locked threshold.",
+        "Shadow only unless status is `promote_shadow`.",
+        "Approve by default; skip only top locked quantile by P(fail).",
+        "Grade on contain guardrail (precision / net avoided / budget) — not 2026 PRODUCTION PF.",
+        "",
+        f"**Verdict:** {report.get('verdict', '')}",
         "",
     ]
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="AI2 failure predictor")
-    ap.add_argument("--train", type=Path, default=Path("AI/data/dataset_train_2024_2025.csv"))
-    ap.add_argument("--validate", type=Path, default=Path("AI/data/dataset_validate_2026.csv"))
+    ap = argparse.ArgumentParser(description="EC2 failure / steamroller guardrail")
+    ap.add_argument("--train", type=Path, default=Path("AI/data/dataset_train_2020_2023.csv"))
+    ap.add_argument("--validate", type=Path, default=Path("AI/data/dataset_holdout_2024_2025.csv"))
     ap.add_argument("--model", choices=("logistic", "gbdt"), default="gbdt")
     ap.add_argument("--calibrate", action="store_true")
-    ap.add_argument("--use-regime", action="store_true", help="Include AI1 regime one-hots")
+    ap.add_argument("--use-regime", action="store_true", default=True,
+                    help="Include EC1 regime one-hots (default on for contain)")
+    ap.add_argument("--no-regime", action="store_true", help="Disable regime one-hots")
     ap.add_argument("--cal-frac", type=float, default=0.25, help="Late-train fraction for threshold lock")
     ap.add_argument("--max-skip", type=float, default=0.15)
     ap.add_argument("--min-skip", type=float, default=0.05)
-    ap.add_argument("--deposit", type=float, default=400.0)
-    ap.add_argument("--out-dir", type=Path, default=Path("AI/data"))
+    ap.add_argument("--deposit", type=float, default=1000.0)
+    ap.add_argument("--out-dir", type=Path, default=Path("AI/data/ec2"))
     args = ap.parse_args()
+    use_regime = bool(args.use_regime) and not bool(args.no_regime)
 
     train_rows = load_dataset(args.train)
     val_rows = load_dataset(args.validate)
@@ -333,7 +390,7 @@ def main() -> int:
         )
         return 1
 
-    # Time-ordered train is already chronological; late slice = threshold cal
+    # Time-ordered train; late slice = threshold cal
     split = max(1, int(len(train_rows) * (1.0 - args.cal_frac)))
     fit_rows = train_rows[:split]
     cal_rows = train_rows[split:]
@@ -342,21 +399,21 @@ def main() -> int:
         return 1
 
     atr_p25, atr_p75 = atr_percentiles(fit_rows)
-    X_fit, y_fit, names = featurize(fit_rows, atr_p25, atr_p75, args.use_regime)
-    X_cal, _, _ = featurize(cal_rows, atr_p25, atr_p75, args.use_regime)
-    X_tr, y_tr, _ = featurize(train_rows, atr_p25, atr_p75, args.use_regime)
-    X_va, y_va, _ = featurize(val_rows, atr_p25, atr_p75, args.use_regime)
+    X_fit, y_fit, names = featurize(fit_rows, atr_p25, atr_p75, use_regime)
+    X_cal, _, _ = featurize(cal_rows, atr_p25, atr_p75, use_regime)
+    X_tr, y_tr, _ = featurize(train_rows, atr_p25, atr_p75, use_regime)
+    X_va, y_va, _ = featurize(val_rows, atr_p25, atr_p75, use_regime)
 
     # 1) Fit on early train → lock skip quantile on late train
     model_cal = build_model(args.model, calibrate=args.calibrate)
     model_cal.fit(X_fit, y_fit)
     p_cal = model_cal.predict_proba(X_cal)[:, 1]
     cal_selected, cal_candidates = select_policy_on_cal(
-        cal_rows, p_cal, args.max_skip, args.min_skip, args.deposit
+        cal_rows, p_cal, args.max_skip, args.min_skip, args.deposit, require_precision=True
     )
     skip_q = float(cal_selected["skip_quantile"])
 
-    # 2) Refit on full train; freeze quantile; single validate eval
+    # 2) Refit on full train; freeze quantile; single holdout eval
     model = build_model(args.model, calibrate=args.calibrate)
     model.fit(X_tr, y_tr)
     p_tr = model.predict_proba(X_tr)[:, 1]
@@ -366,31 +423,50 @@ def main() -> int:
     val_base = basket_metrics(val_rows, deposit=args.deposit)
     train_eval = evaluate_quantile(train_rows, p_tr, skip_q, args.deposit)
     val_eval = evaluate_quantile(val_rows, p_va, skip_q, args.deposit)
-    val_eval["ai_g1"] = ai_g1(val_base, val_eval["kept"])
+    # attach skip_rate onto kept for guardrail
+    val_eval["kept"]["skip_rate"] = val_eval["skip_rate"]
+    val_eval["guardrail"] = guardrail_contain(val_base, val_eval["kept"], val_eval["skip"], args.max_skip)
+    val_eval["ai_g1"] = ai_g1(val_base, val_eval["kept"])  # reference only
 
     auc_train = float(roc_auc_score(y_tr, p_tr)) if len(set(y_tr)) > 1 else 0.0
     auc_val = float(roc_auc_score(y_va, p_va)) if len(set(y_va)) > 1 else 0.0
 
     skip_prec_pass = (
-        val_eval["skip"]["precision_y_fail"] >= 0.50
-        or val_eval["skip"]["precision_loser"] >= 0.50
-    ) and val_eval["skip"]["net_avoided"] <= 0.0
+        val_eval["skip_n"] == 0
+        or (
+            (
+                val_eval["skip"]["precision_y_fail"] >= 0.50
+                or val_eval["skip"]["precision_loser"] >= 0.50
+            )
+            and val_eval["skip"]["net_avoided"] <= 0.0
+        )
+    )
+    g_pass = bool(val_eval["guardrail"]["guardrail_pass"])
     rank_ok = auc_val >= 0.55 and val_eval["skip_n"] >= 8
-    if val_eval["ai_g1"]["ai_g1_pass"] and skip_prec_pass and rank_ok:
-        status = "promote_candidate"
-    elif val_eval["ai_g1"]["ai_g1_pass"] and skip_prec_pass:
-        status = "fragile_shadow_g1_thin_sample"
-    elif val_eval["ai_g1"]["ai_g1_pass"]:
-        status = "shadow_watch_g1_pass_weak_precision"
-    elif skip_prec_pass:
-        status = "shadow_precision_ok_g1_fail"
+
+    if skip_q <= 0:
+        status = "shadow_empty_cal_no_eligible_policy"
+        verdict = "Late-train cal found no precision-eligible skip quantile — approve-by-default."
+    elif g_pass and skip_prec_pass and rank_ok:
+        status = "promote_shadow"
+        verdict = "Holdout guardrail pass with usable ranking — shadow candidate (not wired)."
+    elif g_pass and skip_prec_pass:
+        status = "fragile_shadow"
+        verdict = "Holdout guardrail pass but AUC/sample thin — shadow only."
+    elif skip_prec_pass and not g_pass:
+        status = "shadow_precision_ok_budget_fail"
+        verdict = "Skip set looks bad-path-ish but guardrail budget/trades failed."
+    elif g_pass:
+        status = "shadow_watch_guardrail_weak_precision"
+        verdict = "Budget OK but skip precision / net avoided weak."
     else:
         status = "reject_shadow"
+        verdict = "Holdout guardrail fail — do not wire; logging only."
 
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     skip_set = set(val_eval["skip_ids"])
-    shadow_path = out_dir / "ai2_shadow.csv"
+    shadow_path = out_dir / "ec2_shadow.csv"
     with shadow_path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(
             fh,
@@ -421,40 +497,47 @@ def main() -> int:
                 }
             )
 
-    skip_path = out_dir / "ai2_skip_ids.txt"
+    skip_path = out_dir / "ec2_skip_ids.txt"
     skip_path.write_text(
         "\n".join(val_eval["skip_ids"]) + ("\n" if val_eval["skip_ids"] else ""),
         encoding="utf-8",
     )
 
     report = {
-        "phase": "AI2-FAIL",
+        "phase": "EC2-FAIL",
+        "philosophy": "guardrails_not_gates",
         "status": status,
+        "verdict": verdict,
         "model": args.model,
         "calibrate": bool(args.calibrate),
-        "use_regime": bool(args.use_regime),
+        "use_regime": use_regime,
         "train_path": str(args.train).replace("\\", "/"),
-        "validate_path": str(args.validate).replace("\\", "/"),
+        "holdout_path": str(args.validate).replace("\\", "/"),
+        "split": {
+            "fit": "early train (1 - cal_frac)",
+            "cal": "late train (cal_frac)",
+            "holdout": "2024.01.01-2025.12.31",
+        },
         "fit_n": len(fit_rows),
         "cal_n": len(cal_rows),
         "train_n": len(train_rows),
-        "validate_n": len(val_rows),
+        "holdout_n": len(val_rows),
         "train_y_fail_rate": round(float(y_tr.mean()), 4),
-        "validate_y_fail_rate": round(float(y_va.mean()), 4),
+        "holdout_y_fail_rate": round(float(y_va.mean()), 4),
         "auc_train": round(auc_train, 4),
-        "auc_validate": round(auc_val, 4),
+        "auc_holdout": round(auc_val, 4),
         "locked_skip_quantile": skip_q,
-        "locked_threshold_on_validate": val_eval["threshold"],
+        "locked_threshold_on_holdout": val_eval["threshold"],
         "max_skip": args.max_skip,
         "min_skip": args.min_skip,
         "train_baseline": train_base,
-        "validate_baseline": val_base,
+        "holdout_baseline": val_base,
         "cal_selected": {k: v for k, v in cal_selected.items() if k != "skip_ids"},
         "cal_candidates": [
             {k: v for k, v in c.items() if k != "skip_ids"} for c in cal_candidates
         ],
         "train_at_locked": {k: v for k, v in train_eval.items() if k != "skip_ids"},
-        "validate_eval": val_eval,
+        "holdout_eval": {k: v for k, v in val_eval.items() if k != "skip_ids"},
         "skip_precision_pass": skip_prec_pass,
         "feature_importance": feature_importance(model, names, args.model),
         "artifacts": {
@@ -462,26 +545,25 @@ def main() -> int:
             "shadow": str(shadow_path).replace("\\", "/"),
         },
         "note": (
-            "Skip quantile locked on late-train calibration; validate is a single holdout eval. "
-            "promote_candidate requires AI-G1 + majority-fail skips with net_avoided<=0."
+            "Skip quantile locked on late-train calibration; holdout is a single eval. "
+            "promote_shadow requires contain guardrail + majority-fail skips + AUC support."
         ),
     }
 
-    json_path = out_dir / "ai2_report.json"
+    json_path = out_dir / "ec2_report.json"
     json_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    md_path = out_dir / "ai2_report.md"
+    md_path = out_dir / "ec2_report.md"
     write_md(md_path, report)
 
     print(
-        f"AI2 {args.model} | status={status} | skip_q={skip_q:.0%} | "
+        f"EC2 {args.model} regime={use_regime} | status={status} | skip_q={skip_q:.0%} | "
         f"skip={val_eval['skip_rate']:.1%} ({val_eval['skip_n']}) | "
         f"prec_yfail={val_eval['skip']['precision_y_fail']:.1%} | "
         f"prec_loser={val_eval['skip']['precision_loser']:.1%} | "
         f"net_avoided={val_eval['skip']['net_avoided']:+.1f} | "
         f"auc={auc_val:.3f} | "
-        f"val PF {val_base['pf']:.2f}->{val_eval['kept']['pf']:.2f} | "
-        f"DD {val_base['max_dd_pct']:.1f}->{val_eval['kept']['max_dd_pct']:.1f} | "
-        f"AI-G1={'PASS' if val_eval['ai_g1']['ai_g1_pass'] else 'FAIL'}"
+        f"hold PF {val_base['pf']:.2f}->{val_eval['kept']['pf']:.2f} | "
+        f"guardrail={'PASS' if g_pass else 'FAIL'}"
     )
     print(f"wrote {json_path}")
     print(f"wrote {md_path}")

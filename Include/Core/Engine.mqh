@@ -27,6 +27,27 @@
 
 #define FEMA_EXECUTION_FAILURE_LIMIT 3
 
+// Market-closed / session-edge rejects must not permanently kill long backtests.
+bool FemaIsTransientOrderFail(const int retcode)
+  {
+   return (retcode == TRADE_RETCODE_MARKET_CLOSED ||
+           retcode == TRADE_RETCODE_REQUOTE ||
+           retcode == TRADE_RETCODE_PRICE_OFF ||
+           retcode == TRADE_RETCODE_CONNECTION ||
+           retcode == TRADE_RETCODE_TIMEOUT ||
+           retcode == TRADE_RETCODE_PRICE_CHANGED ||
+           retcode == TRADE_RETCODE_TOO_MANY_REQUESTS);
+  }
+
+bool FemaMarketTradeable(const string symbol)
+  {
+   const long mode = SymbolInfoInteger(symbol, SYMBOL_TRADE_MODE);
+   return (mode == SYMBOL_TRADE_MODE_FULL ||
+           mode == SYMBOL_TRADE_MODE_LONGONLY ||
+           mode == SYMBOL_TRADE_MODE_SHORTONLY ||
+           mode == SYMBOL_TRADE_MODE_CLOSEONLY);
+  }
+
 class CFemaEngine
   {
 private:
@@ -104,7 +125,18 @@ private:
    void              UpdateStateFromPositions()
      {
       if(m_state.GetState() == FEMA_STATE_SUSPENDED)
-         return;
+        {
+         // Manual suspend stays sticky. Auto-suspend (exec failures) resumes when tradeable.
+         if(InpManualSuspend)
+            return;
+         if(FemaMarketTradeable(_Symbol))
+           {
+            m_logger.LogInfo("Auto-resume from SUSPENDED (market tradeable again)");
+            m_state.SetReady();
+           }
+         else
+            return;
+        }
 
       if(InpManualSuspend)
         {
@@ -316,7 +348,12 @@ private:
                                  ok,
                                  retcode,
                                  comment);
-         m_state.RegisterExecutionFailure(FEMA_EXECUTION_FAILURE_LIMIT);
+         // Do not count market-closed / transient rejects toward permanent SUSPEND.
+         if(!FemaIsTransientOrderFail(retcode))
+            m_state.RegisterExecutionFailure(FEMA_EXECUTION_FAILURE_LIMIT);
+         else
+            m_logger.LogInfo("Transient order fail retcode=" + IntegerToString(retcode) +
+                             " — not counted toward SUSPEND");
         }
      }
 
