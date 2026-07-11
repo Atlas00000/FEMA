@@ -15,6 +15,7 @@ private:
    string            m_symbol;
    ENUM_TIMEFRAMES   m_timeframe;
    ulong             m_basket_id;
+   ulong             m_basket_seq;
    datetime          m_basket_start_bar_time;
    CFemaExposure    *m_exposure;
    CFemaTradeManager *m_trade_manager;
@@ -25,6 +26,7 @@ public:
                      m_symbol(""),
                      m_timeframe(PERIOD_CURRENT),
                      m_basket_id(0),
+                     m_basket_seq(0),
                      m_basket_start_bar_time(0),
                      m_exposure(NULL),
                      m_trade_manager(NULL),
@@ -43,6 +45,7 @@ public:
       m_exposure = GetPointer(exposure);
       m_trade_manager = GetPointer(trade_manager);
       m_basket_id = 0;
+      m_basket_seq = 0;
       m_basket_start_bar_time = 0;
      }
 
@@ -51,10 +54,8 @@ public:
 
    void              OnBasketStart(const datetime bar_time)
      {
-      if(m_basket_id == 0)
-         m_basket_id = 1;
-      else
-         m_basket_id++;
+      m_basket_seq++;
+      m_basket_id = m_basket_seq;
       m_basket_start_bar_time = bar_time;
      }
 

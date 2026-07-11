@@ -4,9 +4,9 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2026, FEMA"
 #property link      "https://www.mql5.com"
-#property version   "1.22"
+#property version   "1.23"
 
-#define FEMA_VERSION "1.22"
+#define FEMA_VERSION "1.23"
 
 #include "Include/Core/Engine.mqh"
 

@@ -1,10 +1,18 @@
-# FEMA — AI Enhance (Edge Preservation Layer)
+# FEMA — AI Enhance (legacy exploration)
 
-**Status:** **AI0 complete (v1.22)** — labeled dataset + zero-skip replay verified · ready for AI1  
-**Depends on:** Locked EURUSD PRODUCTION stack ([`System Profile EURUSD.md`](System Profile EURUSD.md))  
-**Vision source:** [`aiscaleupconcept.md`](aiscaleupconcept.md)  
-**Pipeline docs:** [`AI/README.md`](AI/README.md)  
-**Not this project:** Edge discovery, new entries, strategy replacement, aggressive overfiltering  
+**Status:** **Archived / reference** — superseded for new work by [`aiedgecontain.md`](aiedgecontain.md)  
+**Why kept:** AI0–AI4 tooling notes, early 2024–2026 collects, beat-2026 experiments  
+**Do not use this file as the active AI build plan** — that is **AI Edge Contain**.
+
+**Active plan:** [`aiedgecontain.md`](aiedgecontain.md) · [`AI/windows.json`](AI/windows.json) · [`AI/README.md`](AI/README.md)  
+**Depends on:** Locked EURUSD PRODUCTION ([`System Profile EURUSD.md`](System Profile EURUSD.md))  
+**Vision source:** [`aiscaleupconcept.md`](aiscaleupconcept.md)
+
+---
+
+## Legacy note (pre-contain)
+
+The sections below document the older “AI Enhance” pass that scored models against **2026 PRODUCTION** (AI-G1 beat-baseline). That mixed **demo edge** with **AI school grade**. New work uses **guardrails on 2020–2025** instead — see contain doc.
 
 ---
 
@@ -13,10 +21,10 @@
 The execution engine already has the edge. AI does **not** invent buys/sells.
 
 ```
-PRODUCTION Engine  →  candidate basket / add / hold
+PRODUCTION Engine (demo / live)  →  candidate basket / add / hold
          │
          ▼
-AI Edge Preservation Layer
+AI Edge Preservation Layer   ← GUARDRAILS, not performance gates
          │
     Approve | Soft-skip | Delay | Reduce | Suspend | Adapt
          │
@@ -28,16 +36,76 @@ AI Edge Preservation Layer
 
 **Secondary effects (not the direct target):** higher WR, better PF/Sharpe, lower DD, fewer steamroller-path baskets.
 
+### Guardrails vs gates (2026-07-11 lock)
+
+| | **Guardrail (what we want)** | **Gate (what we were overdoing)** |
+| - | ---------------------------- | --------------------------------- |
+| Job | Catch steamrollers / edge death | Beat 2026 PRODUCTION PF/DD |
+| Default | **Approve** — engine trades | Skip until AI “wins” the scoreboard |
+| Build data | **2020–2025** with internal splits | Force every model to lift 2026 lock |
+| Demo now | Run **PRODUCTION as-is** | Block progress until AI > demo window |
+| Success | Bad-path precision · DD damage avoided · ≤15% pause/skip | PF ≥ 2026 baseline or reject everything |
+
+AI0–AI4 work stays useful as tooling; the **scoreboard** changes. We no longer treat “2026 always looks better than AI” as failure of the layer — that window is the **edge under demo**, not the AI schoolyard.
+
 ### Hard rules (from Phase 2)
 
 | Rule | Why |
 | ---- | --- |
 | Engine stays frozen | PRODUCTION entries/exits are validated |
 | Prefer **skip bad** over **pick elite** | Overfiltering killed edge (HTF, ATRP70, LDN_NY, CONFIRM) |
-| Soft gates, **low** skip rates | Protect, don’t redesign |
-| Offline proof before wire | No forward-test dependency for early phases |
-| Retrain on rolling data | Keep edge alive as regimes drift |
-| Cap signal reduction | e.g. AI may remove ≤10–15% of PRODUCTION candidates |
+| Soft guardrails, **low** skip rates | Protect, don’t redesign |
+| Offline proof before wire | Demo runs engine; AI shadows until safe |
+| Retrain on rolling data | Keep guardrails alive as regimes drift |
+| Cap signal reduction | e.g. AI may remove ≤10–15% of candidates |
+
+---
+
+## Data windows (locked)
+
+| Role | Window | Purpose |
+| ---- | ------ | ------- |
+| **Live / demo edge** | Ongoing (incl. 2026) | **PRODUCTION unchanged** — not an AI beat-this target |
+| **AI collect** | **2020.01.01 → 2025.12.31** | One AI0 tester run → offline splits |
+| **AI train** | **2020.01.01 → 2023.12.31** | Fit regime / fail / health / prob |
+| **AI holdout (guardrail quality)** | **2024.01.01 → 2025.12.31** | Did guardrails catch bad paths? Precision · DD cut · ≤15% budget |
+| **Optional later sanity** | 2026 Jan–Jul (demo-era) | Shadow only — must not starve PRODUCTION |
+
+**Symbol / stack:** EURUSD M5 · `FEMA_EURUSD_M5_PRODUCTION` (BSL $25 + ADX<30 + basket TP $10)
+
+### Rules
+
+1. **Demo trades PRODUCTION.** AI build does **not** need to beat demo/2026 metrics.  
+2. **Train 2020–23 → score guardrails on 2024–25 holdout** (bad-path catch, not PF trophy).  
+3. Report metrics **per window** — never one blended PF as “AI vs PRODUCTION”.  
+4. Soft-skip / pause ≤10–15% on the **holdout** window.  
+5. Optional 2026 shadow later: approve-by-default; abort if it starves the live edge.  
+6. AI0 collect: tester `2020.01.01 → 2025.12.31`, then `python AI/split_2020_2025.py`.
+
+### Guardrail pass (build bar)
+
+| Check | Pass |
+| ----- | ---- |
+| Approve by default | Uncertain → trade |
+| Budget | Skip/pause ≤15% of holdout baskets |
+| Bad-path quality | Skipped/paused set mostly losers / BSL · net avoided ≤ 0 |
+| Stress | Helps before known DD troughs on train/holdout |
+| Trade count | ≥85% of unfiltered holdout |
+| **Not required** | PF ≥ 2026 PRODUCTION demo baseline |
+
+### Baselines (reference only)
+
+| Window | Role |
+| ------ | ---- |
+| 2026 Jan–Jul PRODUCTION | **Demo edge freeze** (`AI/baseline.json`) — live reference, not AI school gate |
+| 2024–2025 baskets | Prior long-window characterisation (fade years) |
+| 2020–2025 (pending collect) | New AI build corpus — see [`AI/windows.json`](AI/windows.json) |
+
+### Prior captures (kept for history)
+
+**2024→2026.07** AI0: 490 baskets · full PF 1.06 · 2026 slice PF 1.36 — showed edge concentration in demo window (why “beat 2026” was the wrong build game).
+
+**2015→2026 attempt:** incomplete (CSV only 2015 H1) — archived `dataset_2015H1.csv`.
 
 ---
 
@@ -54,30 +122,32 @@ AI Edge Preservation Layer
 
 ---
 
-## Soft-gate policy (default everywhere)
+## Soft-guardrail policy (default everywhere)
 
-AI gates are **failure filters**, not quality lotteries.
+AI layers are **failure / death filters**, not quality lotteries and not “beat PRODUCTION” contests.
 
 | Setting | Default intent |
 | ------- | -------------- |
-| **Skip only the worst tail** | Top ~10–15% failure-risk candidates |
+| **Skip/pause only the worst tail** | Top ~10–15% clear failure / stress |
 | **Approve by default** | If uncertain → **trade** (engine edge wins) |
-| **Confidence / P(TP) thresholds** | Permissive — block only when P(fail) is clearly elevated |
-| **Trade-count budget** | Max −10% to −15% vs PRODUCTION baseline on same window |
-| **Promotion (AI-G1)** | Offline: PF ≥ baseline **and** DD ≤ baseline **and** trades ≥ 85% of baseline |
-| **No elite-only mode** | Never “Elite/Good only” until proven under AI-G1 |
+| **Build holdout** | **2024–2025** guardrail quality (not 2026 demo PF) |
+| **Trade-count budget** | ≥85% of unfiltered holdout baskets |
+| **Wire later** | Only after holdout guardrail pass + demo shadow doesn’t starve PRODUCTION |
+| **No elite-only mode** | Never “only high P(TP)” |
+| **2026 / demo** | Live edge reference — optional sanity, not the school gate |
 
-Example (illustrative — tune offline, do not hardcode early):
+Example (illustrative — tune offline):
 
 ```
-P(basket hits BSL | features) ≥ 0.55  → soft-skip   # only clear failure risk
-P(fail) < 0.55                        → approve     # default = trade
+P(basket hits BSL | features) clearly elevated  → soft-skip   # guardrail
+uncertain                                       → approve     # default = trade
 ```
 
 Not:
 
 ```
-P(TP) ≥ 0.85 → trade   # too strict — overfilter
+P(TP) ≥ 0.85 → trade        # elite gate
+AI PF must beat 2026 demo   # wrong scoreboard
 ```
 
 ---
@@ -164,69 +234,92 @@ CSV live path in tester: `Tester\...\Agent-*\MQL5\Files\FEMA_AI\` (Common may st
 - [x] Rebuild labeled dataset from full Jan–Jul PRODUCTION run  
 - [x] Replay harness reproduces sample when skip-rate = 0  
 
-**Next:** AI1 regime atlas on `AI/data/dataset.csv`.
+**Next data collect:** ✅ Long window landed (2024→2026.07) — see Data windows § Long-window capture.  
+
+**Next phase:** **AI0 collect 2020→2025** (PRODUCTION + AI log) → `split_2020_2025.py` → rebuild AI1–AI4 as **guardrails** on 2020–23 / 2024–25 (not beat-2026).
 
 ---
 
 ## AI1 — Regime atlas (coarse, descriptive)
 
 **ID:** `AI1-REGIME`  
+**Status:** **Complete (offline)** — 2026-07-11  
 **Objective:** Map **few** regimes to historical edge quality — not 30–50 states yet.
-
-### Start with ~6–10 regimes (expand later)
-
-Examples aligned with known FEMA behaviour:
-
-| Regime (coarse) | Expected edge |
-| --------------- | ------------- |
-| Pullback-in-trend (shallow) | Strong |
-| Grinding / slow trend | Good |
-| Expansion / impulse | Poor |
-| High-ADX / runaway | Poor (partially covered by ADX30) |
-| Compression / micro-range | Mixed–good |
-| Session-boundary / thin | Elevated fail risk |
-| Transition / chop | Mixed |
 
 ### Tasks
 
-| ID | Task |
-| -- | ---- |
-| `AI1-001` | Define regime features + clustering or rule+model hybrid |
-| `AI1-002` | Attach per-regime PF, WR, avg W/L, BSL rate, DD contribution |
-| `AI1-003` | Publish **regime scorecard** (offline) — which states to soft-avoid |
-| `AI1-004` | Set **permissive** regime skip list (only clearly toxic states) |
+| ID | Task | Status |
+| -- | ---- | ------ |
+| `AI1-001` | Rule-based regime labels (9 coarse states) | ✅ `AI/regime_atlas.py` |
+| `AI1-002` | Per-regime PF / WR / BSL / net | ✅ scorecard |
+| `AI1-003` | Publish regime scorecard | ✅ `AI/data/regime_scorecard.md` |
+| `AI1-004` | Permissive soft-skip list | ✅ **empty** (no holdout-confirmed toxic ≤10%) |
 
-### Gate policy
+### Key findings (108 PRODUCTION baskets)
 
-- Skip **only** regimes with clear historical PF ≪ 1 **and** material BSL rate  
-- If regime uncertain → **allow trade**  
-- Target: regime filter alone removes ≤10% of baskets  
+| Regime | N | PF | Note |
+| ------ | - | -- | ---- |
+| `shallow_pullback` | 40 | **1.58** | Core edge |
+| `high_adx` | 20 | **3.62** | Still good under ADX&lt;30 gate |
+| `expansion` | 8 | 2.80 | Small / strong |
+| `asia_open` | 6 | 2.01 | Keep (do not strip Asia) |
+| `compression` | 16 | 0.88 | Soft weak — not skip (share + holdout mixed) |
+| `late_session` | 12 | 0.56 full | Train PF 0.40 but **holdout PF 1.20** → watch only |
+
+### Soft-skip verdict
+
+- **Toxic list: none** — approve-by-default preserved  
+- `late_session` on watchlist only (failed holdout confirmation)  
+- Gates pass with skip-rate 0 (baseline unchanged)  
+- **Not wired to EA**
 
 ### Exit criteria
 
-- Scorecard stable across train/holdout **time splits** (not random shuffle only)  
-- Replay: DD ↓ or flat, PF ≥ baseline, trades ≥ 90%  
+- [x] Scorecard on time split (train 70 / hold 38) — *within 2026-only sample*  
+- [x] Replay: skip≤10%, PF/DD/trade gates (vacuously pass with empty skip)  
 
-**Still offline / shadow.**
+**Rerun when long-window CSV lands:** train = **2024–2025**, holdout/validate = **2026 Jan–Jul** (see Data windows). Soft-skip still empty unless toxic on train **and** weak on 2026 validate.
+
+**Next:** Guardrail rebuild — collect **2020–2025** AI0 CSV, then retrain AI1–AI4 on train/holdout splits (see Data windows).
 
 ---
 
 ## AI2 — Failure predictor (highest ROI model)
 
 **ID:** `AI2-FAIL`  
+**Status:** **Complete (offline shadow)** — 2026-07-11 · **not wireable**  
 **Objective:** Predict **P(basket hits BSL or deep MAE)** at basket start — skip the steamroller path.
 
 This matches Layer 12 in the vision doc and Phase 2’s core lesson: **contain / avoid bad paths**, don’t chase elite winners.
 
 ### Tasks
 
-| ID | Task |
-| -- | ---- |
-| `AI2-001` | Label `y = 1` if basket → BSL or MAE beyond threshold |
-| `AI2-002` | Train offline classifier/regressor (start simple: logistic / GBDT) |
-| `AI2-003` | Calibrate probabilities; pick **high-recall-on-failures is NOT the goal** — pick **high precision on skips** |
-| `AI2-004` | Threshold search under soft policy (skip ≤10–15%) |
-| `AI2-005` | Shadow log: would-skip vs actual outcome |
+| ID | Task | Status |
+| -- | ---- | ------ |
+| `AI2-001` | Label `y = 1` if basket → BSL or MAE beyond threshold | ✅ `y_fail` in dataset |
+| `AI2-002` | Train offline classifier (logistic / GBDT) | ✅ `AI/failure_predictor.py` |
+| `AI2-003` | High precision on skips (not high recall) | ✅ scored; validate weak |
+| `AI2-004` | Soft policy: lock skip **quantile** on late-train cal (≤5–15%) | ✅ |
+| `AI2-005` | Shadow log: would-skip vs actual outcome | ✅ `AI/data/ai2_shadow.csv` |
+
+### Run
+
+```bash
+python AI/repair_basket_ids.py          # once if basket_id all = 1 (pre-v1.23 logs)
+python AI/failure_predictor.py --model gbdt
+# artifacts: AI/data/ai2_report.{json,md} · ai2_skip_ids.txt · ai2_shadow.csv
+```
+
+### Results (locked quantile → single 2026 validate eval)
+
+| Model | Status | Skip | y_fail prec | AUC val | AI-G1 |
+| ----- | ------ | ---- | ----------- | ------- | ----- |
+| **GBDT (primary)** | `fragile_shadow_g1_thin_sample` | 5.5% (6) | 50% | **0.48** | PASS (PF 1.36→1.40, DD 18.6→18.3) |
+| Logistic | `reject_shadow` | 15% | 35% | 0.56 | FAIL (trade budget / mix) |
+
+**Why not wire:** Validate ranking is ~coin-flip (AUC 0.48); G1 lift sits on only **6** skips. Train looks strong → classic non-transfer. Keep PRODUCTION unfiltered; AI2 stays shadow until features/health signals improve transfer.
+
+Also repaired pre-v1.23 logs (`basket_id` was always `1`) via `AI/repair_basket_ids.py` → sequential offline UIDs.
 
 ### Threshold philosophy
 
@@ -237,19 +330,21 @@ Do not require model to be confident this looks like a WINNER.
 
 ### Exit criteria (offline replay)
 
-| Metric | Pass |
-| ------ | ---- |
-| Trade count | ≥ 85–90% of baseline |
-| PF | ≥ baseline |
-| Max DD | ≤ baseline |
-| WR | ≥ baseline (expected if skips are true failures) |
-| Skipped set | Majority would have been losers (precision on skip) |
+| Metric | Pass | This run |
+| ------ | ---- | -------- |
+| Trade count | ≥ 85–90% of baseline | ✅ |
+| PF | ≥ baseline | ✅ (fragile) |
+| Max DD | ≤ baseline | ✅ (fragile) |
+| WR | ≥ baseline | ✅ |
+| Skipped set majority losers | Prefer ≥50% | ⚠ 50% y_fail / 33% loser · n=6 |
+| Rank quality | AUC val ≳ 0.55 | ❌ 0.48 |
 
 ---
 
 ## AI3 — Edge health monitor
 
 **ID:** `AI3-HEALTH`  
+**Status:** **Complete (offline shadow)** — 2026-07-11 · **not wireable** (`reject_shadow`)  
 **Objective:** Detect **edge degradation / death** from rolling live-like metrics — reduce participation before large DD.
 
 ### Monitors (rolling windows)
@@ -260,48 +355,85 @@ Do not require model to be confident this looks like a WINNER.
 | Rolling WR | Soft reduce if collapsing |
 | Rolling expectancy | Primary health score |
 | Rolling BSL rate | Rising fail share |
-| Rolling MAE | Path quality |
-| Time underwater / recovery | Stress |
+| Rolling window DD | Stress (not lifetime peak — clears after recovery) |
+| Health 0–100 | high / medium / low / critical ladder |
 
 ### Tasks
 
-| ID | Task |
-| -- | ---- |
-| `AI3-001` | Define rolling windows (e.g. last N baskets / M days) |
-| `AI3-002` | Health score 0–100 (descriptive first) |
-| `AI3-003` | Soft actions: normal → caution (fewer adds / higher bar) → pause new baskets |
-| `AI3-004` | Offline: would health have paused before worst DD episodes? |
+| ID | Task | Status |
+| -- | ---- | ------ |
+| `AI3-001` | Rolling windows (last N baskets) | ✅ default N=20 (calibrated) |
+| `AI3-002` | Health score 0–100 | ✅ `AI/edge_health.py` |
+| `AI3-003` | Soft ladder + stress-confirm pause | ✅ |
+| `AI3-004` | Offline: pause before worst DD episodes | ✅ train **3/3** troughs caught |
+
+### Run
+
+```bash
+python AI/edge_health.py
+# artifacts: AI/data/ai3_report.{json,md} · ai3_shadow.csv · ai3_pause_ids.txt
+```
+
+### Results
+
+| Slice | Pause | Pause y_fail | DD / PF effect | Notes |
+| ----- | ----- | ------------ | -------------- | ----- |
+| Train 2024–25 | ~32% | — | DD 65%→~42% · trough catch **3/3** | Useful death detector on fade years |
+| **Validate 2026** | **6.4%** (7) | **14%** · net paused **+$35** | PF 1.36→**1.31** · AI-G1 **FAIL** | Pauses too many winners |
+
+**Why not wire:** Health/pause catches train steamroller stretches, but on the 2026 lock it **over-pauses winners** (approve-by-default violated in practice). Keep as shadow feature for AI5; do not pause live yet.
 
 ### Soft action ladder (not binary kill)
 
 | Health | Action |
 | ------ | ------ |
 | High | Full PRODUCTION behaviour |
-| Medium | Slightly stricter AI2 threshold only |
-| Low | Pause **new** baskets; manage open normally |
-| Critical | Full suspend new entries |
+| Medium | Trade (caution log) |
+| Low / Critical | Pause **new** baskets only with stress confirm (roll_exp<0 & roll_pf<1 + roll_dd/BSL heat) |
 
 Do **not** tighten basket TP/SL here.
 
 ### Exit criteria
 
-- Catches known bad stretches in historical replay with limited false pauses  
-- False pause rate low enough that trade budget still holds  
+| Criterion | This run |
+| --------- | -------- |
+| Catches bad stretches (train) | ✅ 3/3 troughs |
+| Limited false pauses / trade budget on validate | ❌ pause quality weak · G1 fail |
 
 ---
 
 ## AI4 — Edge probability / confidence (permissive)
 
 **ID:** `AI4-PROB`  
-**Objective:** Estimate P(hit basket TP) or similarity to historical winners — used as **secondary** soft signal.
+**Status:** **Complete (logging-only)** — 2026-07-11 · **not wireable** (`logging_only_weak_rank`)  
+**Objective:** Estimate P(hit basket TP) — **secondary** soft signal only.
 
 ### Tasks
 
-| ID | Task |
-| -- | ---- |
-| `AI4-001` | Train P(TP) or winner-similarity model |
-| `AI4-002` | Use as **tie-break / mild boost to AI2**, not standalone elite filter |
-| `AI4-003` | Confidence score for logging / explainability |
+| ID | Task | Status |
+| -- | ---- | ------ |
+| `AI4-001` | Train P(TP) model (GBDT / logistic) | ✅ `AI/edge_prob.py` |
+| `AI4-002` | Tie-break / mild boost to AI2 (ablations) | ✅ no lift |
+| `AI4-003` | Confidence shadow log | ✅ `AI/data/ai4_shadow.csv` |
+
+### Run
+
+```bash
+python AI/edge_prob.py --model gbdt
+# artifacts: AI/data/ai4_report.{json,md} · ai4_shadow.csv
+```
+
+### Results (2026 validate)
+
+| Policy | Skip% | PF | AI-G1 | Note |
+| ------ | ----- | -- | ----- | ---- |
+| Baseline | 0% | 1.36 | PASS | — |
+| AI4 low-P(TP) only | 10% | 1.32 | FAIL | Forbidden elite-style — loser prec 18% |
+| AI2 only | 5.5% | 1.40 | PASS | Fragile (from AI2) |
+| AI2 ∩ low-P(TP) | 2.7% | 1.31 | FAIL | No assist lift |
+| AUC train / val | — | — | — | **0.71 / 0.40** (anti-transfer) |
+
+**Why logging-only:** validate ranking is **worse than chance** (AUC 0.40). AI4-only skip hurts PF; intersection with AI2 does not improve skip quality. Keep scores for AI5 explainability — never “trade only high P(TP)”.
 
 ### Threshold philosophy
 
@@ -310,7 +442,10 @@ Do **not** tighten basket TP/SL here.
 
 ### Exit criteria
 
-- Adds lift **on top of AI2** in ablation, or is demoted to logging-only  
+| Criterion | This run |
+| --------- | -------- |
+| Adds lift on top of AI2 | ❌ |
+| Else demote to logging-only | ✅ |
 
 ---
 
@@ -453,37 +588,38 @@ From [`aiscaleupconcept.md`](aiscaleupconcept.md) — park until AI0–AI7 are s
 
 ---
 
-## Promotion gate — AI-G1
+## Promotion — guardrail bar (replaces “beat 2026” AI-G1)
 
-Offline (and later demo) compare vs frozen PRODUCTION baseline on the **same** window + holdout:
+**Build / iterate** on holdout **2024–2025** (after train **2020–2023**):
 
 | Criterion | Pass |
 | --------- | ---- |
-| Profit factor | ≥ baseline |
-| Max DD (bal & eq) | ≤ baseline |
-| Win rate | ≥ baseline (preferred) or flat if DD clearly better |
-| Trade count | ≥ **85%** of baseline (soft protect, not starve) |
-| Skip precision | Skipped set mostly losers / high-BSL |
-| Stability | Passes on time-based holdout, not only in-sample |
+| Approve by default | Uncertain → trade |
+| Trade count | ≥ **85%** of unfiltered holdout |
+| Skip/pause budget | ≤ **15%** |
+| Bad-path precision | Skipped/paused mostly losers / BSL · net avoided ≤ 0 |
+| Stress | Helps before known DD troughs |
+| **Not required** | PF ≥ 2026 PRODUCTION demo baseline |
 
-**Fail AI-G1 → do not wire / do not promote retrain.**
+**Wire to EA (later)** only if:
+1. Holdout guardrail bar passes, **and**
+2. Optional demo/2026 **shadow** does not starve PRODUCTION (approve-by-default, budget holds).
 
-This is intentionally milder on “improvement size” than edge-discovery wild targets: **protect and slightly improve**, don’t chase huge PF jumps.
+Legacy name **AI-G1** in older reports meant “beat 2026 PRODUCTION.” That is **retired as the build gate**. `AI/baseline.json` remains the **demo edge freeze**, not the AI school scoreboard.
 
 ---
 
 ## Suggested build order (practical)
 
 ```
-AI0  Pipeline + logger + replay          ← do first, fully
-AI1  Coarse regime scorecard             ← descriptive
-AI2  Failure model + soft threshold      ← main edge protector
-AI3  Health monitor                      ← edge-death detector
-AI5  Fusion (AI2+AI1+AI3)                ← before wire
-AI4  Prob model                          ← only if ablation helps
-AI6  Shadow → opt-in soft gate in EA
+AI0  Collect 2020–2025 + split             ← next collect
+AI1  Regime atlas on 2020–23 / 2024–25
+AI2  Failure guardrail (bad-path precision)
+AI3  Health / death pause
+AI4  P(TP) logging / tie-break only
+AI5  Fusion (approve-by-default)
+AI6  Demo shadow → opt-in soft guardrail
 AI7  Retrain registry
-AI8 / AI9  only if still needed
 ```
 
 ---
@@ -498,13 +634,13 @@ AI8 / AI9  only if still needed
 | **Sharpe** | Smoother equity if bad clusters cut |
 | **Edge lifetime** | Health + retrain detect and adapt when edge fades |
 
-What AI should **not** promise: doubling profit by trading less “only elite” setups. That path already failed in Phase 2 filters.
+What AI should **not** promise: doubling profit by trading less “only elite” setups — or beating the demo PRODUCTION scoreboard as a homework grade.
 
 ---
 
 ## One-line charter
 
-> **Build infra and soft failure/regime/health models offline; approve by default; skip only clear anti-edge; wire only under AI-G1; retrain to keep the PRODUCTION edge alive — never replace it.**
+> **Run PRODUCTION on demo as the edge; build AI as guardrails on 2020–2025 train/holdout; approve by default; skip/pause only clear anti-edge; never replace the engine — and stop treating 2026 demo metrics as the AI build gate.**
 
 ---
 

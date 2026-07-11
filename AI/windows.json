@@ -1,0 +1,44 @@
+{
+  "preset": "FEMA_EURUSD_M5_PRODUCTION",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "deposit": 400.0,
+  "philosophy": "guardrails_not_gates",
+  "live_demo": {
+    "stack": "PRODUCTION unchanged",
+    "role": "Run the current edge on demo. AI does not need to beat this window to be built."
+  },
+  "ai_build_collect": {
+    "start": "2020.01.01",
+    "end": "2025.12.31",
+    "note": "Single AI0 tester run, then split offline. Confirm last basket open_time is in 2025 before training."
+  },
+  "splits": {
+    "train": {
+      "start": "2020.01.01",
+      "end": "2023.12.31",
+      "role": "Fit models / regime atlas / failure + health"
+    },
+    "holdout": {
+      "start": "2024.01.01",
+      "end": "2025.12.31",
+      "role": "Guardrail quality: catch bad paths, DD protection, skip/pause precision — NOT beat-PRODUCTION"
+    }
+  },
+  "optional_sanity": {
+    "start": "2026.01.01",
+    "end": "2026.07.31",
+    "role": "Later: shadow on demo-era data. Must not starve PRODUCTION. Not the AI build scoreboard."
+  },
+  "guardrail_pass": {
+    "approve_by_default": true,
+    "max_skip_or_pause_rate": 0.15,
+    "prefer_precision_on_bad_paths": true,
+    "success_means": [
+      "Catches steamroller / BSL clusters on holdout",
+      "Skipped/paused set net <= 0 (mostly real damage)",
+      "Trade count remains >= 85% of unfiltered holdout",
+      "Does not require PF > live PRODUCTION 2026 baseline"
+    ]
+  }
+}

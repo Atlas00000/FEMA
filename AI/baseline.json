@@ -3,12 +3,27 @@
   "alias": "P2C-001_REG_ADX30",
   "symbol": "EURUSD",
   "timeframe": "M5",
-  "window_start": "2026.01.01",
-  "window_end": "2026.07.31",
   "deposit": 400.0,
   "leverage": "1:500",
   "model": "every_tick",
   "profit_in_pips": 0,
+  "validate_window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31",
+    "role": "DEMO / live edge freeze — NOT the AI build scoreboard"
+  },
+  "train_window": {
+    "start": "2020.01.01",
+    "end": "2023.12.31",
+    "role": "AI model fit (guardrail build)"
+  },
+  "holdout_window": {
+    "start": "2024.01.01",
+    "end": "2025.12.31",
+    "role": "AI guardrail quality (bad-path precision / DD / budget)"
+  },
+  "philosophy": "guardrails_not_gates",
+  "notes": "PRODUCTION runs on demo unchanged. AI builds on 2020-2025 splits. Do not require beating 2026 metrics to iterate guardrails. See AI/windows.json.",
   "metrics": {
     "profit_factor": 1.36,
     "net_profit": 221.0,
@@ -20,7 +35,8 @@
     "avg_win": 2.77,
     "avg_loss": -5.04,
     "largest_loss": -8.65,
-    "unit": "mt5_deals"
+    "unit": "mt5_deals",
+    "window": "2026.01.01-2026.07.31"
   },
   "basket_metrics_ai0": {
     "source_csv": "AI/data/EURUSD_20260707_baskets.csv",
@@ -35,9 +51,44 @@
     "max_dd_pct": 18.14,
     "y_fail": 28,
     "y_fail_rate": 0.2593,
-    "events_rows": 178311,
     "unit": "baskets",
-    "note": "MT5 report for same run: PF 1.40, +$240.16, 429 deals, DD 18.14%/21.19%. Basket WR > deal WR because multi-leg closes count as multiple deals."
+    "window": "2026.01.01-2026.07.31",
+    "note": "Short validate capture. MT5: PF 1.40, +$240, 429 deals, DD 18%/21%."
   },
-  "notes": "AI-G1 offline compares should use basket_metrics_ai0 when replaying *_baskets.csv. Deal-level metrics stay as Edge Discovery row 22 freeze."
+  "long_window_2024_2026": {
+    "collected": "2026-07-11",
+    "tester": "2024.01.01-2026.07.31",
+    "source_csv": "AI/data/EURUSD_20260707_baskets_2024_2026.csv",
+    "mt5_deals": {
+      "profit_factor": 1.06,
+      "net_profit": 216.35,
+      "max_dd_balance_pct": 65.29,
+      "max_dd_equity_pct": 67.36,
+      "trades": 1985,
+      "win_rate": 0.6695,
+      "sharpe": 0.28
+    },
+    "baskets_all": {
+      "n": 490,
+      "profit_factor": 1.0638,
+      "net_profit": 216.39,
+      "max_dd_pct": 65.29,
+      "bsl_rate": 0.2755
+    },
+    "train_2024_2025": {
+      "n": 380,
+      "profit_factor": 0.9968,
+      "net_profit": -8.89,
+      "max_dd_pct": 65.29,
+      "bsl_rate": 0.2895
+    },
+    "validate_2026_jan_jul": {
+      "n": 110,
+      "profit_factor": 1.3574,
+      "net_profit": 225.28,
+      "max_dd_pct": 18.57,
+      "bsl_rate": 0.2273
+    },
+    "note": "Historical 2024-2026 characterisation. 2026 remains demo edge freeze; AI build moves to 2020-2025 splits."
+  }
 }
