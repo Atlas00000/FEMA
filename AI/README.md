@@ -13,21 +13,23 @@ Offline-first tooling for the Edge Preservation Layer. **No model decisions in t
 | AI0-005 | Done | `replay.py` |
 | AI0-006 | Done | `baseline.json` (PRODUCTION freeze) |
 
-## EA side (v1.21+)
+## EA side (v1.22+)
 
-1. Compile `FEMA.mq5` (journal must show `v1.21` and `ai0=on`).
+1. Compile `FEMA.mq5` (journal: `v1.22` · `ai0=on` · `common_ok=1` · `local_ok=1`).
 2. Run Strategy Tester with PRODUCTION (`InpUseAiEventLog=true`).
-3. After the run, CSVs are in:
+3. **Primary CSV location after a tester run** (non-zero size):
 
 ```
-%APPDATA%\MetaQuotes\Terminal\Common\Files\FEMA_AI\
+%APPDATA%\MetaQuotes\Tester\<terminal_id>\Agent-*\MQL5\Files\FEMA_AI\
   EURUSD_20260707_events.csv
   EURUSD_20260707_baskets.csv
 ```
 
-(Symbol + magic in the filename.)
+Common\Files\FEMA_AI may stay small/locked until the terminal releases handles — prefer the Agent path.
 
-Copy them into `AI/data/` (gitignored) for offline work.
+Copy into `AI/data/` (gitignored) for offline work.
+
+**AI0 status (2026-07-11):** complete — 108 baskets · PF 1.40 · dataset + zero-skip replay OK.
 
 ### Events logged
 

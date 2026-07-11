@@ -1,6 +1,6 @@
 # FEMA — AI Enhance (Edge Preservation Layer)
 
-**Status:** AI0 infra implemented (v1.21) · offline-first · not wired to live decisions  
+**Status:** **AI0 complete (v1.22)** — labeled dataset + zero-skip replay verified · ready for AI1  
 **Depends on:** Locked EURUSD PRODUCTION stack ([`System Profile EURUSD.md`](System Profile EURUSD.md))  
 **Vision source:** [`aiscaleupconcept.md`](aiscaleupconcept.md)  
 **Pipeline docs:** [`AI/README.md`](AI/README.md)  
@@ -134,36 +134,37 @@ stats   Probability        Monitor
 ## AI0 — Pipeline & infra
 
 **ID:** `AI0-INFRA`  
-**Status:** **Implemented (v1.21)** — compile EA, run PRODUCTION tester, copy CSVs into `AI/data/`  
+**Status:** **Complete (v1.22)** — dataset + replay verified 2026-07-11  
 **Objective:** Make offline training and replay possible. No model decisions.
 
 ### Deliverables
 
 | ID | Deliverable | Status |
 | -- | ----------- | ------ |
-| `AI0-001` | **Basket/trade event log** — candidate, fill, add, basket TP/SL, skip reason | ✅ `Include/AI/AiEventLog.mqh` → `*_events.csv` |
-| `AI0-002` | **Feature snapshot at decision time** — EMA geometry, ATR, ADX, level, spread, session, slope, dist EMA100, rolling WR/PF | ✅ on every candidate |
-| `AI0-003` | **Outcome labels** — hit TP / hit BSL / MAE / MFE / bars alive / max depth | ✅ `*_baskets.csv` |
-| `AI0-004` | **Offline dataset builder** | ✅ `AI/build_dataset.py` |
-| `AI0-005` | **Replay harness** | ✅ `AI/replay.py` |
-| `AI0-006` | **Baseline freeze** | ✅ `AI/baseline.json` |
+| `AI0-001` | **Basket/trade event log** | ✅ 178,311 event rows |
+| `AI0-002` | **Feature snapshot at decision time** | ✅ |
+| `AI0-003` | **Outcome labels** | ✅ 108 baskets · 28 fails (25.9%) |
+| `AI0-004` | **Offline dataset builder** | ✅ `AI/data/dataset.csv` |
+| `AI0-005` | **Replay harness** | ✅ zero-skip matches full sample |
+| `AI0-006` | **Baseline freeze** | ✅ deal + basket metrics in `AI/baseline.json` |
 
-### How to collect
+### Verified PRODUCTION capture (2026-07-11)
 
-1. Compile FEMA **v1.21** (`ai0=on` in journal).  
-2. Tester: PRODUCTION, Jan–Jul 2026.  
-3. Copy `%APPDATA%\MetaQuotes\Terminal\Common\Files\FEMA_AI\*_baskets.csv` → `AI/data/`.  
-4. `python AI/replay.py --baskets AI/data/<file>_baskets.csv` — zero-skip must match full sample.  
-5. `python AI/build_dataset.py --baskets ...` → labeled `dataset.csv` for AI1/AI2.
+| | MT5 report | Basket CSV replay |
+| - | ---------- | ----------------- |
+| Net | +$240.16 | +$240.20 |
+| PF | 1.40 | 1.40 |
+| DD bal | 18.14% | 18.14% |
+| Count | 429 deals | **108 baskets** |
 
-See [`AI/README.md`](AI/README.md).
+CSV live path in tester: `Tester\...\Agent-*\MQL5\Files\FEMA_AI\` (Common may stay header-only while agent holds the lock).
 
 ### Exit criteria
 
-- [ ] Rebuild labeled dataset from a full Jan–Jul PRODUCTION run (user tester pass)  
-- [x] Replay harness reproduces baseline sample when skip-rate = 0 (verified on sample + logic)
+- [x] Rebuild labeled dataset from full Jan–Jul PRODUCTION run  
+- [x] Replay harness reproduces sample when skip-rate = 0  
 
-**No forward testing required.**
+**Next:** AI1 regime atlas on `AI/data/dataset.csv`.
 
 ---
 

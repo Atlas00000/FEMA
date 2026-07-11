@@ -19,8 +19,10 @@ private:
    bool              m_enabled;
    string            m_symbol;
    ulong             m_magic;
-   int               m_events_handle;
+   int               m_events_handle;       // Common\\Files (easy pickup)
    int               m_baskets_handle;
+   int               m_events_handle_local; // Tester Agent MQL5\\Files (reliable in backtests)
+   int               m_baskets_handle_local;
    CFemaLogger      *m_log;
    SFemaAiBasketTrack m_track;
    double            m_roll_profits[FEMA_AI_ROLL_WINDOW];
@@ -40,28 +42,46 @@ private:
       return out;
      }
 
+   void              WriteLine(const int h1, const int h2, const string line) const
+     {
+      if(h1 != INVALID_HANDLE)
+        {
+         FileWriteString(h1, line);
+         FileFlush(h1);
+        }
+      if(h2 != INVALID_HANDLE)
+        {
+         FileWriteString(h2, line);
+         FileFlush(h2);
+        }
+     }
+
+   int               OpenCsv(const string path, const int common_flag) const
+     {
+      // FILE_TXT + FileWriteString — FILE_CSV leaves 0-byte files in tester.
+      return FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE|common_flag);
+     }
+
    void              WriteEventsHeader()
      {
-      if(m_events_handle == INVALID_HANDLE)
-         return;
-      FileWriteString(m_events_handle,
-                      "event_time,event,basket_id,symbol,direction,level_index,"
-                      "level_price,trigger_price,profit,reason,"
-                      "ema_fast,ema_trend,ema_sep,ema_sep_atr,ema_slope,atr,adx,"
-                      "grid_center,dist_ema_trend_atr,spread_points,hour,dow,"
-                      "pos_count,is_new_basket,roll_wr,roll_pf,roll_n\n");
+      const string hdr =
+         "event_time,event,basket_id,symbol,direction,level_index,"
+         "level_price,trigger_price,profit,reason,"
+         "ema_fast,ema_trend,ema_sep,ema_sep_atr,ema_slope,atr,adx,"
+         "grid_center,dist_ema_trend_atr,spread_points,hour,dow,"
+         "pos_count,is_new_basket,roll_wr,roll_pf,roll_n\r\n";
+      WriteLine(m_events_handle, m_events_handle_local, hdr);
      }
 
    void              WriteBasketsHeader()
      {
-      if(m_baskets_handle == INVALID_HANDLE)
-         return;
-      FileWriteString(m_baskets_handle,
-                      "basket_id,open_time,close_time,symbol,direction,open_level,"
-                      "max_depth,profit,exit_reason,hit_tp,hit_bsl,mae,mfe,"
-                      "bars_alive,ema_fast,ema_trend,ema_sep,ema_sep_atr,ema_slope,"
-                      "atr,adx,grid_center,dist_ema_trend_atr,spread_points,hour,dow,"
-                      "roll_wr,roll_pf,roll_n\n");
+      const string hdr =
+         "basket_id,open_time,close_time,symbol,direction,open_level,"
+         "max_depth,profit,exit_reason,hit_tp,hit_bsl,mae,mfe,"
+         "bars_alive,ema_fast,ema_trend,ema_sep,ema_sep_atr,ema_slope,"
+         "atr,adx,grid_center,dist_ema_trend_atr,spread_points,hour,dow,"
+         "roll_wr,roll_pf,roll_n\r\n";
+      WriteLine(m_baskets_handle, m_baskets_handle_local, hdr);
      }
 
    void              WriteEventRow(const ENUM_FEMA_AI_EVENT ev,
@@ -69,7 +89,9 @@ private:
                                    const double profit,
                                    const string reason)
      {
-      if(!m_enabled || m_events_handle == INVALID_HANDLE)
+      if(!m_enabled)
+         return;
+      if(m_events_handle == INVALID_HANDLE && m_events_handle_local == INVALID_HANDLE)
          return;
       const string line =
          TimeToString(f.time, TIME_DATE|TIME_SECONDS) + "," +
@@ -98,9 +120,8 @@ private:
          (f.is_new_basket ? "1" : "0") + "," +
          DoubleToString(f.roll_wr, 4) + "," +
          DoubleToString(f.roll_pf, 4) + "," +
-         IntegerToString(f.roll_n) + "\n";
-      FileWriteString(m_events_handle, line);
-      FileFlush(m_events_handle);
+         IntegerToString(f.roll_n) + "\r\n";
+      WriteLine(m_events_handle, m_events_handle_local, line);
      }
 
    void              ComputeRollStats(double &wr, double &pf, int &n) const
@@ -151,6 +172,8 @@ public:
                      m_magic(0),
                      m_events_handle(INVALID_HANDLE),
                      m_baskets_handle(INVALID_HANDLE),
+                     m_events_handle_local(INVALID_HANDLE),
+                     m_baskets_handle_local(INVALID_HANDLE),
                      m_log(NULL),
                      m_roll_count(0),
                      m_roll_idx(0)
@@ -183,18 +206,25 @@ public:
          return true;
 
       FolderCreate("FEMA_AI", FILE_COMMON);
+      FolderCreate("FEMA_AI");
 
       const string tag = Tag();
       const string events_path = "FEMA_AI\\" + tag + "_events.csv";
       const string baskets_path = "FEMA_AI\\" + tag + "_baskets.csv";
 
-      m_events_handle = FileOpen(events_path, FILE_WRITE|FILE_CSV|FILE_ANSI|FILE_COMMON|FILE_REWRITE);
-      m_baskets_handle = FileOpen(baskets_path, FILE_WRITE|FILE_CSV|FILE_ANSI|FILE_COMMON|FILE_REWRITE);
-      if(m_events_handle == INVALID_HANDLE || m_baskets_handle == INVALID_HANDLE)
+      m_events_handle = OpenCsv(events_path, FILE_COMMON);
+      m_baskets_handle = OpenCsv(baskets_path, FILE_COMMON);
+      m_events_handle_local = OpenCsv(events_path, 0);
+      m_baskets_handle_local = OpenCsv(baskets_path, 0);
+
+      const bool any_ok =
+         (m_events_handle != INVALID_HANDLE && m_baskets_handle != INVALID_HANDLE) ||
+         (m_events_handle_local != INVALID_HANDLE && m_baskets_handle_local != INVALID_HANDLE);
+
+      if(!any_ok)
         {
          if(m_log != NULL)
-            m_log.LogError("AI0 log open failed events=" + IntegerToString(m_events_handle) +
-                           " baskets=" + IntegerToString(m_baskets_handle));
+            m_log.LogError("AI0 log open failed (common+local)");
          Close();
          m_enabled = false;
          return false;
@@ -203,8 +233,12 @@ public:
       WriteEventsHeader();
       WriteBasketsHeader();
       if(m_log != NULL)
+        {
          m_log.LogInfo("AI0 event log on Common\\Files\\" + events_path +
-                       " + " + baskets_path);
+                       " and MQL5\\Files\\" + baskets_path +
+                       " common_ok=" + IntegerToString(m_events_handle != INVALID_HANDLE) +
+                       " local_ok=" + IntegerToString(m_events_handle_local != INVALID_HANDLE));
+        }
       return true;
      }
 
@@ -219,6 +253,16 @@ public:
         {
          FileClose(m_baskets_handle);
          m_baskets_handle = INVALID_HANDLE;
+        }
+      if(m_events_handle_local != INVALID_HANDLE)
+        {
+         FileClose(m_events_handle_local);
+         m_events_handle_local = INVALID_HANDLE;
+        }
+      if(m_baskets_handle_local != INVALID_HANDLE)
+        {
+         FileClose(m_baskets_handle_local);
+         m_baskets_handle_local = INVALID_HANDLE;
         }
      }
 
@@ -327,7 +371,7 @@ public:
       f.basket_id = m_track.basket_id;
       WriteEventRow(FEMA_AI_BASKET_CLOSE, f, profit, FemaExitReasonToString(reason));
 
-      if(m_baskets_handle != INVALID_HANDLE)
+      if(m_baskets_handle != INVALID_HANDLE || m_baskets_handle_local != INVALID_HANDLE)
         {
          const int hit_tp = (reason == FEMA_EXIT_BASKET_TP ? 1 : 0);
          const int hit_bsl = (reason == FEMA_EXIT_BASKET_SL ? 1 : 0);
@@ -360,9 +404,8 @@ public:
             IntegerToString(m_track.open_features.dow) + "," +
             DoubleToString(m_track.open_features.roll_wr, 4) + "," +
             DoubleToString(m_track.open_features.roll_pf, 4) + "," +
-            IntegerToString(m_track.open_features.roll_n) + "\n";
-         FileWriteString(m_baskets_handle, line);
-         FileFlush(m_baskets_handle);
+            IntegerToString(m_track.open_features.roll_n) + "\r\n";
+         WriteLine(m_baskets_handle, m_baskets_handle_local, line);
         }
 
       PushRoll(profit);

@@ -19,7 +19,25 @@
     "sharpe": 1.90,
     "avg_win": 2.77,
     "avg_loss": -5.04,
-    "largest_loss": -8.65
+    "largest_loss": -8.65,
+    "unit": "mt5_deals"
   },
-  "notes": "AI-G1 compare target. Frozen from Edge Discovery row 22 / System Profile EURUSD. Replay skip-rate=0 must reproduce basket-level stats within tolerance when using AI0 baskets.csv from the same window."
+  "basket_metrics_ai0": {
+    "source_csv": "AI/data/EURUSD_20260707_baskets.csv",
+    "collected": "2026-07-11",
+    "ea_version": "1.22",
+    "baskets": 108,
+    "net_profit": 240.2,
+    "profit_factor": 1.3968,
+    "win_rate": 0.7778,
+    "avg_win": 10.0656,
+    "avg_loss": -25.2212,
+    "max_dd_pct": 18.14,
+    "y_fail": 28,
+    "y_fail_rate": 0.2593,
+    "events_rows": 178311,
+    "unit": "baskets",
+    "note": "MT5 report for same run: PF 1.40, +$240.16, 429 deals, DD 18.14%/21.19%. Basket WR > deal WR because multi-leg closes count as multiple deals."
+  },
+  "notes": "AI-G1 offline compares should use basket_metrics_ai0 when replaying *_baskets.csv. Deal-level metrics stay as Edge Discovery row 22 freeze."
 }
