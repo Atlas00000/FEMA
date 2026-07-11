@@ -28,12 +28,18 @@ private:
    double            m_adx;
    double            m_atr_pct_threshold;
    bool              m_ready;
+   bool              m_track_adx;
    CFemaLogger      *m_log;
 
    bool              IsActive() const
      {
       return m_use_adx_gate || m_use_atr_pct_gate || m_use_ema_sep_gate ||
              m_use_ema_slope_gate || m_use_breakout_suspend;
+     }
+
+   bool              NeedsAdx() const
+     {
+      return m_use_adx_gate || m_track_adx;
      }
 
    static double     PercentileValue(double &values[], const double pct)
@@ -80,10 +86,12 @@ public:
                      m_adx(0.0),
                      m_atr_pct_threshold(0.0),
                      m_ready(false),
+                     m_track_adx(false),
                      m_log(NULL)
      {}
 
    void              SetLogger(CFemaLogger &log) { m_log = GetPointer(log); }
+   double            Adx() const { return m_adx; }
 
    bool              Init(const string symbol,
                           const ENUM_TIMEFRAMES timeframe,
@@ -97,7 +105,8 @@ public:
                           const double ema_sep_atr_mult,
                           const bool use_ema_slope_gate,
                           const bool use_breakout_suspend,
-                          const double breakout_atr_mult)
+                          const double breakout_atr_mult,
+                          const bool track_adx = false)
      {
       m_symbol = symbol;
       m_timeframe = timeframe;
@@ -112,15 +121,17 @@ public:
       m_use_ema_slope_gate = use_ema_slope_gate;
       m_use_breakout_suspend = use_breakout_suspend;
       m_breakout_atr_mult = MathMax(0.1, breakout_atr_mult);
+      m_track_adx = track_adx;
       m_ready = false;
+      m_adx = 0.0;
 
-      if(!IsActive())
+      if(!IsActive() && !NeedsAdx())
         {
          m_ready = true;
          return true;
         }
 
-      if(m_use_adx_gate)
+      if(NeedsAdx())
         {
          m_handle_adx = iADX(m_symbol, m_timeframe, m_adx_period);
          if(m_handle_adx == INVALID_HANDLE)
@@ -129,6 +140,12 @@ public:
                m_log.LogError("Failed to create ADX handle");
             return false;
            }
+        }
+
+      if(!IsActive())
+        {
+         m_ready = true;
+         return true;
         }
 
       return true;
@@ -144,13 +161,7 @@ public:
 
    bool              Update(const CFemaIndicators &indicators)
      {
-      if(!IsActive())
-        {
-         m_ready = true;
-         return true;
-        }
-
-      if(m_use_adx_gate)
+      if(NeedsAdx() && m_handle_adx != INVALID_HANDLE)
         {
          double adx_buf[];
          ArraySetAsSeries(adx_buf, true);
@@ -159,6 +170,12 @@ public:
          m_adx = adx_buf[0];
          if(!MathIsValidNumber(m_adx))
             return false;
+        }
+
+      if(!IsActive())
+        {
+         m_ready = true;
+         return true;
         }
 
       if(!UpdateAtrPercentile(indicators))

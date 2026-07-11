@@ -1,8 +1,9 @@
 # FEMA — AI Enhance (Edge Preservation Layer)
 
-**Status:** Planning · offline-first · not wired to live execution yet  
+**Status:** AI0 infra implemented (v1.21) · offline-first · not wired to live decisions  
 **Depends on:** Locked EURUSD PRODUCTION stack ([`System Profile EURUSD.md`](System Profile EURUSD.md))  
 **Vision source:** [`aiscaleupconcept.md`](aiscaleupconcept.md)  
+**Pipeline docs:** [`AI/README.md`](AI/README.md)  
 **Not this project:** Edge discovery, new entries, strategy replacement, aggressive overfiltering  
 
 ---
@@ -133,23 +134,34 @@ stats   Probability        Monitor
 ## AI0 — Pipeline & infra
 
 **ID:** `AI0-INFRA`  
+**Status:** **Implemented (v1.21)** — compile EA, run PRODUCTION tester, copy CSVs into `AI/data/`  
 **Objective:** Make offline training and replay possible. No model decisions.
 
 ### Deliverables
 
-| ID | Deliverable |
-| -- | ----------- |
-| `AI0-001` | **Basket/trade event log** — every candidate touch, fill, add, basket TP, basket SL, skip reason |
-| `AI0-002` | **Feature snapshot at decision time** — EMA geometry, ATR, ADX, level index, spread, session, slope, distance EMA100, recent WR/PF |
-| `AI0-003` | **Outcome labels** — hit TP / hit BSL / MAE / MFE / bars alive / max depth |
-| `AI0-004` | **Offline dataset builder** — CSV/Parquet from tester + (later) demo logs |
-| `AI0-005` | **Replay harness** — apply hypothetical skip masks to PRODUCTION trade list; report PF/WR/DD/trade count |
-| `AI0-006` | **Baseline freeze** — PRODUCTION metrics locked as compare target |
+| ID | Deliverable | Status |
+| -- | ----------- | ------ |
+| `AI0-001` | **Basket/trade event log** — candidate, fill, add, basket TP/SL, skip reason | ✅ `Include/AI/AiEventLog.mqh` → `*_events.csv` |
+| `AI0-002` | **Feature snapshot at decision time** — EMA geometry, ATR, ADX, level, spread, session, slope, dist EMA100, rolling WR/PF | ✅ on every candidate |
+| `AI0-003` | **Outcome labels** — hit TP / hit BSL / MAE / MFE / bars alive / max depth | ✅ `*_baskets.csv` |
+| `AI0-004` | **Offline dataset builder** | ✅ `AI/build_dataset.py` |
+| `AI0-005` | **Replay harness** | ✅ `AI/replay.py` |
+| `AI0-006` | **Baseline freeze** | ✅ `AI/baseline.json` |
+
+### How to collect
+
+1. Compile FEMA **v1.21** (`ai0=on` in journal).  
+2. Tester: PRODUCTION, Jan–Jul 2026.  
+3. Copy `%APPDATA%\MetaQuotes\Terminal\Common\Files\FEMA_AI\*_baskets.csv` → `AI/data/`.  
+4. `python AI/replay.py --baskets AI/data/<file>_baskets.csv` — zero-skip must match full sample.  
+5. `python AI/build_dataset.py --baskets ...` → labeled `dataset.csv` for AI1/AI2.
+
+See [`AI/README.md`](AI/README.md).
 
 ### Exit criteria
 
-- Can rebuild a labeled dataset from a full Jan–Jul (or longer) PRODUCTION run  
-- Replay harness reproduces baseline when skip-rate = 0  
+- [ ] Rebuild labeled dataset from a full Jan–Jul PRODUCTION run (user tester pass)  
+- [x] Replay harness reproduces baseline sample when skip-rate = 0 (verified on sample + logic)
 
 **No forward testing required.**
 

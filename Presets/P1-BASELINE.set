@@ -1,6 +1,6 @@
-; ID: P2C-002 | REG_ATRP70 — BSL_25 + ATR percentile gate
-; Deploy to: MQL5\Profiles\Tester\FEMA_EURUSD_M5_P2C002_ATRP70.ini + .set
-; Journal: Init v1.16+ ... bsl=25 atr_gate=on
+; ID: P1-BASELINE | Characterisation only — new symbols first run
+; No BSL, no ADX — expect steamroller; NOT for deploy
+; Next: P2A-002_BSL_25 sweep, then ADX (PRODUCTION stack)
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -12,7 +12,7 @@ InpBasketTp=10.0
 InpUsePerTradeSl=false
 InpSlAtrMultiplier=1.5
 InpSlUseGridStructure=true
-InpUseBasketSl=true
+InpUseBasketSl=false
 InpBasketSl=25.0
 InpMaxBasketBars=0
 InpMaxEntryDepth=5
@@ -22,9 +22,9 @@ InpHtfTimeframe=16385
 InpHtfEmaPeriod=200
 InpHtfRequireSlope=false
 InpUseAdxGate=false
-InpAdxMax=25.0
+InpAdxMax=30.0
 InpAdxPeriod=14
-InpUseAtrPercentileGate=true
+InpUseAtrPercentileGate=false
 InpAtrPercentileMax=70.0
 InpAtrPercentileLookback=100
 InpUseEmaSepGate=false
@@ -32,6 +32,20 @@ InpEmaSepAtrMult=3.0
 InpUseEmaSlopeGate=false
 InpUseBreakoutSuspend=false
 InpBreakoutAtrMult=3.0
+InpUseSessionBlockNo23=false
+InpUseSessionBlockFriClose=false
+InpUseSessionBlockSunOpen=false
+InpUseSessionWhitelistLdnNy=false
+InpUseExitRte=false
+InpRteMinProfit=0.0
+InpUseBasketTrail=false
+InpBasketTrailActivatePct=50.0
+InpBasketTrailGivebackPct=50.0
+InpUseCandleConfirm=false
+InpUseRsiExhaustionFilter=false
+InpRsiPeriod=14
+InpRsiBuyMax=70.0
+InpRsiSellMin=30.0
 InpBaseLot=0.01
 InpRiskPercent=0.0
 InpSpreadFilter=true
@@ -44,3 +58,4 @@ InpMagicNumber=20260707
 InpTradePermission=0
 InpManualSuspend=false
 InpLogMode=0
+InpUseAiEventLog=true

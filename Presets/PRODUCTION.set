@@ -1,5 +1,9 @@
-; ID: PRODUCTION | Alias of P2C-001_REG_ADX30
-; LOAD: Settings -> FEMA_EURUSD_M5_PRODUCTION.ini
+; ID: PRODUCTION | Edge Discovery row 22 | ONLY locked deploy stack
+; Same as: P2C-001_REG_ADX30 (BSL $25 + ADX(14)<30 + basket TP $10)
+; LOAD: Inputs -> FEMA_EURUSD_M5_PRODUCTION.set
+; Settings: EURUSD M5 | 2026.01.01-2026.07.31 | $400 | Every tick | ProfitInPips=0
+; Journal: v1.21 | adx_gate=on | bsl=25 | ai0=on
+; Benchmark: PF 1.36 | +$221 | 18%/21% DD | 424 trades
 
 InpEmaFastPeriod=20
 InpEmaTrendPeriod=100
@@ -57,3 +61,4 @@ InpMagicNumber=20260707
 InpTradePermission=0
 InpManualSuspend=false
 InpLogMode=0
+InpUseAiEventLog=true

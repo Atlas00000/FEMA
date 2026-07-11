@@ -88,4 +88,7 @@ input bool   InpManualSuspend   = false;
 input group "=== Logging ==="
 input ENUM_FEMA_LOG_MODE InpLogMode = FEMA_LOG_DETAILED;
 
+input group "=== AI0: Event Pipeline ==="
+input bool   InpUseAiEventLog = true;  // CSV features/events/labels to Common\\Files\\FEMA_AI
+
 #endif

@@ -1,0 +1,25 @@
+{
+  "preset": "FEMA_EURUSD_M5_PRODUCTION",
+  "alias": "P2C-001_REG_ADX30",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window_start": "2026.01.01",
+  "window_end": "2026.07.31",
+  "deposit": 400.0,
+  "leverage": "1:500",
+  "model": "every_tick",
+  "profit_in_pips": 0,
+  "metrics": {
+    "profit_factor": 1.36,
+    "net_profit": 221.0,
+    "max_dd_balance_pct": 18.0,
+    "max_dd_equity_pct": 21.0,
+    "win_rate": 0.71,
+    "trades": 424,
+    "sharpe": 1.90,
+    "avg_win": 2.77,
+    "avg_loss": -5.04,
+    "largest_loss": -8.65
+  },
+  "notes": "AI-G1 compare target. Frozen from Edge Discovery row 22 / System Profile EURUSD. Replay skip-rate=0 must reproduce basket-level stats within tolerance when using AI0 baskets.csv from the same window."
+}

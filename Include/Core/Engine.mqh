@@ -23,6 +23,7 @@
 #include "../Broker/Execution.mqh"
 #include "../Utils/Helpers.mqh"
 #include "../Utils/Logger.mqh"
+#include "../AI/AiEventLog.mqh"
 
 #define FEMA_EXECUTION_FAILURE_LIMIT 3
 
@@ -47,6 +48,7 @@ private:
    CFemaSymbolInfo       m_symbol_info;
    CFemaValidation       m_validation;
    CFemaExecution        m_execution;
+   CFemaAiEventLog       m_ai_log;
    int                   m_prev_position_count;
 
    void              WireLoggers()
@@ -62,6 +64,7 @@ private:
       m_execution.SetLogger(m_logger);
       m_basket.SetLogger(m_logger);
       m_exit.SetLogger(m_logger);
+      m_ai_log.SetLogger(m_logger);
      }
 
    void              SyncBasketIfFlat(const bool apply_sl_cooldown = false)
@@ -71,6 +74,7 @@ private:
       if(m_basket.BasketStartBarTime() <= 0)
          return;
 
+      m_ai_log.OnBasketAborted();
       m_basket.OnBasketClosed();
       m_exit.ResetTrailState();
       m_grid.ResetFiredFlags();
@@ -135,12 +139,14 @@ private:
       if(!m_basket.HasOpenPositions())
          return;
 
+      const double profit = m_basket.FloatingProfit();
+      m_ai_log.UpdatePath(profit);
+
       m_logger.LogBasket(m_basket.BasketId(),
-                         m_basket.FloatingProfit(),
+                         profit,
                          m_basket.PositionCount(),
                          m_state.GetState());
 
-      const double profit = m_basket.FloatingProfit();
       m_exit.UpdateTrail(profit);
 
       const double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
@@ -153,8 +159,10 @@ private:
       if(reason == FEMA_EXIT_NONE)
          return;
 
+      const int age_bars = m_basket.AgeBars();
       if(m_exit.CloseBasket(m_basket, m_execution, reason))
         {
+         m_ai_log.OnBasketClosed(profit, reason, age_bars);
          m_basket.OnBasketClosed();
          m_grid.ResetFiredFlags();
 
@@ -172,25 +180,34 @@ private:
       if(!m_state.CanEnter())
          return;
 
+      // Detect candidate touch before risk filters so AI0 can log skips.
+      SFemaSignal signal;
+      if(!m_entry.Evaluate(m_grid, m_indicators, m_htf, signal))
+         return;
+
+      const int pos_count = m_exposure.CountOpenPositions();
+      const bool is_new_basket = (pos_count == 0);
+      SFemaAiFeatures features;
+      m_ai_log.BuildFeatures(signal, m_indicators, m_regime, m_grid,
+                             pos_count, m_basket.BasketId(), features);
+      m_ai_log.LogCandidate(features);
+
       string filter_reason = "";
       if(!m_filters.AllowEntry(m_state, m_exposure, filter_reason))
         {
+         m_ai_log.LogSkip(features, filter_reason == "" ? "filter" : filter_reason);
          if(filter_reason != "" && m_logger.IsDetailed())
             m_logger.LogInfo("Entry blocked: " + filter_reason);
          return;
         }
 
-      SFemaSignal signal;
-      if(!m_entry.Evaluate(m_grid, m_indicators, m_htf, signal))
-         return;
-
       // Regime gates filter new basket opens only — grid add-ons must complete.
-      const bool is_new_basket = (m_exposure.CountOpenPositions() == 0);
       if(is_new_basket)
         {
          string regime_reason = "";
          if(!m_regime.AllowsDirection(signal.direction, m_indicators, regime_reason))
            {
+            m_ai_log.LogSkip(features, regime_reason == "" ? "regime" : regime_reason);
             if(regime_reason != "" && m_logger.IsDetailed())
                m_logger.LogInfo("Entry blocked: " + regime_reason);
             return;
@@ -200,6 +217,7 @@ private:
       string session_reason = "";
       if(!m_session.AllowsEntry(is_new_basket, session_reason))
         {
+         m_ai_log.LogSkip(features, session_reason == "" ? "session" : session_reason);
          if(session_reason != "" && m_logger.IsDetailed())
             m_logger.LogInfo("Entry blocked: " + session_reason);
          return;
@@ -235,6 +253,7 @@ private:
                                                   sl_price);
          if(!sl_ok)
            {
+            m_ai_log.LogSkip(features, "sl_calc_failed");
             m_logger.LogWarn("Failed to calculate per-trade SL");
             return;
            }
@@ -243,6 +262,7 @@ private:
       string validation_reason = "";
       if(!m_validation.Validate(m_symbol_info, signal.direction, lots, sl_price, validation_reason))
         {
+         m_ai_log.LogSkip(features, validation_reason == "" ? "validation" : validation_reason);
          m_logger.LogWarn("Validation failed: " + validation_reason);
          return;
         }
@@ -250,14 +270,6 @@ private:
       const string comment = CFemaTradeManager::BuildComment(signal.level_index, signal.direction);
       int retcode = 0;
       const bool ok = m_execution.OpenMarket(signal.direction, lots, sl_price, comment, retcode);
-      m_logger.LogOrderResult(m_basket.BasketId(),
-                              signal.direction,
-                              signal.level_index,
-                              signal.trigger_price,
-                              lots,
-                              ok,
-                              retcode,
-                              comment);
 
       if(ok)
         {
@@ -265,7 +277,21 @@ private:
            {
             m_exit.ResetTrailState();
             m_basket.OnBasketStart(iTime(_Symbol, _Period, 0));
+            features.basket_id = m_basket.BasketId();
+            m_ai_log.OnBasketOpened(m_basket.BasketId(), features);
            }
+
+         m_ai_log.OnLegFilled(signal.level_index);
+         m_ai_log.LogFill(features, !is_new_basket);
+
+         m_logger.LogOrderResult(m_basket.BasketId(),
+                                 signal.direction,
+                                 signal.level_index,
+                                 signal.trigger_price,
+                                 lots,
+                                 ok,
+                                 retcode,
+                                 comment);
 
          const int level_index = m_entry.FindLevelArrayIndex(m_grid, signal);
          if(level_index >= 0)
@@ -281,6 +307,15 @@ private:
         }
       else
         {
+         m_ai_log.LogSkip(features, "order_fail_" + IntegerToString(retcode));
+         m_logger.LogOrderResult(m_basket.BasketId(),
+                                 signal.direction,
+                                 signal.level_index,
+                                 signal.trigger_price,
+                                 lots,
+                                 ok,
+                                 retcode,
+                                 comment);
          m_state.RegisterExecutionFailure(FEMA_EXECUTION_FAILURE_LIMIT);
         }
      }
@@ -334,7 +369,8 @@ public:
                         InpUseAtrPercentileGate, InpAtrPercentileMax, InpAtrPercentileLookback,
                         InpUseEmaSepGate, InpEmaSepAtrMult,
                         InpUseEmaSlopeGate,
-                        InpUseBreakoutSuspend, InpBreakoutAtrMult))
+                        InpUseBreakoutSuspend, InpBreakoutAtrMult,
+                        InpUseAiEventLog))
         {
          m_logger.LogError("Failed to initialize regime filter");
          return INIT_FAILED;
@@ -357,6 +393,8 @@ public:
       m_exit.Init(InpBasketTp, InpUseBasketSl, InpBasketSl, InpMaxBasketBars,
                   InpUseExitRte, InpRteMinProfit,
                   InpUseBasketTrail, InpBasketTrailActivatePct, InpBasketTrailGivebackPct);
+      if(!m_ai_log.Init(InpUseAiEventLog, symbol, InpMagicNumber))
+         m_logger.LogWarn("AI0 event log failed to open — continuing without AI CSV");
       if(!m_regime.Update(m_indicators))
         {
          m_logger.LogWarn("Regime filter update failed on init");
@@ -385,6 +423,7 @@ public:
                        " ses=" + m_session.ActiveSummary() +
                        " exit=" + m_exit.ActiveSummary() +
                        " entry=" + entry_summary +
+                       " ai0=" + (InpUseAiEventLog ? "on" : "off") +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),
                              m_indicators.EmaFast(),
@@ -397,6 +436,7 @@ public:
 
    void              OnDeinit(const int reason)
      {
+      m_ai_log.Close();
       m_regime.Release();
       m_htf.Release();
       m_indicators.Release();
