@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2F-001_GRID_ATR15_ccab473e",
+  "base_run_id": "20260101_P2F-001_GRID_ATR15_ccab473e",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2F-001_GRID_ATR15",
+  "preset_slug": "P2F-001_GRID_ATR15",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "ccab473e",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 258,
+    "profit_factor": 1.08,
+    "win_rate": 0.66,
+    "net": 40.0,
+    "max_dd_pct": 28,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 29,
+  "task_id": "P2F-001",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "Wider grid",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

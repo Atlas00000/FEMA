@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fema.local/schemas/market_fingerprint.schema.json",
+  "title": "FEMA Market Fingerprint v0",
+  "description": "Offline market context derived from basket telemetry (RG-FP-01). Not a live trade signal.",
+  "type": "object",
+  "required": [
+    "schema",
+    "computed_at",
+    "window",
+    "volatility",
+    "trend_persistence",
+    "liquidity",
+    "session",
+    "pullback",
+    "ema_geometry",
+    "regime"
+  ],
+  "properties": {
+    "schema": { "const": "fema_market_fingerprint_v0" },
+    "computed_at": { "type": "string", "format": "date-time" },
+    "run_id": { "type": ["string", "null"] },
+    "source_baskets": { "type": ["string", "null"] },
+    "window": {
+      "type": "object",
+      "required": ["n_baskets"],
+      "properties": {
+        "n_baskets": { "type": "integer", "minimum": 0 },
+        "requested": { "type": ["integer", "null"] },
+        "open_first": { "type": ["string", "null"] },
+        "open_last": { "type": ["string", "null"] },
+        "days": { "type": ["number", "null"] }
+      }
+    },
+    "volatility": {
+      "type": "object",
+      "properties": {
+        "atr_mean": { "type": ["number", "null"] },
+        "atr_p50": { "type": ["number", "null"] },
+        "atr_p90": { "type": ["number", "null"] },
+        "mae_abs_mean": { "type": ["number", "null"] },
+        "mae_abs_p90": { "type": ["number", "null"] }
+      }
+    },
+    "trend_persistence": {
+      "type": "object",
+      "properties": {
+        "buy_share": { "type": ["number", "null"] },
+        "ema_slope_abs_mean": { "type": ["number", "null"] },
+        "ema_sep_atr_abs_mean": { "type": ["number", "null"] }
+      }
+    },
+    "liquidity": {
+      "type": "object",
+      "properties": {
+        "spread_mean": { "type": ["number", "null"] },
+        "spread_p90": { "type": ["number", "null"] }
+      }
+    },
+    "session": {
+      "type": "object",
+      "properties": {
+        "asia_share": { "type": ["number", "null"] },
+        "london_share": { "type": ["number", "null"] },
+        "ny_share": { "type": ["number", "null"] },
+        "hour_top3": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hour": { "type": "integer" },
+              "share": { "type": "number" }
+            }
+          }
+        },
+        "dow_hist": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "pullback": {
+      "type": "object",
+      "properties": {
+        "avg_depth": { "type": ["number", "null"] },
+        "depth_p90": { "type": ["number", "null"] },
+        "avg_open_level": { "type": ["number", "null"] },
+        "dist_ema_trend_atr_abs_mean": { "type": ["number", "null"] }
+      }
+    },
+    "ema_geometry": {
+      "type": "object",
+      "properties": {
+        "ema_sep_atr_p50": { "type": ["number", "null"] },
+        "ema_sep_atr_p90_abs": { "type": ["number", "null"] },
+        "slope_pos_share": { "type": ["number", "null"] }
+      }
+    },
+    "regime": {
+      "type": "object",
+      "properties": {
+        "adx_mean": { "type": ["number", "null"] },
+        "adx_p50": { "type": ["number", "null"] },
+        "adx_p90": { "type": ["number", "null"] },
+        "adx_lt_30_share": { "type": ["number", "null"] }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

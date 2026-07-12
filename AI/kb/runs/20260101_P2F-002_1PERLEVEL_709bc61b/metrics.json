@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2F-002_1PERLEVEL_709bc61b",
+  "base_run_id": "20260101_P2F-002_1PERLEVEL_709bc61b",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2F-002_1PERLEVEL",
+  "preset_slug": "P2F-002_1PERLEVEL",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "709bc61b",
+  "role": "other",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 426,
+    "profit_factor": 1.38,
+    "win_rate": 0.71,
+    "net": 229.0,
+    "max_dd_pct": 18.14,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 31,
+  "task_id": "P2F-002",
+  "discovery_status": "Control",
+  "failure_reason": "",
+  "notes": "1-per-level verified",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

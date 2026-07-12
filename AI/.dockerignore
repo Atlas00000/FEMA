@@ -1,0 +1,12 @@
+# Build context is repo root (see Dockerfile COPY AI/...)
+.git
+**/.git
+**/__pycache__
+**/*.pyc
+**/*.ex5
+**/*.ex4
+**/*.log
+AI/data
+**/node_modules
+agent-transcripts
+.cursor

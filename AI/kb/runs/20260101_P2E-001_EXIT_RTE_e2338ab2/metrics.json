@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2E-001_EXIT_RTE_e2338ab2",
+  "base_run_id": "20260101_P2E-001_EXIT_RTE_e2338ab2",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2E-001_EXIT_RTE",
+  "preset_slug": "P2E-001_EXIT_RTE",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "e2338ab2",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 522,
+    "profit_factor": 0.54,
+    "win_rate": 0.75,
+    "net": -107.0,
+    "max_dd_pct": 31,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 27,
+  "task_id": "P2E-001",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "RTE scalp",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

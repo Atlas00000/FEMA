@@ -1,0 +1,2 @@
+# placeholder — Wave 1 ops deps also in ops/api/requirements.txt
+psycopg[binary]>=3.2.0

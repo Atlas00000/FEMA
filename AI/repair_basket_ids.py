@@ -19,6 +19,7 @@ if str(_AI_DIR) not in sys.path:
     sys.path.insert(0, str(_AI_DIR))
 
 from build_dataset import build_rows, write_csv  # noqa: E402
+from csv_util import read_csv_rows  # noqa: E402
 
 
 def parse_time(s: str) -> datetime:
@@ -26,8 +27,7 @@ def parse_time(s: str) -> datetime:
 
 
 def repair_baskets(src: Path, dst: Path) -> list[dict]:
-    with src.open(newline="", encoding="utf-8-sig") as fh:
-        rows = list(csv.DictReader(fh))
+    rows = read_csv_rows(src)
     if not rows:
         raise SystemExit(f"empty baskets: {src}")
     rows.sort(key=lambda r: parse_time(r["open_time"]))

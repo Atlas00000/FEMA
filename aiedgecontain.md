@@ -1,5 +1,9 @@
 # FEMA — AI Edge Contain
 
+> **ARCHIVE / SUPPORTING CHAPTER** — not the active build spine.  
+> **Active:** [`edgelifecycle.md`](edgelifecycle.md) (process) · [`infrascaleup.md`](infrascaleup.md) (Ops Plane §16) · [`AI/STATUS.md`](AI/STATUS.md).  
+> This file records offline contain experiments (EC0–EC2). Do not treat it as a competing roadmap.
+
 **Status:** **EC2 complete (shadow empty)** — no transferable P(fail) · approve-by-default · ready for EC3  
 **Job:** Build **guardrails** around the locked PRODUCTION edge — not beat it, not replace it.  
 **Live / demo:** Run `FEMA_EURUSD_M5_PRODUCTION` unchanged.  

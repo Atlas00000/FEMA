@@ -1,0 +1,33 @@
+{
+  "run_id": "20250101_P2C-002_REG_ATRP70_735ce60b",
+  "base_run_id": "20250101_P2C-002_REG_ATRP70_735ce60b",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2C-002_REG_ATRP70",
+  "preset_slug": "P2C-002_REG_ATRP70",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2025.01.01",
+    "end": "2025.12.31"
+  },
+  "window_hash": "735ce60b",
+  "role": "other",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 349,
+    "profit_factor": 1.34,
+    "win_rate": 0.73,
+    "net": 181.0,
+    "max_dd_pct": 18,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 17,
+  "task_id": "P2C-002",
+  "discovery_status": "2025 only",
+  "failure_reason": "other",
+  "notes": "2025 slice; fails 2026 row 21",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

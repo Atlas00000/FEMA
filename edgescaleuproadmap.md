@@ -112,10 +112,10 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W01-001` | Draft certificate doc | Copy Green/Amber/Red bands from [`edgecontainment.md`](edgecontainment.md) §1 into a short `AI/certificate_PRODUCTION_EURUSD.md` (or System Profile appendix). | File exists; linked from System Profile |
-| `ESR-W01-002` | Bind to lock fingerprint | List journal must-haves (`adx_gate=on`, `bsl=25`, preset path). | Checklist matches live demo load |
-| `ESR-W01-003` | Pick rolling windows | Confirm **50 / 100 / 250** baskets as primary windows (no more). | One sentence in certificate |
-| `ESR-W01-004` | Baseline snapshot | Record lock-window reference metrics (PF/WR/DD/trades) as certificate “birth” numbers. | Table filled from Edge Discovery / System Profile |
+| `ESR-W01-001` | Draft certificate doc | Copy Green/Amber/Red bands from [`edgecontainment.md`](edgecontainment.md) §1 into a short `AI/certificate_PRODUCTION_EURUSD.md` (or System Profile appendix). | ✅ MD + JSON |
+| `ESR-W01-002` | Bind to lock fingerprint | List journal must-haves (`adx_gate=on`, `bsl=25`, preset path). | ✅ `fema_ops cert-confirm` |
+| `ESR-W01-003` | Pick rolling windows | Confirm **50 / 100 / 250** baskets as primary windows (no more). | ✅ in certificate |
+| `ESR-W01-004` | Baseline snapshot | Record lock-window reference metrics (PF/WR/DD/trades) as certificate “birth” numbers. | ✅ birth + lock run |
 
 **Out of week:** Health code, pause wiring, candidate generation.
 
@@ -142,10 +142,10 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W03-001` | Script `edge_health_cert.py` | Compute rolling PF, WR, TP hit, duration, depth, MAE ratio, frequency vs certificate bands → component scores → weighted 0–100. | Script runs on sample CSV |
-| `ESR-W03-002` | Ladder labels | Map score → Normal / Investigate / Watch / Re-Discovery / Retire per containment §3. | Printed on report |
-| `ESR-W03-003` | Persistence stub | Flag “deteriorating” only after **3** consecutive window updates (even if daily job runs once). | Flag logic unit-tested or documented with example |
-| `ESR-W03-004` | JSON + MD report | Write `AI/data/live/health_latest.json` + short `.md`. | Artifacts regenerate cleanly |
+| `ESR-W03-001` | Script `edge_health_cert.py` / `fema_ops health` | Compute rolling PF, WR, TP hit, duration, depth, MAE ratio, frequency vs certificate bands → component scores → weighted 0–100. | ✅ `health_v0` |
+| `ESR-W03-002` | Ladder labels | Map score → Normal / Investigate / Watch / Re-Discovery / Retire per containment §3. | ✅ |
+| `ESR-W03-003` | Persistence stub | Flag “deteriorating” only after **3** consecutive window updates (even if daily job runs once). | ✅ unit-tested |
+| `ESR-W03-004` | JSON + MD report | Write `AI/data/live/health_latest.json` + short `.md`. | ✅ |
 
 **Out of week:** MT5 pause input, drift classifiers, ML.
 
@@ -172,8 +172,8 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W05-001` | Daily runbook | Steps: export/copy CSV → run health script → glance ladder. | `AI/runbook_daily_health.md` |
-| `ESR-W05-002` | Optional one-command | Tiny shell/ps1 wrapper calling the script (no scheduler required). | `AI/run_daily_health.ps1` or `.sh` |
+| `ESR-W05-001` | Daily runbook | Steps: export/copy CSV → run health script → glance ladder. | ✅ `AI/templates/daily_health.md` |
+| `ESR-W05-002` | Optional one-command | Tiny shell/ps1 wrapper calling the script (no scheduler required). | Pending (status+health CLI enough) |
 | `ESR-W05-003` | Alert rule (human) | If ladder ≤ Watch for 3 days → ping yourself (email/Telegram optional; phone note OK). | Written rule only |
 | `ESR-W05-004` | Keep PRODUCTION unchanged | Confirm no Inputs drift on demo. | Checklist tick |
 
@@ -187,7 +187,7 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W06-001` | Weekly template | Sections: health trend, certificate breaches, action ladder decision, “do nothing” default. | `AI/templates/weekly_edge_review.md` |
+| `ESR-W06-001` | Weekly template | Sections: health trend, certificate breaches, action ladder decision, “do nothing” default. | ✅ `AI/templates/weekly_edge_review.md` |
 | `ESR-W06-002` | First real weekly | Fill template once from demo. | Saved under `AI/data/live/reviews/` |
 | `ESR-W06-003` | Action discipline | If Investigate: report only. If Watch: queue **offline** candidate ideas (no live change). | Decision logged |
 | `ESR-W06-004` | MVP Watch gate | Declare “health trusted enough to design pause shadow” or list blockers. | Go / no-go note |
@@ -202,10 +202,10 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W07-001` | Spec in System Profile | Allowed / forbidden pause list copied from containment. | Profile or lifecycle updated |
-| `ESR-W07-002` | Shadow column | Health report adds `would_pause_new` when ladder ≤ Re-Discovery (or Critical persistence). | Field in JSON/MD |
-| `ESR-W07-003` | Replay check | On backfilled demo: count % of days/baskets that would pause; must not be “always on.” | One paragraph metrics |
-| `ESR-W07-004` | Wire decision | Explicit **no wire** this week unless go-criteria met (optional later epic). | Decision logged |
+| `ESR-W07-001` | Spec in System Profile | Allowed / forbidden pause list copied from containment. | ✅ `AI/kb/pause_policy.md` |
+| `ESR-W07-002` | Shadow column | Health report adds `would_pause_new` when ladder ≤ Re-Discovery (or Critical persistence). | ✅ |
+| `ESR-W07-003` | Replay check | On backfilled demo: count % of days/baskets that would pause; must not be “always on.” | ✅ `fema_ops pause-check` |
+| `ESR-W07-004` | Wire decision | Explicit **no wire** this week unless go-criteria met (optional later epic). | ✅ default `InpReadPauseNewFlag=false` |
 
 **Out of week:** EA `InpAiPauseNew` live on demo (defer to `ESR-DEF-PAUSE-WIRE`).
 
@@ -247,10 +247,10 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W10-001` | Search map card | One-pager: may-adapt pairs vs frozen (from containment §6). | In Edge Discovery or KB |
-| `ESR-W10-002` | Clone playbook | How to fork PRODUCTION → Candidate_Xn with **one subsystem** changed. | Playbook ≤1 page |
-| `ESR-W10-003` | Queue from health | If weekly ladder = Watch: create **≤3** manual candidates, not 30. | Queue logged in KB |
-| `ESR-W10-004` | Run offline tests | Tester on agreed window; log results into KB (pass or fail). | ≥1 candidate fully logged |
+| `ESR-W10-001` | Search map card | One-pager: may-adapt pairs vs frozen (from containment §6). | ✅ `AI/kb/search_map.md` |
+| `ESR-W10-002` | Clone playbook | How to fork PRODUCTION → Candidate_Xn with **one subsystem** changed. | ✅ `AI/kb/clone_playbook.md` + `fema_ops clone` |
+| `ESR-W10-003` | Queue from health | If weekly ladder = Watch: create **≤3** manual candidates, not 30. | ✅ KB `candidates.csv` (Cap in playbook) |
+| `ESR-W10-004` | Run offline tests | Tester on agreed window; log results into KB (pass or fail). | Pending (operator) |
 
 **Out of week:** Auto param sweep, genetic search, parallel agent farm.
 
@@ -262,10 +262,10 @@ W1–2 Certificate     W3–4 Health      W5–6 Cadence
 
 | ID | Task | Description | Done when |
 | -- | ---- | ----------- | --------- |
-| `ESR-W11-001` | Promotion checklist | Walk-forward / OOS / vs PRODUCTION / G-rules / human sign-off. | `AI/templates/promotion_checklist.md` |
-| `ESR-W11-002` | Link Edge Discovery gates | Reuse existing G1 (and friends); do not invent a second scoreboard. | Checklist cites Edge Discovery |
-| `ESR-W11-003` | Dry-run promote | Paper-promote or paper-reject the Week 10 candidate through the checklist. | Signed decision in KB |
-| `ESR-W11-004` | Re-Discovery trigger table | When health/persistence says Re-Discovery → open EL1 campaign (process only). | Table in lifecycle / this roadmap |
+| `ESR-W11-001` | Promotion checklist | Walk-forward / OOS / vs PRODUCTION / G-rules / human sign-off. | ✅ `AI/templates/promotion_checklist.md` |
+| `ESR-W11-002` | Link Edge Discovery gates | Reuse existing G1 (and friends); do not invent a second scoreboard. | ✅ `gate_rules.json` |
+| `ESR-W11-003` | Dry-run promote | Paper-promote or paper-reject the Week 10 candidate through the checklist. | ✅ `AI/kb/el2_promote_decision.md` |
+| `ESR-W11-004` | Re-Discovery trigger table | When health/persistence says Re-Discovery → open EL1 campaign (process only). | Pending EL7 |
 
 **Out of week:** Auto-promote scripts.
 

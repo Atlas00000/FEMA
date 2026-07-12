@@ -1,0 +1,143 @@
+{
+  "schema": "fema_market_fingerprint_v0",
+  "computed_at": "2026-07-12T14:14:39Z",
+  "run_id": "20260101_PRODUCTION_13c52cd9",
+  "source_baskets": "C:/Users/emili/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Experts/FEMA/AI/data/live/latest_baskets.csv",
+  "window": {
+    "n_baskets": 100,
+    "requested": 100,
+    "open_first": "2025.06.02 11:55:38",
+    "open_last": "2025.12.11 02:15:32",
+    "days": 191.6
+  },
+  "volatility": {
+    "atr_mean": 0.000477,
+    "atr_p50": 0.00042,
+    "atr_p90": 0.000786,
+    "mae_abs_mean": 12.833,
+    "mae_abs_p90": 25.031
+  },
+  "trend_persistence": {
+    "buy_share": 0.55,
+    "ema_slope_abs_mean": 2.96e-05,
+    "ema_sep_atr_abs_mean": 3.9827
+  },
+  "liquidity": {
+    "spread_mean": 7.03,
+    "spread_p90": 12.0
+  },
+  "session": {
+    "asia_share": 0.22,
+    "london_share": 0.21,
+    "ny_share": 0.57,
+    "hour_top3": [
+      {
+        "hour": 15,
+        "share": 0.11
+      },
+      {
+        "hour": 11,
+        "share": 0.08
+      },
+      {
+        "hour": 16,
+        "share": 0.08
+      }
+    ],
+    "dow_hist": {
+      "0": 0.03,
+      "1": 0.13,
+      "2": 0.22,
+      "3": 0.25,
+      "4": 0.23,
+      "5": 0.14
+    }
+  },
+  "pullback": {
+    "avg_depth": 3.98,
+    "depth_p90": 5.0,
+    "avg_open_level": 1.0,
+    "dist_ema_trend_atr_abs_mean": 2.9425
+  },
+  "ema_geometry": {
+    "ema_sep_atr_p50": 1.3693,
+    "ema_sep_atr_p90_abs": 6.9783,
+    "slope_pos_share": 0.42
+  },
+  "regime": {
+    "adx_mean": 23.67,
+    "adx_p50": 24.16,
+    "adx_p90": 29.3,
+    "adx_lt_30_share": 1.0
+  },
+  "notes": [],
+  "compatibility": {
+    "schema": "fema_compatibility_v0",
+    "computed_at": "2026-07-12T14:14:39Z",
+    "genome": "PRODUCTION",
+    "score": 100.0,
+    "signal": "compatible",
+    "shadow": true,
+    "checks": [
+      {
+        "key": "regime.adx_lt_30_share",
+        "ok": true,
+        "value": 1.0,
+        "points": 100.0,
+        "note": "ADX gate environment",
+        "subsystem": "adx"
+      },
+      {
+        "key": "regime.adx_p50",
+        "ok": true,
+        "value": 24.16,
+        "points": 100.0,
+        "note": "",
+        "subsystem": "adx"
+      },
+      {
+        "key": "pullback.avg_depth",
+        "ok": true,
+        "value": 3.98,
+        "points": 100.0,
+        "note": "",
+        "subsystem": "grid"
+      },
+      {
+        "key": "volatility.mae_abs_mean",
+        "ok": true,
+        "value": 12.833,
+        "points": 100.0,
+        "note": "",
+        "subsystem": "grid"
+      },
+      {
+        "key": "session.asia_share",
+        "ok": true,
+        "value": 0.22,
+        "points": 100.0,
+        "note": "",
+        "subsystem": "session"
+      },
+      {
+        "key": "liquidity.spread_p90",
+        "ok": true,
+        "value": 12.0,
+        "points": 100.0,
+        "note": "",
+        "subsystem": "execution"
+      },
+      {
+        "key": "session.london_ny_only_proxy",
+        "ok": true,
+        "value": 0.7799999999999999,
+        "points": 100.0,
+        "note": "fail if London+NY dominate",
+        "subsystem": "session"
+      }
+    ],
+    "mismatches": [],
+    "suggest_subsystems": [],
+    "note": "Shadow only \u2014 does not change health ladder or pause."
+  }
+}

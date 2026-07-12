@@ -13,6 +13,12 @@ import json
 import sys
 from pathlib import Path
 
+_AI_DIR = Path(__file__).resolve().parent
+if str(_AI_DIR) not in sys.path:
+    sys.path.insert(0, str(_AI_DIR))
+
+from csv_util import read_csv_rows  # noqa: E402
+
 
 FEATURE_COLS = [
     "basket_id",
@@ -60,15 +66,13 @@ def _f(row: dict, key: str, default: float = 0.0) -> float:
 
 def build_rows(baskets_path: Path, mae_fail: float) -> list[dict]:
     rows: list[dict] = []
-    with baskets_path.open(newline="", encoding="utf-8-sig") as fh:
-        reader = csv.DictReader(fh)
-        for raw in reader:
-            hit_bsl = int(float(raw.get("hit_bsl", 0) or 0))
-            mae = _f(raw, "mae")
-            y_fail = 1 if hit_bsl == 1 or mae <= -abs(mae_fail) else 0
-            out = {c: raw.get(c, "") for c in FEATURE_COLS + LABEL_COLS if c != "y_fail"}
-            out["y_fail"] = y_fail
-            rows.append(out)
+    for raw in read_csv_rows(baskets_path):
+        hit_bsl = int(float(raw.get("hit_bsl", 0) or 0))
+        mae = _f(raw, "mae")
+        y_fail = 1 if hit_bsl == 1 or mae <= -abs(mae_fail) else 0
+        out = {c: raw.get(c, "") for c in FEATURE_COLS + LABEL_COLS if c != "y_fail"}
+        out["y_fail"] = y_fail
+        rows.append(out)
     return rows
 
 

@@ -19,6 +19,9 @@ from datetime import datetime
 from pathlib import Path
 
 
+from csv_util import read_csv_rows  # noqa: E402
+
+
 REGIME_ORDER = [
     "late_session",
     "asia_open",
@@ -112,7 +115,7 @@ def assign_regime(row: dict, atr_p25: float, atr_p75: float) -> str:
 
 
 def load_dataset(path: Path) -> list[dict]:
-    rows = list(csv.DictReader(path.open(encoding="utf-8-sig")))
+    rows = read_csv_rows(path)
     for i, r in enumerate(rows, start=1):
         r["_row_id"] = str(i)
         r["_ts"] = parse_time(r["open_time"])

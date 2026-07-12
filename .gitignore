@@ -1,6 +1,18 @@
 *.log
 *.ex5
 *.ex4
-AI/data/
+
+# Fat telemetry / datasets — keep schemas & live README only
+AI/data/**
+!AI/data/live/
+AI/data/live/**
+!AI/data/live/README.md
+!AI/data/live/.gitkeep
+!AI/data/artifacts/
+AI/data/artifacts/**
+!AI/data/artifacts/README.md
+!AI/data/artifacts/.gitkeep
+
 AI/__pycache__/
 **/__pycache__/
+*.pyc

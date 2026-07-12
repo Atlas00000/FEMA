@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2A-ALL_FULL_d5d5e42a",
+  "base_run_id": "20260101_P2A-ALL_FULL_d5d5e42a",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2A-ALL_FULL",
+  "preset_slug": "P2A-ALL_FULL",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "d5d5e42a",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 1882,
+    "profit_factor": 1.0,
+    "win_rate": 0.42,
+    "net": 6.0,
+    "max_dd_pct": 28,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 11,
+  "task_id": "P2A-ALL",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "Full stack worse than candidate",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

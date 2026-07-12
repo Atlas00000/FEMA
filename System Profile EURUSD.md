@@ -9,6 +9,10 @@
 **Journal must show:** `adx_gate=on` · `bsl=25` · `InpUseAdxGate=true` · `InpAdxMax=30`  
 Without ADX gate you get bare BSL_25 (PF 1.27, +$176) — not PRODUCTION.
 
+**Edge certificate (health bands):** [`AI/certificate_PRODUCTION_EURUSD.json`](AI/certificate_PRODUCTION_EURUSD.json) · human mirror [`AI/certificate_PRODUCTION_EURUSD.md`](AI/certificate_PRODUCTION_EURUSD.md) · EL3 confirm [`AI/kb/el3_lock_confirm.md`](AI/kb/el3_lock_confirm.md) · lifecycle [`edgelifecycle.md`](edgelifecycle.md)
+
+**EL6 pause (shadow):** [`AI/kb/pause_policy.md`](AI/kb/pause_policy.md) — `InpReadPauseNewFlag=false` by default; opt-in reads `FEMA_AI\\pause_new.flag` (new baskets only).
+
 ---
 
 ## 1. System profile

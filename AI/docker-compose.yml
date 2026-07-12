@@ -1,0 +1,23 @@
+# INF-DOCKER — Python ops only (no MT5)
+# From repo root: docker-compose -f AI/docker-compose.yml run --rm fema_ops health
+# Ops Plane Wave 1: docker-compose -f ops/docker-compose.yml up -d --build
+
+services:
+  fema_ops:
+    build:
+      context: ..
+      dockerfile: AI/Dockerfile
+    image: fema-ops:local
+    working_dir: /work/AI
+    environment:
+      FEMA_REPO_ROOT: /work
+      PYTHONPATH: /work/AI
+    volumes:
+      # Read/write telemetry + health artifacts
+      - ./data:/work/AI/data
+      # KB may be edited (candidates, runs index)
+      - ./kb:/work/AI/kb
+      # Presets for clone (read-write so Candidate_Xn can land)
+      - ../Presets:/work/Presets
+    # Override: docker compose run --rm fema_ops health
+    command: ["status"]

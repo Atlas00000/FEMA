@@ -1,0 +1,77 @@
+# FEMA Ops Plane — Wave 1 (postgres + read-only API + ops CLI)
+# From repo root:
+#   docker compose -f ops/docker-compose.yml up -d --build
+#   docker compose -f ops/docker-compose.yml exec fema_ops db-migrate
+#   docker compose -f ops/docker-compose.yml exec fema_ops db-ingest --source demo --from-live
+#   curl -H "Authorization: Bearer fema-dev-token" http://localhost:8080/v1/status
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fema
+      POSTGRES_PASSWORD: fema
+      POSTGRES_DB: fema
+    ports:
+      - "5432:5432"
+    volumes:
+      - fema_pg:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fema -d fema"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  fema_ops:
+    build:
+      context: ..
+      dockerfile: AI/Dockerfile
+    image: fema-ops:local
+    working_dir: /work/AI
+    environment:
+      FEMA_REPO_ROOT: /work
+      PYTHONPATH: /work/AI
+      FEMA_DATABASE_URL: postgresql://fema:fema@postgres:5432/fema
+    volumes:
+      - ../AI/data:/work/AI/data
+      - ../AI/kb:/work/AI/kb
+      - ../Presets:/work/Presets
+      - ../ops:/work/ops:ro
+      - fema_incoming:/var/fema/incoming
+      - fema_artifacts:/var/fema/artifacts
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["status"]
+
+  fema_api:
+    build:
+      context: ..
+      dockerfile: ops/api/Dockerfile
+    image: fema-api:local
+    ports:
+      - "8080:8080"
+    environment:
+      FEMA_REPO_ROOT: /work
+      PYTHONPATH: /work/AI:/work/ops/api
+      FEMA_DATABASE_URL: postgresql://fema:fema@postgres:5432/fema
+      FEMA_API_TOKEN: fema-dev-token
+    volumes:
+      - ../AI/data:/work/AI/data:ro
+      - ../AI/kb:/work/AI/kb:ro
+      - ../AI/certificate_PRODUCTION_EURUSD.json:/work/AI/certificate_PRODUCTION_EURUSD.json:ro
+      - ../AI/fema_ops:/work/AI/fema_ops:ro
+      - ../AI/paths.py:/work/AI/paths.py:ro
+      - ../AI/cert_loader.py:/work/AI/cert_loader.py:ro
+      - ../AI/csv_util.py:/work/AI/csv_util.py:ro
+      - ./api:/work/ops/api:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+
+volumes:
+  fema_pg:
+  fema_incoming:
+  fema_artifacts:

@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//| AiEventLog.mqh — AI0 CSV event / feature / basket outcome logger |
+//| AiEventLog.mqh — schema-versioned CSV event / basket logger      |
 //+------------------------------------------------------------------+
 #ifndef FEMA_AIEVENTLOG_MQH
 #define FEMA_AIEVENTLOG_MQH
@@ -19,9 +19,13 @@ private:
    bool              m_enabled;
    string            m_symbol;
    ulong             m_magic;
-   int               m_events_handle;       // Common\\Files (easy pickup)
+   string            m_run_id;
+   string            m_ea_build;
+   string            m_preset_id;
+   string            m_fingerprint;
+   int               m_events_handle;
    int               m_baskets_handle;
-   int               m_events_handle_local; // Tester Agent MQL5\\Files (reliable in backtests)
+   int               m_events_handle_local;
    int               m_baskets_handle_local;
    CFemaLogger      *m_log;
    SFemaAiBasketTrack m_track;
@@ -58,23 +62,64 @@ private:
 
    int               OpenCsv(const string path, const int common_flag) const
      {
-      // FILE_TXT + FileWriteString — FILE_CSV leaves 0-byte files in tester.
       return FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE|common_flag);
+     }
+
+   void              WriteMetaBlock(const int h1, const int h2, const string schema) const
+     {
+      WriteLine(h1, h2, "# FEMA_META schema=" + schema + "\r\n");
+      WriteLine(h1, h2, "# FEMA_META run_id=" + Esc(m_run_id) + "\r\n");
+      WriteLine(h1, h2, "# FEMA_META magic=" + IntegerToString((long)m_magic) + "\r\n");
+      WriteLine(h1, h2, "# FEMA_META ea_build=" + Esc(m_ea_build) + "\r\n");
+      WriteLine(h1, h2, "# FEMA_META fingerprint=" + Esc(m_fingerprint) + "\r\n");
+      WriteLine(h1, h2, "# FEMA_META created=" +
+                TimeToString(TimeCurrent(), TIME_DATE|TIME_SECONDS) + "\r\n");
+     }
+
+   void              WriteRunMetaFile() const
+     {
+      const string path = "FEMA_AI\\" + Tag() + "_run.meta.txt";
+      const string body =
+         "schema_baskets=" + FEMA_AI_BASKETS_SCHEMA + "\r\n" +
+         "schema_events=" + FEMA_AI_EVENTS_SCHEMA + "\r\n" +
+         "run_id=" + m_run_id + "\r\n" +
+         "magic=" + IntegerToString((long)m_magic) + "\r\n" +
+         "ea_build=" + m_ea_build + "\r\n" +
+         "preset_id=" + m_preset_id + "\r\n" +
+         "fingerprint=" + m_fingerprint + "\r\n" +
+         "symbol=" + m_symbol + "\r\n" +
+         "created=" + TimeToString(TimeCurrent(), TIME_DATE|TIME_SECONDS) + "\r\n";
+
+      int h = FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE|FILE_COMMON);
+      if(h != INVALID_HANDLE)
+        {
+         FileWriteString(h, body);
+         FileClose(h);
+        }
+      h = FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE);
+      if(h != INVALID_HANDLE)
+        {
+         FileWriteString(h, body);
+         FileClose(h);
+        }
      }
 
    void              WriteEventsHeader()
      {
+      WriteMetaBlock(m_events_handle, m_events_handle_local, FEMA_AI_EVENTS_SCHEMA);
       const string hdr =
          "event_time,event,basket_id,symbol,direction,level_index,"
          "level_price,trigger_price,profit,reason,"
          "ema_fast,ema_trend,ema_sep,ema_sep_atr,ema_slope,atr,adx,"
          "grid_center,dist_ema_trend_atr,spread_points,hour,dow,"
-         "pos_count,is_new_basket,roll_wr,roll_pf,roll_n\r\n";
+         "pos_count,is_new_basket,roll_wr,roll_pf,roll_n,"
+         "retcode,reject_class,transient\r\n";
       WriteLine(m_events_handle, m_events_handle_local, hdr);
      }
 
    void              WriteBasketsHeader()
      {
+      WriteMetaBlock(m_baskets_handle, m_baskets_handle_local, FEMA_AI_BASKETS_SCHEMA);
       const string hdr =
          "basket_id,open_time,close_time,symbol,direction,open_level,"
          "max_depth,profit,exit_reason,hit_tp,hit_bsl,mae,mfe,"
@@ -87,7 +132,10 @@ private:
    void              WriteEventRow(const ENUM_FEMA_AI_EVENT ev,
                                    const SFemaAiFeatures &f,
                                    const double profit,
-                                   const string reason)
+                                   const string reason,
+                                   const int retcode,
+                                   const string reject_class,
+                                   const bool transient)
      {
       if(!m_enabled)
          return;
@@ -120,7 +168,10 @@ private:
          (f.is_new_basket ? "1" : "0") + "," +
          DoubleToString(f.roll_wr, 4) + "," +
          DoubleToString(f.roll_pf, 4) + "," +
-         IntegerToString(f.roll_n) + "\r\n";
+         IntegerToString(f.roll_n) + "," +
+         IntegerToString(retcode) + "," +
+         Esc(reject_class) + "," +
+         (transient ? "1" : "0") + "\r\n";
       WriteLine(m_events_handle, m_events_handle_local, line);
      }
 
@@ -170,6 +221,10 @@ public:
                      m_enabled(false),
                      m_symbol(""),
                      m_magic(0),
+                     m_run_id(""),
+                     m_ea_build(""),
+                     m_preset_id(""),
+                     m_fingerprint(""),
                      m_events_handle(INVALID_HANDLE),
                      m_baskets_handle(INVALID_HANDLE),
                      m_events_handle_local(INVALID_HANDLE),
@@ -192,13 +247,51 @@ public:
 
    void              SetLogger(CFemaLogger &log) { m_log = GetPointer(log); }
    bool              Enabled() const { return m_enabled; }
+   string            RunId() const { return m_run_id; }
 
-   bool              Init(const bool enabled, const string symbol, const ulong magic)
+   // INF-EA: edge fingerprint JSON (Inp* that define the lock). Body built by Engine.
+   void              WriteRunConfigJson(const string json_body) const
+     {
+      if(!m_enabled)
+         return;
+      const string path = "FEMA_AI\\" + Tag() + "_run_config.json";
+      int h = FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE|FILE_COMMON);
+      if(h != INVALID_HANDLE)
+        {
+         FileWriteString(h, json_body);
+         FileClose(h);
+        }
+      h = FileOpen(path, FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_REWRITE);
+      if(h != INVALID_HANDLE)
+        {
+         FileWriteString(h, json_body);
+         FileClose(h);
+        }
+     }
+
+   bool              Init(const bool enabled,
+                          const string symbol,
+                          const ulong magic,
+                          const string ea_build,
+                          const string preset_id,
+                          const bool adx_gate,
+                          const double bsl)
      {
       Close();
       m_enabled = enabled;
       m_symbol = symbol;
       m_magic = magic;
+      m_ea_build = ea_build;
+      m_preset_id = (preset_id == "" ? "PRODUCTION" : preset_id);
+      m_fingerprint = "adx_gate=" + (adx_gate ? "on" : "off") +
+                      ";bsl=" + DoubleToString(bsl, 0) +
+                      ";preset=" + m_preset_id;
+      m_run_id = TimeToString(TimeCurrent(), TIME_DATE|TIME_SECONDS);
+      StringReplace(m_run_id, ".", "");
+      StringReplace(m_run_id, ":", "");
+      StringReplace(m_run_id, " ", "_");
+      m_run_id = m_run_id + "_" + Tag();
+
       m_roll_count = 0;
       m_roll_idx = 0;
       m_track.active = false;
@@ -224,7 +317,7 @@ public:
       if(!any_ok)
         {
          if(m_log != NULL)
-            m_log.LogError("AI0 log open failed (common+local)");
+            m_log.LogError("AI log open failed (common+local)");
          Close();
          m_enabled = false;
          return false;
@@ -232,10 +325,12 @@ public:
 
       WriteEventsHeader();
       WriteBasketsHeader();
+      WriteRunMetaFile();
       if(m_log != NULL)
         {
-         m_log.LogInfo("AI0 event log on Common\\Files\\" + events_path +
-                       " and MQL5\\Files\\" + baskets_path +
+         m_log.LogInfo("AI log " + FEMA_AI_BASKETS_SCHEMA + "/" + FEMA_AI_EVENTS_SCHEMA +
+                       " run_id=" + m_run_id +
+                       " fp=" + m_fingerprint +
                        " common_ok=" + IntegerToString(m_events_handle != INVALID_HANDLE) +
                        " local_ok=" + IntegerToString(m_events_handle_local != INVALID_HANDLE));
         }
@@ -310,17 +405,45 @@ public:
 
    void              LogCandidate(const SFemaAiFeatures &f)
      {
-      WriteEventRow(FEMA_AI_CANDIDATE, f, 0.0, "");
+      WriteEventRow(FEMA_AI_CANDIDATE, f, 0.0, "", 0, "ok", false);
      }
 
    void              LogSkip(const SFemaAiFeatures &f, const string reason)
      {
-      WriteEventRow(FEMA_AI_SKIP, f, 0.0, reason);
+      WriteEventRow(FEMA_AI_SKIP, f, 0.0, reason, 0, "ok", false);
      }
 
    void              LogFill(const SFemaAiFeatures &f, const bool is_add)
      {
-      WriteEventRow(is_add ? FEMA_AI_ADD : FEMA_AI_FILL, f, 0.0, "");
+      WriteEventRow(is_add ? FEMA_AI_ADD : FEMA_AI_FILL, f, 0.0, "", 0, "ok", false);
+     }
+
+   void              LogOrderFail(const SFemaAiFeatures &f,
+                                  const int retcode,
+                                  const bool transient,
+                                  const string detail)
+     {
+      const string cls = FemaAiRejectClass(retcode, transient);
+      const string reason = "order_fail_" + IntegerToString(retcode) +
+                            (detail == "" ? "" : ";" + detail);
+      WriteEventRow(FEMA_AI_ORDER_FAIL, f, 0.0, reason, retcode, cls, transient);
+      // Back-compat for older parsers that only look at SKIP
+      WriteEventRow(FEMA_AI_SKIP, f, 0.0, "order_fail_" + IntegerToString(retcode),
+                    retcode, cls, transient);
+     }
+
+   void              LogLifecycle(const string code, const string detail)
+     {
+      SFemaAiFeatures f;
+      FemaAiFeaturesReset(f);
+      f.time = TimeCurrent();
+      f.spread_points = CFemaHelpers::SpreadPoints(m_symbol);
+      MqlDateTime dt;
+      TimeToStruct(f.time, dt);
+      f.hour = dt.hour;
+      f.dow = dt.day_of_week;
+      WriteEventRow(FEMA_AI_LIFECYCLE, f, 0.0, Esc(code) + (detail == "" ? "" : ";" + Esc(detail)),
+                    0, "ok", false);
      }
 
    void              OnBasketOpened(const ulong basket_id,
@@ -338,7 +461,7 @@ public:
       m_track.mfe = 0.0;
       m_track.open_features = f;
       m_track.open_features.basket_id = basket_id;
-      WriteEventRow(FEMA_AI_BASKET_OPEN, m_track.open_features, 0.0, "");
+      WriteEventRow(FEMA_AI_BASKET_OPEN, m_track.open_features, 0.0, "", 0, "ok", false);
      }
 
    void              OnLegFilled(const int level_index)
@@ -369,7 +492,7 @@ public:
       SFemaAiFeatures f = m_track.open_features;
       f.time = TimeCurrent();
       f.basket_id = m_track.basket_id;
-      WriteEventRow(FEMA_AI_BASKET_CLOSE, f, profit, FemaExitReasonToString(reason));
+      WriteEventRow(FEMA_AI_BASKET_CLOSE, f, profit, FemaExitReasonToString(reason), 0, "ok", false);
 
       if(m_baskets_handle != INVALID_HANDLE || m_baskets_handle_local != INVALID_HANDLE)
         {

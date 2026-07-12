@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2A-003_TIME_96B_713527f9",
+  "base_run_id": "20260101_P2A-003_TIME_96B_713527f9",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2A-003_TIME_96B",
+  "preset_slug": "P2A-003_TIME_96B",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "713527f9",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 30,
+    "profit_factor": 0.17,
+    "win_rate": 0.83,
+    "net": -245.0,
+    "max_dd_pct": 66,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 8,
+  "task_id": "P2A-003",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "Identical to 48B/P1",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

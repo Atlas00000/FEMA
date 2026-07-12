@@ -26,6 +26,7 @@ _AI_DIR = Path(__file__).resolve().parent
 if str(_AI_DIR) not in sys.path:
     sys.path.insert(0, str(_AI_DIR))
 
+from csv_util import read_csv_rows  # noqa: E402
 from regime_atlas import assign_regime, metrics as basket_metrics  # noqa: E402
 
 
@@ -66,8 +67,7 @@ def f(row: dict, key: str, default: float = 0.0) -> float:
 
 
 def load_dataset(path: Path) -> list[dict]:
-    with path.open(newline="", encoding="utf-8-sig") as fh:
-        return list(csv.DictReader(fh))
+    return read_csv_rows(path)
 
 
 def atr_percentiles(rows: list[dict]) -> tuple[float, float]:

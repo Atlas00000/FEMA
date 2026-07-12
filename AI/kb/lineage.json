@@ -1,0 +1,73 @@
+{
+  "schema": "fema_edge_lineage_v1",
+  "updated": "2026-07-12",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "active_lock": {
+    "preset_id": "PRODUCTION",
+    "alias": "P2C-001_REG_ADX30",
+    "run_id": "20260101_PRODUCTION_13c52cd9",
+    "certificate": "AI/certificate_PRODUCTION_EURUSD.json",
+    "parent_preset_id": "P2A-002_BSL_25",
+    "parent_run_id": "20260101_P2A-002_BSL_25_5ea7b09b",
+    "retired_run_id": null,
+    "status": "lock",
+    "promoted_at": "2026-07-11",
+    "notes": "EL2/EL3 lock — BSL25 + ADX30; birth PF 1.36 / DD 18% (mt5_deals)"
+  },
+  "promotion_chain": [
+    {
+      "step": 0,
+      "preset_id": "P1-BASELINE",
+      "run_id": "20260101_P1-BASELINE_4a41623a",
+      "role": "rejected_baseline",
+      "parent_preset_id": null,
+      "child_preset_id": "P2A-002_BSL_25",
+      "retired_run_id": null,
+      "decision": "reject",
+      "failure_reason": "other",
+      "notes": "Steamroller — no BSL"
+    },
+    {
+      "step": 1,
+      "preset_id": "P2A-002_BSL_25",
+      "run_id": "20260101_P2A-002_BSL_25_5ea7b09b",
+      "role": "control",
+      "parent_preset_id": "P1-BASELINE",
+      "child_preset_id": "PRODUCTION",
+      "retired_run_id": null,
+      "decision": "control",
+      "failure_reason": null,
+      "notes": "BSL $25 control; ADX off"
+    },
+    {
+      "step": 2,
+      "preset_id": "PRODUCTION",
+      "run_id": "20260101_PRODUCTION_13c52cd9",
+      "role": "lock",
+      "parent_preset_id": "P2A-002_BSL_25",
+      "child_preset_id": null,
+      "retired_run_id": null,
+      "decision": "promote",
+      "failure_reason": null,
+      "notes": "Current active lock (alias P2C-001_REG_ADX30)"
+    }
+  ],
+  "aliases": [
+    {
+      "preset_id": "P2C-001_REG_ADX30",
+      "alias_of": "PRODUCTION",
+      "run_id": "20260101_PRODUCTION_13c52cd9"
+    }
+  ],
+  "el7_on_rediscovery": {
+    "action": "Set active_lock.retired_run_id to current lock run_id; append new chain step; open EL1",
+    "sop": "AI/kb/research_loop_sop.md"
+  },
+  "sources": {
+    "el0": "AI/kb/el0_baseline_inventory.json",
+    "el2": "AI/kb/el2_promote_decision.md",
+    "el3": "AI/kb/el3_lock_confirm.json",
+    "manifest": "Presets/manifest.json"
+  }
+}

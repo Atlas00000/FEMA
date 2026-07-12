@@ -1,0 +1,280 @@
+{
+  "generated_at": "2026-07-11T21:16:27Z",
+  "seed": "C:/Users/emili/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Experts/FEMA/AI/kb/discovery_rows_seed.json",
+  "created_or_linked": 34,
+  "new_index_rows": 33,
+  "rows": [
+    {
+      "row": 1,
+      "preset": "P1-BASELINE",
+      "task_id": "P1",
+      "run_id": "20260101_P1-BASELINE_4a41623a",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 2,
+      "preset": "P2A-001_PSL_ATR15_RAW",
+      "task_id": "P2A-001",
+      "run_id": "20260101_P2A-001_PSL_ATR15_RAW_f67b382d",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 3,
+      "preset": "P2A-001_PSL_ATR20",
+      "task_id": "P2A-001",
+      "run_id": "20260101_P2A-001_PSL_ATR20_f49d3773",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 4,
+      "preset": "P2A-001_PSL_ATR15",
+      "task_id": "P2A-001",
+      "run_id": "20260101_P2A-001_PSL_ATR15_7fab2c11",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 5,
+      "preset": "P2A-002_BSL_15",
+      "task_id": "P2A-002",
+      "run_id": "20260101_P2A-002_BSL_15_0709f094",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 6,
+      "preset": "P2A-002_BSL_25",
+      "task_id": "P2A-002",
+      "run_id": "20260101_P2A-002_BSL_25_5ea7b09b",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 7,
+      "preset": "P2A-003_TIME_48B",
+      "task_id": "P2A-003",
+      "run_id": "20260101_P2A-003_TIME_48B_b4afaa4d",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 8,
+      "preset": "P2A-003_TIME_96B",
+      "task_id": "P2A-003",
+      "run_id": "20260101_P2A-003_TIME_96B_713527f9",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 9,
+      "preset": "P2A-004_DEPTH_L3",
+      "task_id": "P2A-004",
+      "run_id": "20260101_P2A-004_DEPTH_L3_d8a6bb39",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 10,
+      "preset": "P2A-005_CD_10B",
+      "task_id": "P2A-005",
+      "run_id": "20260101_P2A-005_CD_10B_024b081c",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 11,
+      "preset": "P2A-ALL_FULL",
+      "task_id": "P2A-ALL",
+      "run_id": "20260101_P2A-ALL_FULL_d5d5e42a",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 12,
+      "preset": "P2B-001_HTF_H1",
+      "task_id": "P2B-001",
+      "run_id": "20260101_P2B-001_HTF_H1_3caf8cef",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 13,
+      "preset": "P2B-002_HTF_H4",
+      "task_id": "P2B-002",
+      "run_id": "20260101_P2B-002_HTF_H4_7735d085",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 14,
+      "preset": "P2B-003_HTF_SLOPE",
+      "task_id": "P2B-003",
+      "run_id": "20260101_P2B-003_HTF_SLOPE_cb5bbe01",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 15,
+      "preset": "P2C-001_REG_ADX25",
+      "task_id": "P2C-001",
+      "run_id": "20260101_P2C-001_REG_ADX25_b66afbf5",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 16,
+      "preset": "P2C-001_REG_ADX30",
+      "task_id": "P2C-001",
+      "run_id": "20250101_P2C-001_REG_ADX30_1429db68",
+      "role": "other",
+      "status": "documented"
+    },
+    {
+      "row": 17,
+      "preset": "P2C-002_REG_ATRP70",
+      "task_id": "P2C-002",
+      "run_id": "20250101_P2C-002_REG_ATRP70_735ce60b",
+      "role": "other",
+      "status": "documented"
+    },
+    {
+      "row": 18,
+      "preset": "P2C-003_REG_EMASEP_3ATR",
+      "task_id": "P2C-003",
+      "run_id": "20260101_P2C-003_REG_EMASEP_3ATR_4e1134cf",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 19,
+      "preset": "P2C-004_REG_SLOPE",
+      "task_id": "P2C-004",
+      "run_id": "20260101_P2C-004_REG_SLOPE_90dda6c1",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 20,
+      "preset": "P2C-005_BRK_SUSPEND",
+      "task_id": "P2C-005",
+      "run_id": "20260101_P2C-005_BRK_SUSPEND_44bdc4f9",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 21,
+      "preset": "P2C002_ATRP70",
+      "task_id": "P2C-002",
+      "run_id": "20260101_P2C002_ATRP70_b5bac7a9",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 22,
+      "preset": "PRODUCTION",
+      "task_id": "PRODUCTION",
+      "run_id": "20260101_PRODUCTION_13c52cd9",
+      "role": "lock",
+      "status": "recorded"
+    },
+    {
+      "row": 23,
+      "preset": "P2D-001_SES_NO23",
+      "task_id": "P2D-001",
+      "run_id": "20260101_P2D-001_SES_NO23_6f2c2b65",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 24,
+      "preset": "P2D-002_SES_NOFRI",
+      "task_id": "P2D-002",
+      "run_id": "20260101_P2D-002_SES_NOFRI_26e08aa5",
+      "role": "candidate",
+      "status": "documented"
+    },
+    {
+      "row": 25,
+      "preset": "P2D-003_SES_NOSUN",
+      "task_id": "P2D-003",
+      "run_id": "20260101_P2D-003_SES_NOSUN_c4677299",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 26,
+      "preset": "P2D-004_SES_LDN_NY",
+      "task_id": "P2D-004",
+      "run_id": "20260101_P2D-004_SES_LDN_NY_02e60884",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 27,
+      "preset": "P2E-001_EXIT_RTE",
+      "task_id": "P2E-001",
+      "run_id": "20260101_P2E-001_EXIT_RTE_e2338ab2",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 28,
+      "preset": "P2E-003_TRAIL_50",
+      "task_id": "P2E-003",
+      "run_id": "20260101_P2E-003_TRAIL_50_02617cf4",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 29,
+      "preset": "P2F-001_GRID_ATR15",
+      "task_id": "P2F-001",
+      "run_id": "20260101_P2F-001_GRID_ATR15_ccab473e",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 30,
+      "preset": "P2F-001_GRID_ATR20",
+      "task_id": "P2F-001",
+      "run_id": "20260101_P2F-001_GRID_ATR20_d7e81c54",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 31,
+      "preset": "P2F-002_1PERLEVEL",
+      "task_id": "P2F-002",
+      "run_id": "20260101_P2F-002_1PERLEVEL_709bc61b",
+      "role": "other",
+      "status": "documented"
+    },
+    {
+      "row": 32,
+      "preset": "P2F-003_RSI_EXH",
+      "task_id": "P2F-003",
+      "run_id": "20260101_P2F-003_RSI_EXH_c39a9dd0",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 33,
+      "preset": "P2F-004_CONFIRM",
+      "task_id": "P2F-004",
+      "run_id": "20260101_P2F-004_CONFIRM_b442d1cb",
+      "role": "reject",
+      "status": "documented"
+    },
+    {
+      "row": 34,
+      "preset": "PRODUCTION",
+      "task_id": "G3",
+      "run_id": "20260101_PRODUCTION_26e9ba7e",
+      "role": "reject",
+      "status": "documented"
+    }
+  ]
+}

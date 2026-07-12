@@ -1,36 +1,56 @@
 # FEMA AI — Offline tooling
 
-**Active framework:** [`../aiedgecontain.md`](../aiedgecontain.md) (AI Edge Contain — guardrails)  
-**Legacy notes:** [`../ai_enhance.md`](../ai_enhance.md) (older beat-2026 experiments)
+**Active framework:** [`../edgelifecycle.md`](../edgelifecycle.md) (spine) · glance [`STATUS.md`](STATUS.md) · contain notes [`../aiedgecontain.md`](../aiedgecontain.md)
+**Schemas:** [`schemas/README.md`](schemas/README.md) · `fema_baskets_v2` / `fema_events_v2` (EA **v1.25+**)
 
-Offline-first tooling for the Edge Contain layer. **No model decisions in the EA yet.**
+Offline tooling for Edge Ops. **No model decisions in the EA.**
 
 ## Deliverables
 
 | ID | Status | Location |
 | -- | ------ | -------- |
+| INF-LOG | Done (v1.25) | Schema meta + fingerprint + ORDER_FAIL/LIFECYCLE |
+| INF-EXPORT | Done | `AI/data/live/latest_*` via `sync_from_agent.py` |
+| INF-CERT | Done | `certificate_PRODUCTION_EURUSD.json` + `cert_loader.py` |
+| INF-OPS | Done | `fema_ops` · `health_v0` · `python -m fema_ops health` |
+| INF-RUN | Done | `AI/kb/runs/` · `python -m fema_ops register` / `list-runs` |
+| INF-PRESET | Done | `Presets/manifest.json` · `fema_ops clone` · search map · gates |
+| INF-EA | Done (v1.26) | `*_run_config.json` · `InpReadPauseNewFlag` (default off) |
+| INF-STATUS | Done | `AI/STATUS.md` · `python -m fema_ops status` |
+| INF-DOCKER | Done | `AI/Dockerfile` · [`DOCKER.md`](DOCKER.md) · no MT5 |
+| EL0–EL3 | Done | Baseline · run_ids · gates · `cert-confirm` lock |
+| EL6 | Shadow | `would_pause_new` · `pause-check` · `pause-flag` |
 | AI0-001 | Done | EA CSV event stream (`*_events.csv`) |
 | AI0-002 | Done | Feature snapshot columns on candidate/fill/open |
-| AI0-003 | Done | Basket outcome labels (`*_baskets.csv`: hit_tp/bsl, mae, mfe, bars, depth) |
-| AI0-004 | Done | `build_dataset.py` |
+| AI0-003 | Done | Basket outcome labels (`*_baskets.csv`) |
+| AI0-004 | Done | `build_dataset.py` (+ `csv_util.py`) |
 | AI0-005 | Done | `replay.py` |
 | AI0-006 | Done | `baseline.json` (PRODUCTION freeze) |
 
-## EA side (v1.22+)
+## EA side (v1.25+)
 
-1. Compile `FEMA.mq5` (journal: `v1.22` · `ai0=on` · `common_ok=1` · `local_ok=1`).
-2. Run Strategy Tester with PRODUCTION (`InpUseAiEventLog=true`).
-3. **Primary CSV location after a tester run** (non-zero size):
+1. Compile `FEMA.mq5` **v1.26** (journal: `Init v1.26` · `pause_flag=off|armed|ON` · `AI log ... run_id=...`).
+2. Run Strategy Tester / demo with PRODUCTION (`InpUseAiEventLog=true`).
+3. **Primary CSV location after a tester run:**
 
 ```
 %APPDATA%\MetaQuotes\Tester\<terminal_id>\Agent-*\MQL5\Files\FEMA_AI\
-  EURUSD_20260707_events.csv
-  EURUSD_20260707_baskets.csv
+  EURUSD_<magic>_events.csv
+  EURUSD_<magic>_baskets.csv
+  EURUSD_<magic>_run.meta.txt
+  EURUSD_<magic>_run_config.json   # INF-EA edge Inp* snapshot
 ```
 
-Common\Files\FEMA_AI may stay small/locked until the terminal releases handles — prefer the Agent path.
+4. **Sync to stable repo paths (INF-EXPORT):**
 
-Copy into `AI/data/` (gitignored) for offline work.
+```powershell
+.\AI\sync_from_agent.ps1
+# or: python AI/sync_from_agent.py
+```
+
+Writes `AI/data/live/latest_baskets.csv`, `latest_events.csv`, `latest_run.meta.txt`.  
+Scripts should use `from paths import LATEST_BASKETS` — never hardcode Agent paths.  
+Readers: `from csv_util import read_csv_rows`.
 
 **AI0 status (2026-07-11):** complete — 108 baskets · PF 1.40 · dataset + zero-skip replay OK.
 
@@ -84,7 +104,63 @@ python AI/replay.py --baskets AI/data/EURUSD_20260707_baskets.csv --skip-ids AI/
 # AI Edge Contain — EC0 ingest (after 2020-2025 tester collect)
 python AI/ec0_ingest.py --from-agent "PATH/TO/Agent/MQL5/Files/FEMA_AI/EURUSD_*_baskets.csv"
 
-# AI3 edge health (rolling score + stress pause)
+# Sync live CSVs
+python AI/sync_from_agent.py
+# EL4 demo (Wave 0 default):
+python -m fema_ops ingest --source demo
+python -m fema_ops observatory
+# Tester Discovery collect only:
+python -m fema_ops ingest --source tester
+
+# Certificate health_v0 (INF-OPS / EL5 shadow)
+cd AI
+python -m fema_ops health
+# or from repo root:
+python AI/edge_health_cert.py
+python AI/edge_health_cert.py --baskets AI/data/EURUSD_20260707_baskets.csv --no-state
+
+# Unit tests
+python -m unittest AI.tests.test_health_v0
+python -m unittest AI.tests.test_runs
+python -m unittest AI.tests.test_gates
+python -m unittest AI.tests.test_lock_confirm
+
+# Register a tester/demo slice (INF-RUN)
+cd AI
+python -m fema_ops register --baskets data/EURUSD_20260707_baskets.csv --preset PRODUCTION --role lock --from 2026.01.01 --to 2026.07.31
+python -m fema_ops list-runs
+
+# EL1 Discovery table -> documented run_ids
+python -m fema_ops backfill-discovery
+
+# EL2 G1 gate / KB polish
+python -m fema_ops gate-polish
+python -m fema_ops gate-check --pf 1.40 --dd 19
+# Decision: AI/kb/el2_promote_decision.md · checklist: AI/templates/promotion_checklist.md
+
+# EL3 lock / certificate confirm
+python -m fema_ops cert-confirm
+# Report: AI/kb/el3_lock_confirm.md
+
+# Clone PRODUCTION -> one-subsystem candidate (INF-PRESET)
+python -m fema_ops clone --list-subsystems
+python -m fema_ops clone --id Candidate_X1 --subsystem session --set InpUseSessionBlockNo23=true --notes "Watch queue"
+python -m fema_ops list-presets
+
+# EL6 pause shadow
+python -m fema_ops health
+python -m fema_ops pause-check
+python -m fema_ops pause-flag
+# Wire only after review: copy AI/data/live/pause_new.flag -> MT5 Files\FEMA_AI\
+# and set InpReadPauseNewFlag=true (default remains false)
+
+# Docker (INF-DOCKER — Python only, no MT5)
+# From repo root:
+#   docker build -f AI/Dockerfile -t fema-ops .
+#   docker compose -f AI/docker-compose.yml run --rm fema_ops health
+# See AI/DOCKER.md
+
+# AI3 edge health (legacy AI-G1 pause calibrator — not certificate health)
 python AI/edge_health.py
 
 # AI4 P(TP) confidence (logging / AI2 assist ablations)

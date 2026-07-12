@@ -1,0 +1,1 @@
+AI/data/EURUSD_20260707_baskets.csv

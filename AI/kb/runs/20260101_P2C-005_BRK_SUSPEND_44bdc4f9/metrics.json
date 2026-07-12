@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2C-005_BRK_SUSPEND_44bdc4f9",
+  "base_run_id": "20260101_P2C-005_BRK_SUSPEND_44bdc4f9",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2C-005_BRK_SUSPEND",
+  "preset_slug": "P2C-005_BRK_SUSPEND",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "44bdc4f9",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 753,
+    "profit_factor": 1.1,
+    "win_rate": 0.72,
+    "net": 112.0,
+    "max_dd_pct": 17,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 20,
+  "task_id": "P2C-005",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "Breakout suspend",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

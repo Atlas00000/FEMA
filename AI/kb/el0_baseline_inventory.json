@@ -1,0 +1,78 @@
+{
+  "schema": "fema_el0_baseline_v1",
+  "phase": "EL0-BASE",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "tester": {
+    "deposit": 400.0,
+    "leverage": "1:500",
+    "model": "every_tick",
+    "profit_in_pips": 0,
+    "canonical_window": {"start": "2026.01.01", "end": "2026.07.31"}
+  },
+  "started_from": {
+    "id": "P1-BASELINE",
+    "preset_file": "Presets/P1-BASELINE.set",
+    "tester_name": "FEMA_EURUSD_M5_P1-BASELINE",
+    "stack": "EMA20/100 grid + basket TP $10; no basket SL; no ADX",
+    "diff_vs_production": ["InpUseBasketSl=false", "InpUseAdxGate=false"],
+    "metrics_mt5_deals": {
+      "source": "Edge Discovery.md row 1",
+      "profit_factor": 0.17,
+      "net_profit": -245.0,
+      "max_dd_balance_pct": 66.0,
+      "win_rate": 0.83,
+      "trades": 30,
+      "note": "Steamroller — high WR then huge tail losses; NOT deployable"
+    },
+    "status": "rejected_baseline",
+    "run_id": "20260101_P1-BASELINE_4a41623a",
+    "run_id_note": "EL1 documented backfill from Discovery row 1 (no basket CSV)"
+  },
+  "intermediate_control": {
+    "id": "P2A-002_BSL_25",
+    "preset_file": "Presets/P2A-002_BSL_25.set",
+    "tester_name": "FEMA_EURUSD_M5_P2A-002_BSL_25",
+    "stack": "BSL $25 + basket TP $10; ADX off",
+    "diff_vs_production": ["InpUseAdxGate=false"],
+    "metrics_mt5_deals_2026": {
+      "source": "Edge Discovery.md validated baselines table",
+      "profit_factor": 1.27,
+      "net_profit": 176.0,
+      "max_dd_balance_pct": 17.0,
+      "max_dd_equity_pct": 21.0,
+      "win_rate": 0.7,
+      "trades": 424
+    },
+    "status": "control",
+    "run_id": "20260101_P2A-002_BSL_25_5ea7b09b"
+  },
+  "moved_to": {
+    "id": "PRODUCTION",
+    "alias": "P2C-001_REG_ADX30",
+    "preset_file": "Presets/PRODUCTION.set",
+    "tester_load": "FEMA_EURUSD_M5_PRODUCTION.ini",
+    "stack": "BSL $25 + ADX(14) max 30 + basket TP $10",
+    "metrics_mt5_deals": {
+      "source": "System Profile / Edge Discovery row 22",
+      "profit_factor": 1.36,
+      "net_profit": 221.0,
+      "max_dd_balance_pct": 18.0,
+      "max_dd_equity_pct": 21.0,
+      "win_rate": 0.71,
+      "trades": 424,
+      "sharpe": 1.9
+    },
+    "run_id": "20260101_PRODUCTION_13c52cd9",
+    "certificate": "AI/certificate_PRODUCTION_EURUSD.json",
+    "status": "lock"
+  },
+  "one_liner": "We started from P1-BASELINE (steamroller PF 0.17); Discovery moved us through BSL_25 (PF 1.27) to PRODUCTION (BSL_25 + ADX30, PF 1.36).",
+  "links": {
+    "edge_discovery": "Edge Discovery.md",
+    "system_profile": "System Profile EURUSD.md",
+    "baseline_json": "AI/baseline.json",
+    "candidates_csv": "AI/kb/candidates.csv",
+    "manifest": "Presets/manifest.json"
+  }
+}

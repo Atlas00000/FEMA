@@ -85,6 +85,10 @@ input ulong  InpMagicNumber     = 20260707;
 input ENUM_FEMA_TRADE_PERMISSION InpTradePermission = FEMA_PERM_BOTH;
 input bool   InpManualSuspend   = false;
 
+input group "=== EL6: Pause-new (opt-in wire) ==="
+input bool   InpReadPauseNewFlag = false;  // OFF = shadow only; ON reads FEMA_AI\\pause_new.flag
+input string InpPauseNewFlagFile = "FEMA_AI\\pause_new.flag";  // local + Common Files
+
 input group "=== Logging ==="
 input ENUM_FEMA_LOG_MODE InpLogMode = FEMA_LOG_DETAILED;
 

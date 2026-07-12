@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2D-004_SES_LDN_NY_02e60884",
+  "base_run_id": "20260101_P2D-004_SES_LDN_NY_02e60884",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2D-004_SES_LDN_NY",
+  "preset_slug": "P2D-004_SES_LDN_NY",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "02e60884",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 287,
+    "profit_factor": 1.05,
+    "win_rate": 0.63,
+    "net": 27.0,
+    "max_dd_pct": 38,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 26,
+  "task_id": "P2D-004",
+  "discovery_status": "Rejected",
+  "failure_reason": "other",
+  "notes": "Whitelist cuts Asia",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

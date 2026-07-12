@@ -1,12 +1,16 @@
 # FEMA — AI Enhance (legacy exploration)
 
-**Status:** **Archived / reference** — superseded for new work by [`aiedgecontain.md`](aiedgecontain.md)  
-**Why kept:** AI0–AI4 tooling notes, early 2024–2026 collects, beat-2026 experiments  
-**Do not use this file as the active AI build plan** — that is **AI Edge Contain**.
+> **ARCHIVE / SUPPORTING CHAPTER** — not the active build spine.  
+> **Active:** [`edgelifecycle.md`](edgelifecycle.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/STATUS.md`](AI/STATUS.md).  
+> Kept for AI0–AI4 tooling notes and beat-2026 experiments only.
 
-**Active plan:** [`aiedgecontain.md`](aiedgecontain.md) · [`AI/windows.json`](AI/windows.json) · [`AI/README.md`](AI/README.md)  
+**Status:** **Archived / reference** — superseded for new work by lifecycle + Ops Plane (not by reopen of this plan)  
+**Why kept:** AI0–AI4 tooling notes, early 2024–2026 collects, beat-2026 experiments  
+**Do not use this file as the active AI build plan.**
+
+**Active plan:** [`edgelifecycle.md`](edgelifecycle.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/README.md`](AI/README.md)  
 **Depends on:** Locked EURUSD PRODUCTION ([`System Profile EURUSD.md`](System Profile EURUSD.md))  
-**Vision source:** [`aiscaleupconcept.md`](aiscaleupconcept.md)
+**Contain chapter (also archive):** [`aiedgecontain.md`](aiedgecontain.md)
 
 ---
 

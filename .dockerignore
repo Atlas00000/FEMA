@@ -1,0 +1,10 @@
+# Used when: docker build -f AI/Dockerfile -t fema-ops .
+.git
+**/__pycache__
+**/*.pyc
+**/*.ex5
+**/*.ex4
+**/*.log
+AI/data
+.cursor
+agent-transcripts

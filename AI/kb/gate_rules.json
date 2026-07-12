@@ -1,0 +1,71 @@
+{
+  "schema": "fema_gate_rules_v1",
+  "source": "Edge Discovery.md promotion gates + EL2 polish",
+  "production_benchmark": {
+    "symbol": "EURUSD",
+    "timeframe": "M5",
+    "window": {"start": "2026.01.01", "end": "2026.07.31"},
+    "profit_factor": 1.36,
+    "max_dd_balance_pct": 18.0,
+    "run_id": "20260101_PRODUCTION_13c52cd9",
+    "control_run_id": "20260101_P2A-002_BSL_25_5ea7b09b"
+  },
+  "failure_reason_enum": [
+    "atr_expand",
+    "deep_pullback",
+    "session",
+    "regime",
+    "execution",
+    "dd_breach",
+    "pf_breach",
+    "other"
+  ],
+  "gates": [
+    {
+      "id": "G1",
+      "name": "Beat PRODUCTION on PF and max DD together",
+      "scope": "candidate_vs_production_same_window",
+      "rules": [
+        {"metric": "profit_factor", "op": ">=", "ref": "production.profit_factor"},
+        {"metric": "max_dd_balance_pct", "op": "<=", "ref": "production.max_dd_balance_pct"}
+      ],
+      "notes": "Not win rate alone. DD +1pp fails even if PF higher (see P2D-001)."
+    },
+    {
+      "id": "G2",
+      "name": "Filter stack quality",
+      "scope": "after_P2B_C_D",
+      "rules": [
+        {"metric": "profit_factor", "op": ">=", "value": 1.0},
+        {"metric": "max_dd_balance_pct", "op": "<=", "value": 25.0}
+      ],
+      "notes": "Historical Discovery gate; still used for stack completeness."
+    },
+    {
+      "id": "G3",
+      "name": "Cross-symbol",
+      "scope": "multi_symbol",
+      "rules": [
+        {"metric": "profit_factor", "op": ">=", "value": 1.2},
+        {"metric": "symbols_validated", "op": ">=", "value": 2}
+      ],
+      "status": "fail",
+      "notes": "GBPUSD PRODUCTION PF 0.80 — EURUSD-only deploy."
+    }
+  ],
+  "demote_rules": [
+    {
+      "id": "STALE_SLICE",
+      "name": "Demote stale-slice-only wins",
+      "rule": "window must equal production_benchmark.window for G1 promote",
+      "examples": ["P2C-002 ATRP70 2025-only (row 17)"]
+    }
+  ],
+  "promotion": {
+    "auto_promote": false,
+    "requires": ["G1", "human_approval", "checklist"],
+    "checklist": "AI/templates/promotion_checklist.md",
+    "decision_log": "AI/kb/el2_promote_decision.md",
+    "forbidden": ["promote_because_ai_said_so", "live_param_change", "stale_slice_promote"]
+  }
+}

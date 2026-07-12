@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2F-001_GRID_ATR20_d7e81c54",
+  "base_run_id": "20260101_P2F-001_GRID_ATR20_d7e81c54",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2F-001_GRID_ATR20",
+  "preset_slug": "P2F-001_GRID_ATR20",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "d7e81c54",
+  "role": "reject",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 253,
+    "profit_factor": 0.93,
+    "win_rate": 0.6,
+    "net": -35.0,
+    "max_dd_pct": 34,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 30,
+  "task_id": "P2F-001",
+  "discovery_status": "Rejected",
+  "failure_reason": "regime",
+  "notes": "ATR mult 2.0",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

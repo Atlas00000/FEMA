@@ -1,0 +1,38 @@
+{
+  "schema": "fema_edge_genome_v0",
+  "preset": "PRODUCTION",
+  "alias": "P2C-001_REG_ADX30",
+  "lock_run_id": "20260101_PRODUCTION_13c52cd9",
+  "updated": "2026-07-12",
+  "hypothesis": "Shallow ATR pullbacks in EMA20/100 trend with ADX<30 hit +$10 TP often enough under -$25 BSL.",
+  "thrive": {
+    "regime.adx_lt_30_share": { "min": 0.85, "target": 0.95, "note": "ADX gate environment" },
+    "regime.adx_p50": { "max": 28, "note": "Median ADX below gate" },
+    "pullback.avg_depth": { "min": 2.5, "max": 4.5, "birth": 3.94 },
+    "pullback.depth_p90": { "max": 5.0, "note": "Deep grids rare" },
+    "volatility.mae_abs_mean": { "max": 18.0, "note": "vs BSL 25" },
+    "session.asia_share": { "min": 0.15, "note": "Asia contributes; London/NY-only kills edge" },
+    "liquidity.spread_p90": { "max": 30, "note": "Spread filter 30 pts" },
+    "ema_geometry.ema_sep_atr_p90_abs": { "min": 0.5, "note": "Some trend separation" }
+  },
+  "fail": {
+    "regime.adx_lt_30_share": { "max": 0.6, "note": "Strong-trend regime — steamroller risk" },
+    "pullback.avg_depth": { "min": 4.8, "note": "Deep pullbacks / wider spacing kills edge" },
+    "session.london_ny_only_proxy": { "min": 0.9, "note": "P2D-004 style" },
+    "volatility.mae_abs_mean": { "min": 22.0, "note": "MAE near BSL" },
+    "cross_symbol": { "note": "GBPUSD PRODUCTION PF 0.80 — genome is EURUSD-only" }
+  },
+  "subsystem_hints": {
+    "regime_adx": "adx",
+    "deep_pullback": "grid",
+    "session_skew": "session",
+    "spread_exec": "execution",
+    "ema_geometry": "htf"
+  },
+  "sources": [
+    "System Profile EURUSD.md",
+    "Edge Discovery.md",
+    "AI/certificate_PRODUCTION_EURUSD.json",
+    "AI/kb/el0_baseline_inventory.json"
+  ]
+}

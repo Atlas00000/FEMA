@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_PRODUCTION_13c52cd9",
+  "base_run_id": "20260101_PRODUCTION_13c52cd9",
+  "registered_at": "2026-07-11T20:44:22Z",
+  "preset": "FEMA_EURUSD_M5_PRODUCTION",
+  "preset_slug": "PRODUCTION",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "13c52cd9",
+  "role": "lock",
+  "baskets_path": "AI/data/EURUSD_20260707_baskets.csv",
+  "ea_run_id": null,
+  "metrics": {
+    "n": 108,
+    "profit_factor": 1.3968,
+    "win_rate": 0.7778,
+    "net": 240.2,
+    "tp_hit_rate": 0.7778,
+    "open_first": "2026.01.02 09:09:15",
+    "open_last": "2026.07.02 14:40:32"
+  },
+  "status": "recorded",
+  "notes": "PRODUCTION lock birth / Edge Discovery row 22",
+  "schema": "fema_run_v1",
+  "discovery_row": 22,
+  "discovery_status": "Candidate",
+  "fingerprint_path": "AI/kb/runs/20260101_PRODUCTION_13c52cd9/fingerprint.json",
+  "compatibility_signal": "compatible"
+}

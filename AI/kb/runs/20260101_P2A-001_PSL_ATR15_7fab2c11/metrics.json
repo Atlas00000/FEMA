@@ -1,0 +1,33 @@
+{
+  "run_id": "20260101_P2A-001_PSL_ATR15_7fab2c11",
+  "base_run_id": "20260101_P2A-001_PSL_ATR15_7fab2c11",
+  "registered_at": "2026-07-11T21:16:03Z",
+  "preset": "P2A-001_PSL_ATR15",
+  "preset_slug": "P2A-001_PSL_ATR15",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "7fab2c11",
+  "role": "candidate",
+  "baskets_path": null,
+  "ea_run_id": null,
+  "metrics": {
+    "n": 1819,
+    "profit_factor": 1.02,
+    "win_rate": 0.42,
+    "net": 39.0,
+    "max_dd_pct": 26,
+    "unit": "mt5_deals_discovery_table"
+  },
+  "status": "documented",
+  "discovery_row": 4,
+  "task_id": "P2A-001",
+  "discovery_status": "Alternate",
+  "failure_reason": "",
+  "notes": "Prev candidate; structure SL",
+  "schema": "fema_run_v1",
+  "source": "Edge Discovery.md backtest results log (EL1 backfill)"
+}

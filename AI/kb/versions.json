@@ -1,0 +1,48 @@
+{
+  "schema": "fema_versions_v1",
+  "updated": "2026-07-12",
+  "note": "Bump ids when the artifact contract changes. STATUS cites this file (RG-VER-01).",
+  "components": {
+    "preset": {
+      "id": "PRODUCTION",
+      "file": "Presets/PRODUCTION.set",
+      "alias": "P2C-001_REG_ADX30",
+      "version": "lock_20260101_PRODUCTION_13c52cd9",
+      "ea_build": "1.26"
+    },
+    "certificate": {
+      "id": "certificate_PRODUCTION_EURUSD",
+      "file": "AI/certificate_PRODUCTION_EURUSD.json",
+      "version": 1
+    },
+    "health_model": {
+      "id": "health_v0",
+      "file": "AI/fema_ops/health.py",
+      "weights_source": "AI/certificate_PRODUCTION_EURUSD.json#health_weights"
+    },
+    "gate_rules": {
+      "id": "fema_gate_rules_v1",
+      "file": "AI/kb/gate_rules.json",
+      "schema": "fema_gate_rules_v1"
+    },
+    "kb": {
+      "id": "fema_kb_wave2",
+      "schema_doc": "AI/kb/schema.md",
+      "lineage": "AI/kb/lineage.json",
+      "candidates": "AI/kb/candidates.csv",
+      "runs_index": "AI/kb/runs/index.json"
+    },
+    "feature_store": {
+      "id": "fema_market_fingerprint_v0",
+      "status": "active",
+      "schema": "AI/schemas/market_fingerprint.schema.json",
+      "genome": "AI/kb/genome_PRODUCTION.json",
+      "note": "Wave 3 offline fingerprint + compatibility shadow"
+    },
+    "ai_models": {
+      "id": "none",
+      "status": "parked_offline_only",
+      "note": "No live risk from models (Wave 6 / INF-DEF)"
+    }
+  }
+}

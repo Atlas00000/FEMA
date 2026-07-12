@@ -1,10 +1,13 @@
 //+------------------------------------------------------------------+
-//| AiTypes.mqh — AI0 feature / event structures (logging only)      |
+//| AiTypes.mqh — AI feature / event structures (schema-versioned)   |
 //+------------------------------------------------------------------+
 #ifndef FEMA_AITYPES_MQH
 #define FEMA_AITYPES_MQH
 
 #include "../Core/Types.mqh"
+
+#define FEMA_AI_BASKETS_SCHEMA  "fema_baskets_v2"
+#define FEMA_AI_EVENTS_SCHEMA   "fema_events_v2"
 
 enum ENUM_FEMA_AI_EVENT
   {
@@ -13,7 +16,9 @@ enum ENUM_FEMA_AI_EVENT
    FEMA_AI_FILL        = 2,
    FEMA_AI_ADD         = 3,
    FEMA_AI_BASKET_OPEN = 4,
-   FEMA_AI_BASKET_CLOSE= 5
+   FEMA_AI_BASKET_CLOSE= 5,
+   FEMA_AI_ORDER_FAIL  = 6,
+   FEMA_AI_LIFECYCLE   = 7
   };
 
 struct SFemaAiFeatures
@@ -56,6 +61,15 @@ struct SFemaAiBasketTrack
    SFemaAiFeatures      open_features;
   };
 
+struct SFemaAiFingerprint
+  {
+   string               ea_build;
+   string               preset_id;
+   bool                 adx_gate;
+   double               bsl;
+   ulong                magic;
+  };
+
 string FemaAiEventToString(const ENUM_FEMA_AI_EVENT ev)
   {
    switch(ev)
@@ -66,8 +80,28 @@ string FemaAiEventToString(const ENUM_FEMA_AI_EVENT ev)
       case FEMA_AI_ADD:          return "ADD";
       case FEMA_AI_BASKET_OPEN:  return "BASKET_OPEN";
       case FEMA_AI_BASKET_CLOSE: return "BASKET_CLOSE";
+      case FEMA_AI_ORDER_FAIL:   return "ORDER_FAIL";
+      case FEMA_AI_LIFECYCLE:    return "LIFECYCLE";
      }
    return "UNKNOWN";
+  }
+
+string FemaAiRejectClass(const int retcode, const bool transient)
+  {
+   if(retcode == 0)
+      return "ok";
+   if(transient)
+      return "transient";
+   if(retcode == TRADE_RETCODE_NO_MONEY)
+      return "no_money";
+   if(retcode == TRADE_RETCODE_REJECT ||
+      retcode == TRADE_RETCODE_INVALID ||
+      retcode == TRADE_RETCODE_INVALID_VOLUME ||
+      retcode == TRADE_RETCODE_INVALID_PRICE ||
+      retcode == TRADE_RETCODE_INVALID_STOPS ||
+      retcode == TRADE_RETCODE_TRADE_DISABLED)
+      return "reject";
+   return "other";
   }
 
 void FemaAiFeaturesReset(SFemaAiFeatures &f)

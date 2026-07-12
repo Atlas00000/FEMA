@@ -1,0 +1,54 @@
+{
+  "schema": "fema_el7_dry_run_v0",
+  "computed_at": "2026-07-12T14:38:53Z",
+  "trigger": {
+    "schema": "fema_el7_trigger_v0",
+    "computed_at": "2026-07-12T14:38:53Z",
+    "ladder": "normal",
+    "health": 91.72,
+    "warning_active": false,
+    "consecutive_deteriorate": 0,
+    "open_discovery": false,
+    "reason": "none",
+    "priority": "none",
+    "pause_hint": false,
+    "note": "Human opens Discovery; this is a recommendation only."
+  },
+  "steps": [
+    {
+      "id": "EL7-002",
+      "action": "snapshot_lock_as_retired_parent",
+      "set_retired_run_id": "20260101_PRODUCTION_13c52cd9",
+      "parent_preset_id": "PRODUCTION"
+    },
+    {
+      "id": "EL7-003",
+      "action": "open_EL1_canonical_window",
+      "window": {
+        "start": "2026.01.01",
+        "end": "2026.07.31"
+      },
+      "max_candidates": 3,
+      "factory": "python -m fema_ops recommend && python -m fema_ops factory --apply --index 0"
+    },
+    {
+      "id": "EL7-004",
+      "action": "promote_via_EL2_checklist_only",
+      "gates": "AI/kb/gate_rules.json",
+      "checklist": "AI/templates/promotion_checklist.md"
+    },
+    {
+      "id": "EL7-005",
+      "action": "if_no_promote_keep_last_acceptable_lock",
+      "lock_run_id": "20260101_PRODUCTION_13c52cd9"
+    }
+  ],
+  "lineage_before": {
+    "active_run_id": "20260101_PRODUCTION_13c52cd9",
+    "retired_run_id": null,
+    "parent_preset_id": "P2A-002_BSL_25"
+  },
+  "applied": false,
+  "dry_run": true,
+  "note": "Dry-run only \u2014 lineage not mutated. Use --apply only when human opens Re-Discovery."
+}

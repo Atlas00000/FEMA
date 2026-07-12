@@ -1,0 +1,28 @@
+name: FEMA CI schema gates
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  schema-gates:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AI
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install -r ../ops/api/requirements.txt
+      - name: CI schema gates
+        run: python -m fema_ops ci-gates
+      - name: Unit tests (wave contracts)
+        run: |
+          python -m unittest discover -s tests -p "test_wave*.py" -q
+          python -m unittest discover -s tests -p "test_health_v0.py" -q

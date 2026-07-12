@@ -1,0 +1,103 @@
+{
+  "generated_at": "2026-07-12T14:38:53Z",
+  "phase": "Wave 6 park freeze (no PARK features)",
+  "open_esr": "Wave 6 park-freeze offline; after demo basket close run pipeline for on_demo_path",
+  "ea_build_target": "1.26",
+  "preset": "FEMA_EURUSD_M5_PRODUCTION",
+  "certificate": "AI/certificate_PRODUCTION_EURUSD.json",
+  "versions": {
+    "file": "AI/kb/versions.json",
+    "health_model": "health_v0",
+    "certificate": 1,
+    "gate_rules": "fema_gate_rules_v1",
+    "kb": "fema_kb_wave2",
+    "preset": "lock_20260101_PRODUCTION_13c52cd9",
+    "feature_store": "fema_market_fingerprint_v0"
+  },
+  "lineage": {
+    "file": "AI/kb/lineage.json",
+    "active_run_id": "20260101_PRODUCTION_13c52cd9",
+    "parent_preset_id": "P2A-002_BSL_25",
+    "retired_run_id": null
+  },
+  "compatibility": {
+    "signal": "compatible",
+    "score": 100.0,
+    "suggest_subsystems": [],
+    "shadow": true
+  },
+  "fingerprint": {
+    "artifact": "AI/data/live/fingerprint_latest.json",
+    "n_baskets": 100,
+    "adx_lt_30_share": 1.0
+  },
+  "health": {
+    "score": 91.72,
+    "ladder": "normal",
+    "would_pause_new": false,
+    "warning_active": false,
+    "formula": "health_v0",
+    "n_baskets": 1315,
+    "on_demo_path": false,
+    "artifact": "AI/data/live/health_latest.json"
+  },
+  "sync": {
+    "source": "demo",
+    "age_hours": 1.13,
+    "stale": false,
+    "baskets_rows": 0,
+    "baskets_bytes": 503,
+    "header_only": true,
+    "baskets_locked": false,
+    "heartbeat": "AI/data/live/sync_heartbeat.json"
+  },
+  "runs": {
+    "lock_run_id": "20260101_PRODUCTION_13c52cd9",
+    "recent": [
+      {
+        "run_id": "20260101_P2F-003_RSI_EXH_c39a9dd0",
+        "role": "reject",
+        "pf": 1.38
+      },
+      {
+        "run_id": "20260101_P2F-004_CONFIRM_b442d1cb",
+        "role": "reject",
+        "pf": 0.94
+      },
+      {
+        "run_id": "20260101_PRODUCTION_26e9ba7e",
+        "role": "reject",
+        "pf": 0.8
+      }
+    ]
+  },
+  "live": {
+    "latest_baskets_exists": true,
+    "latest_source": "synced_utc=2026-07-12T14:33:45.313366+00:00\nsource=demo\nsource_requested=demo\nbaskets_src=C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\FEMA_AI\\EURUSD_20260707_baskets.csv\nevents_src=C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\FEMA_AI\\EURUSD_20260707_events.csv\nmeta_src=C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common\\Files\\FEMA_AI\\EURUSD_20260707_run",
+    "pause_flag_live": false,
+    "observatory": "AI/data/live/observatory_daily.md"
+  },
+  "wire": {
+    "InpReadPauseNewFlag": "false (default - do not wire yet)",
+    "pause_policy": "AI/kb/pause_policy.md"
+  },
+  "governance": {
+    "raci": "AI/kb/raci.md",
+    "research_sop": "AI/kb/research_loop_sop.md",
+    "rediscovery_policy": "AI/kb/retrain_rediscovery_policy.md",
+    "genome": "AI/kb/genome_PRODUCTION.json",
+    "telemetry_checklist": "AI/kb/telemetry_checklist.md",
+    "wave6_park_freeze": "AI/kb/wave6_park_freeze.md"
+  },
+  "start_here": [
+    "edgelifecycle.md",
+    "infrascaleup.md",
+    "AI/STATUS.md",
+    "AI/kb/versions.json",
+    "AI/kb/lineage.json",
+    "AI/kb/genome_PRODUCTION.md",
+    "AI/schemas/market_fingerprint.schema.json",
+    "AI/certificate_PRODUCTION_EURUSD.json",
+    "System Profile EURUSD.md"
+  ]
+}

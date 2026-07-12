@@ -1,0 +1,63 @@
+{
+  "schema": "fema_preset_manifest_v1",
+  "parent_lock": "PRODUCTION",
+  "updated": "2026-07-11",
+  "presets": [
+    {
+      "id": "PRODUCTION",
+      "file": "PRODUCTION.set",
+      "parent": null,
+      "alias_of": null,
+      "subsystem": null,
+      "diff_summary": "Locked deploy stack: BSL 25 + ADX max 30 + basket TP 10",
+      "status": "lock",
+      "run_id": "20260101_PRODUCTION_13c52cd9",
+      "notes": "Edge Discovery row 22 / System Profile"
+    },
+    {
+      "id": "P2C-001_REG_ADX30",
+      "file": "P2C-001_REG_ADX30.set",
+      "parent": "PRODUCTION",
+      "alias_of": "PRODUCTION",
+      "subsystem": "adx",
+      "diff_summary": "Identical to PRODUCTION (naming alias)",
+      "status": "alias",
+      "run_id": "20260101_PRODUCTION_13c52cd9",
+      "notes": "Prefer PRODUCTION.set for load"
+    },
+    {
+      "id": "P2A-002_BSL_25",
+      "file": "P2A-002_BSL_25.set",
+      "parent": "PRODUCTION",
+      "alias_of": null,
+      "subsystem": "adx",
+      "diff_summary": "ADX gate off (control vs PRODUCTION)",
+      "status": "control",
+      "run_id": null,
+      "notes": "Expect PF ~1.27 on 2026 lock window"
+    },
+    {
+      "id": "P1-BASELINE",
+      "file": "P1-BASELINE.set",
+      "parent": null,
+      "alias_of": null,
+      "subsystem": null,
+      "diff_summary": "Characterisation baseline \u2014 no BSL / no ADX",
+      "status": "baseline",
+      "run_id": null,
+      "notes": "Not for deploy; new-symbol first run"
+    },
+    {
+      "id": "Candidate_X1",
+      "file": "Candidate_X1.set",
+      "parent": "PRODUCTION",
+      "alias_of": null,
+      "subsystem": "session",
+      "diff_summary": "InpUseSessionBlockNo23:false->true",
+      "status": "queued",
+      "run_id": null,
+      "notes": "INF-PRESET factory smoke \u2014 queued, not deploy",
+      "cloned_at": "2026-07-11T20:47:19Z"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema": "fema_search_map_v1",
+  "source": "edgecontainment.md section 6",
+  "rule": "Only optimize the subsystem showing drift. One subsystem per candidate clone.",
+  "may_adapt_pairs": [
+    {
+      "id": "ema",
+      "pair": ["EMA20", "EMA Trend"],
+      "keys": ["InpEmaFastPeriod", "InpEmaTrendPeriod"]
+    },
+    {
+      "id": "atr",
+      "pair": ["ATR Period", "ATR Multiplier"],
+      "keys": ["InpAtrPeriod", "InpAtrMultiplier", "InpGridRebuildAtr"]
+    },
+    {
+      "id": "grid",
+      "pair": ["Grid Spacing", "Grid Levels"],
+      "keys": ["InpGridLevels", "InpGridRebuildAtr", "InpMaxEntryDepth"]
+    },
+    {
+      "id": "basket_exit",
+      "pair": ["Basket TP", "Basket SL"],
+      "keys": [
+        "InpBasketTp",
+        "InpBasketSl",
+        "InpUseBasketSl",
+        "InpUsePerTradeSl",
+        "InpSlAtrMultiplier",
+        "InpSlUseGridStructure",
+        "InpUseExitRte",
+        "InpRteMinProfit",
+        "InpUseBasketTrail",
+        "InpBasketTrailActivatePct",
+        "InpBasketTrailGivebackPct",
+        "InpMaxBasketBars"
+      ]
+    },
+    {
+      "id": "adx",
+      "pair": ["ADX Threshold", "EMA Slope Filter"],
+      "keys": [
+        "InpUseAdxGate",
+        "InpAdxMax",
+        "InpAdxPeriod",
+        "InpUseEmaSlopeGate",
+        "InpUseEmaSepGate",
+        "InpEmaSepAtrMult"
+      ]
+    },
+    {
+      "id": "cooldown",
+      "pair": ["Cooldown", "Max Trades"],
+      "keys": [
+        "InpCooldownBars",
+        "InpCooldownBarsAfterSl",
+        "InpMaxOpenTrades"
+      ]
+    },
+    {
+      "id": "session",
+      "pair": ["Session blocks", "Session whitelist"],
+      "keys": [
+        "InpUseSessionBlockNo23",
+        "InpUseSessionBlockFriClose",
+        "InpUseSessionBlockSunOpen",
+        "InpUseSessionWhitelistLdnNy"
+      ]
+    },
+    {
+      "id": "htf",
+      "pair": ["HTF filter", "HTF EMA"],
+      "keys": [
+        "InpUseHtfFilter",
+        "InpHtfTimeframe",
+        "InpHtfEmaPeriod",
+        "InpHtfRequireSlope"
+      ]
+    },
+    {
+      "id": "regime_extra",
+      "pair": ["ATR percentile", "Breakout suspend"],
+      "keys": [
+        "InpUseAtrPercentileGate",
+        "InpAtrPercentileMax",
+        "InpAtrPercentileLookback",
+        "InpUseBreakoutSuspend",
+        "InpBreakoutAtrMult"
+      ]
+    },
+    {
+      "id": "entry_filter",
+      "pair": ["Candle confirm", "RSI exhaustion"],
+      "keys": [
+        "InpUseCandleConfirm",
+        "InpUseRsiExhaustionFilter",
+        "InpRsiPeriod",
+        "InpRsiBuyMax",
+        "InpRsiSellMin"
+      ]
+    }
+  ],
+  "frozen": [
+    "Lot sizing philosophy (InpBaseLot / InpRiskPercent framework)",
+    "Risk model",
+    "Basket management philosophy",
+    "Market-order execution",
+    "Strategy type (Pullback Continuation)",
+    "Position sizing framework",
+    "State machine",
+    "Execution architecture"
+  ],
+  "frozen_keys_do_not_clone_as_search": [
+    "InpBaseLot",
+    "InpRiskPercent",
+    "InpMagicNumber",
+    "InpTradePermission",
+    "InpManualSuspend"
+  ]
+}

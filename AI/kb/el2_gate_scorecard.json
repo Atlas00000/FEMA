@@ -1,0 +1,1045 @@
+{
+  "phase": "EL2-GATE",
+  "benchmark": {
+    "symbol": "EURUSD",
+    "timeframe": "M5",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "profit_factor": 1.36,
+    "max_dd_balance_pct": 18.0,
+    "run_id": "20260101_PRODUCTION_13c52cd9",
+    "control_run_id": "20260101_P2A-002_BSL_25_5ea7b09b"
+  },
+  "summary": {
+    "lock": 1,
+    "candidate": 6,
+    "reject": 26,
+    "control": 1,
+    "g1_pass": 1,
+    "stale_demoted": 2
+  },
+  "rows": [
+    {
+      "row": 1,
+      "preset": "P1-BASELINE",
+      "run_id": "20260101_P1-BASELINE_4a41623a",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.17,
+          "dd": 66.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 2,
+      "preset": "P2A-001_PSL_ATR15_RAW",
+      "run_id": "20260101_P2A-001_PSL_ATR15_RAW_f67b382d",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 0.0,
+          "dd": 5.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "pf_breach",
+        "notes": "g1_fail:pf_breach"
+      }
+    },
+    {
+      "row": 3,
+      "preset": "P2A-001_PSL_ATR20",
+      "run_id": "20260101_P2A-001_PSL_ATR20_f49d3773",
+      "status": "candidate",
+      "failure_reason": "dd_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.91,
+          "dd": 22.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 4,
+      "preset": "P2A-001_PSL_ATR15",
+      "run_id": "20260101_P2A-001_PSL_ATR15_7fab2c11",
+      "status": "candidate",
+      "failure_reason": "dd_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.02,
+          "dd": 26.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 5,
+      "preset": "P2A-002_BSL_15",
+      "run_id": "20260101_P2A-002_BSL_15_0709f094",
+      "status": "candidate",
+      "failure_reason": "dd_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.06,
+          "dd": 43.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 6,
+      "preset": "P2A-002_BSL_25",
+      "run_id": "20260101_P2A-002_BSL_25_5ea7b09b",
+      "status": "candidate",
+      "failure_reason": "pf_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 1.15,
+          "dd": 18.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "pf_breach",
+        "notes": "g1_fail:pf_breach"
+      }
+    },
+    {
+      "row": 7,
+      "preset": "P2A-003_TIME_48B",
+      "run_id": "20260101_P2A-003_TIME_48B_b4afaa4d",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.17,
+          "dd": 66.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 8,
+      "preset": "P2A-003_TIME_96B",
+      "run_id": "20260101_P2A-003_TIME_96B_713527f9",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.17,
+          "dd": 66.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 9,
+      "preset": "P2A-004_DEPTH_L3",
+      "run_id": "20260101_P2A-004_DEPTH_L3_d8a6bb39",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.17,
+          "dd": 66.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 10,
+      "preset": "P2A-005_CD_10B",
+      "run_id": "20260101_P2A-005_CD_10B_024b081c",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.0,
+          "dd": 32.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 11,
+      "preset": "P2A-ALL_FULL",
+      "run_id": "20260101_P2A-ALL_FULL_d5d5e42a",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.0,
+          "dd": 28.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 12,
+      "preset": "P2B-001_HTF_H1",
+      "run_id": "20260101_P2B-001_HTF_H1_3caf8cef",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.85,
+          "dd": 57.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 13,
+      "preset": "P2B-002_HTF_H4",
+      "run_id": "20260101_P2B-002_HTF_H4_7735d085",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.79,
+          "dd": 61.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 14,
+      "preset": "P2B-003_HTF_SLOPE",
+      "run_id": "20260101_P2B-003_HTF_SLOPE_cb5bbe01",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.85,
+          "dd": 57.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 15,
+      "preset": "P2C-001_REG_ADX25",
+      "run_id": "20260101_P2C-001_REG_ADX25_b66afbf5",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.8,
+          "dd": 53.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 16,
+      "preset": "P2C-001_REG_ADX30",
+      "run_id": "20250101_P2C-001_REG_ADX30_1429db68",
+      "status": "reject",
+      "failure_reason": "other",
+      "decision": "demote_stale_slice",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": true,
+        "checks": {
+          "same_window": false,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.0,
+          "dd": 33.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "other",
+        "notes": "stale_slice_demote"
+      }
+    },
+    {
+      "row": 17,
+      "preset": "P2C-002_REG_ATRP70",
+      "run_id": "20250101_P2C-002_REG_ATRP70_735ce60b",
+      "status": "reject",
+      "failure_reason": "other",
+      "decision": "demote_stale_slice",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": true,
+        "checks": {
+          "same_window": false,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 1.34,
+          "dd": 18.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "other",
+        "notes": "stale_slice_demote"
+      }
+    },
+    {
+      "row": 18,
+      "preset": "P2C-003_REG_EMASEP_3ATR",
+      "run_id": "20260101_P2C-003_REG_EMASEP_3ATR_4e1134cf",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.95,
+          "dd": 33.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 19,
+      "preset": "P2C-004_REG_SLOPE",
+      "run_id": "20260101_P2C-004_REG_SLOPE_90dda6c1",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 1.15,
+          "dd": 8.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "pf_breach",
+        "notes": "g1_fail:pf_breach"
+      }
+    },
+    {
+      "row": 20,
+      "preset": "P2C-005_BRK_SUSPEND",
+      "run_id": "20260101_P2C-005_BRK_SUSPEND_44bdc4f9",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 1.1,
+          "dd": 17.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "pf_breach",
+        "notes": "g1_fail:pf_breach"
+      }
+    },
+    {
+      "row": 21,
+      "preset": "P2C002_ATRP70",
+      "run_id": "20260101_P2C002_ATRP70_b5bac7a9",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.94,
+          "dd": 32.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 22,
+      "preset": "PRODUCTION",
+      "run_id": "20260101_PRODUCTION_13c52cd9",
+      "status": "lock",
+      "failure_reason": "",
+      "decision": "promote_locked",
+      "g1": {
+        "gate": "G1",
+        "pass": true,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": true
+        },
+        "candidate": {
+          "pf": 1.36,
+          "dd": 18.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "",
+        "notes": "g1_pass"
+      }
+    },
+    {
+      "row": 23,
+      "preset": "P2D-001_SES_NO23",
+      "run_id": "20260101_P2D-001_SES_NO23_6f2c2b65",
+      "status": "candidate",
+      "failure_reason": "dd_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.4,
+          "dd": 19.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 24,
+      "preset": "P2D-002_SES_NOFRI",
+      "run_id": "20260101_P2D-002_SES_NOFRI_26e08aa5",
+      "status": "candidate",
+      "failure_reason": "dd_breach",
+      "decision": "alternate_g1_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.38,
+          "dd": 18.14,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 25,
+      "preset": "P2D-003_SES_NOSUN",
+      "run_id": "20260101_P2D-003_SES_NOSUN_c4677299",
+      "status": "reject",
+      "failure_reason": "other",
+      "decision": "inert_or_control",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.38,
+          "dd": 18.14,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 26,
+      "preset": "P2D-004_SES_LDN_NY",
+      "run_id": "20260101_P2D-004_SES_LDN_NY_02e60884",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.05,
+          "dd": 38.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 27,
+      "preset": "P2E-001_EXIT_RTE",
+      "run_id": "20260101_P2E-001_EXIT_RTE_e2338ab2",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.54,
+          "dd": 31.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 28,
+      "preset": "P2E-003_TRAIL_50",
+      "run_id": "20260101_P2E-003_TRAIL_50_02617cf4",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.1,
+          "dd": 19.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 29,
+      "preset": "P2F-001_GRID_ATR15",
+      "run_id": "20260101_P2F-001_GRID_ATR15_ccab473e",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.08,
+          "dd": 28.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 30,
+      "preset": "P2F-001_GRID_ATR20",
+      "run_id": "20260101_P2F-001_GRID_ATR20_d7e81c54",
+      "status": "reject",
+      "failure_reason": "regime",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.93,
+          "dd": 34.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 31,
+      "preset": "P2F-002_1PERLEVEL",
+      "run_id": "20260101_P2F-002_1PERLEVEL_709bc61b",
+      "status": "control",
+      "failure_reason": "",
+      "decision": "inert_or_control",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.38,
+          "dd": 18.14,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 32,
+      "preset": "P2F-003_RSI_EXH",
+      "run_id": "20260101_P2F-003_RSI_EXH_c39a9dd0",
+      "status": "reject",
+      "failure_reason": "other",
+      "decision": "inert_or_control",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": true,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 1.38,
+          "dd": 18.17,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 33,
+      "preset": "P2F-004_CONFIRM",
+      "run_id": "20260101_P2F-004_CONFIRM_b442d1cb",
+      "status": "reject",
+      "failure_reason": "dd_breach",
+      "decision": "reject",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": true,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.94,
+          "dd": 46.0,
+          "symbol": "EURUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "dd_breach",
+        "notes": "g1_fail:dd_breach"
+      }
+    },
+    {
+      "row": 34,
+      "preset": "PRODUCTION",
+      "run_id": "20260101_PRODUCTION_26e9ba7e",
+      "status": "reject",
+      "failure_reason": "other",
+      "decision": "g3_fail",
+      "g1": {
+        "gate": "G1",
+        "pass": false,
+        "stale_slice": false,
+        "checks": {
+          "same_window": true,
+          "same_symbol": false,
+          "pf_ge_production": false,
+          "dd_le_production": false
+        },
+        "candidate": {
+          "pf": 0.8,
+          "dd": 65.0,
+          "symbol": "GBPUSD"
+        },
+        "benchmark": {
+          "pf": 1.36,
+          "dd": 18.0
+        },
+        "failure_reason": "other",
+        "notes": "g1_fail:other"
+      }
+    }
+  ]
+}

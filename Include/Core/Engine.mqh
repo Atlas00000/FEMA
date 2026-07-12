@@ -71,6 +71,7 @@ private:
    CFemaExecution        m_execution;
    CFemaAiEventLog       m_ai_log;
    int                   m_prev_position_count;
+   bool                  m_pause_new_active;
 
    void              WireLoggers()
      {
@@ -86,6 +87,112 @@ private:
       m_basket.SetLogger(m_logger);
       m_exit.SetLogger(m_logger);
       m_ai_log.SetLogger(m_logger);
+     }
+
+   string            JsonEsc(const string s) const
+     {
+      string out = s;
+      StringReplace(out, "\\", "\\\\");
+      StringReplace(out, "\"", "\\\"");
+      return out;
+     }
+
+   string            BuildRunConfigJson() const
+     {
+      // INF-EA-001: edge-defining Inp* snapshot (certificate fingerprint family).
+      string j = "{";
+      j += "\"ea_build\":\"" + JsonEsc(FEMA_VERSION) + "\",";
+      j += "\"preset_id\":\"PRODUCTION\",";
+      j += "\"symbol\":\"" + JsonEsc(_Symbol) + "\",";
+      j += "\"timeframe\":\"" + EnumToString(_Period) + "\",";
+      j += "\"run_id\":\"" + JsonEsc(m_ai_log.RunId()) + "\",";
+      j += "\"InpEmaFastPeriod\":" + IntegerToString(InpEmaFastPeriod) + ",";
+      j += "\"InpEmaTrendPeriod\":" + IntegerToString(InpEmaTrendPeriod) + ",";
+      j += "\"InpAtrPeriod\":" + IntegerToString(InpAtrPeriod) + ",";
+      j += "\"InpAtrMultiplier\":" + DoubleToString(InpAtrMultiplier, 4) + ",";
+      j += "\"InpGridLevels\":" + IntegerToString(InpGridLevels) + ",";
+      j += "\"InpGridRebuildAtr\":" + DoubleToString(InpGridRebuildAtr, 4) + ",";
+      j += "\"InpBasketTp\":" + DoubleToString(InpBasketTp, 2) + ",";
+      j += "\"InpUseBasketSl\":" + (InpUseBasketSl ? "true" : "false") + ",";
+      j += "\"InpBasketSl\":" + DoubleToString(InpBasketSl, 2) + ",";
+      j += "\"InpMaxEntryDepth\":" + IntegerToString(InpMaxEntryDepth) + ",";
+      j += "\"InpUseAdxGate\":" + (InpUseAdxGate ? "true" : "false") + ",";
+      j += "\"InpAdxMax\":" + DoubleToString(InpAdxMax, 1) + ",";
+      j += "\"InpAdxPeriod\":" + IntegerToString(InpAdxPeriod) + ",";
+      j += "\"InpUseHtfFilter\":" + (InpUseHtfFilter ? "true" : "false") + ",";
+      j += "\"InpUseAtrPercentileGate\":" + (InpUseAtrPercentileGate ? "true" : "false") + ",";
+      j += "\"InpUseSessionBlockNo23\":" + (InpUseSessionBlockNo23 ? "true" : "false") + ",";
+      j += "\"InpUseSessionBlockFriClose\":" + (InpUseSessionBlockFriClose ? "true" : "false") + ",";
+      j += "\"InpUseSessionBlockSunOpen\":" + (InpUseSessionBlockSunOpen ? "true" : "false") + ",";
+      j += "\"InpUseSessionWhitelistLdnNy\":" + (InpUseSessionWhitelistLdnNy ? "true" : "false") + ",";
+      j += "\"InpBaseLot\":" + DoubleToString(InpBaseLot, 2) + ",";
+      j += "\"InpMagicNumber\":" + IntegerToString((long)InpMagicNumber) + ",";
+      j += "\"InpReadPauseNewFlag\":" + (InpReadPauseNewFlag ? "true" : "false") + ",";
+      j += "\"InpUseAiEventLog\":" + (InpUseAiEventLog ? "true" : "false");
+      j += "}\r\n";
+      return j;
+     }
+
+   bool              ParsePauseFlagBody(const string body) const
+     {
+      // Accept: "1", "true", "pause_new=1", JSON-ish "pause_new": true
+      string t = body;
+      StringTrimLeft(t);
+      StringTrimRight(t);
+      StringToLower(t);
+      if(t == "1" || t == "true" || t == "yes" || t == "pause")
+         return true;
+      if(StringFind(t, "pause_new=1") >= 0 || StringFind(t, "pause_new=true") >= 0)
+         return true;
+      if(StringFind(t, "\"pause_new\": true") >= 0 || StringFind(t, "\"pause_new\":true") >= 0)
+         return true;
+      if(StringFind(t, "pause_new=0") >= 0 || StringFind(t, "pause_new=false") >= 0)
+         return false;
+      return false;
+     }
+
+   bool              ReadPauseFlagFile(const int common_flag) const
+     {
+      const string path = InpPauseNewFlagFile;
+      if(!FileIsExist(path, common_flag))
+         return false;
+      const int h = FileOpen(path, FILE_READ|FILE_TXT|FILE_ANSI|common_flag);
+      if(h == INVALID_HANDLE)
+         return false;
+      string body = "";
+      while(!FileIsEnding(h))
+         body += FileReadString(h);
+      FileClose(h);
+      return ParsePauseFlagBody(body);
+     }
+
+   void              RefreshPauseNewFlag()
+     {
+      if(!InpReadPauseNewFlag)
+        {
+         if(m_pause_new_active)
+           {
+            m_pause_new_active = false;
+            m_ai_log.LogLifecycle("RESUME", "PAUSE_FLAG_DISABLED");
+            m_logger.LogInfo("Pause-new wire disabled — new baskets allowed");
+           }
+         return;
+        }
+
+      const bool want = ReadPauseFlagFile(FILE_COMMON) || ReadPauseFlagFile(0);
+      if(want == m_pause_new_active)
+         return;
+      m_pause_new_active = want;
+      if(want)
+        {
+         m_ai_log.LogLifecycle("PAUSE_NEW", "FLAG_FILE");
+         m_logger.LogWarn("EL6 pause-new ACTIVE (flag file) — no new baskets; manage open only");
+        }
+      else
+        {
+         m_ai_log.LogLifecycle("RESUME", "PAUSE_FLAG_CLEARED");
+         m_logger.LogInfo("EL6 pause-new cleared — new baskets allowed");
+        }
      }
 
    void              SyncBasketIfFlat(const bool apply_sl_cooldown = false)
@@ -132,6 +239,7 @@ private:
          if(FemaMarketTradeable(_Symbol))
            {
             m_logger.LogInfo("Auto-resume from SUSPENDED (market tradeable again)");
+            m_ai_log.LogLifecycle("RESUME", "MARKET_TRADEABLE");
             m_state.SetReady();
            }
          else
@@ -236,6 +344,14 @@ private:
       // Regime gates filter new basket opens only — grid add-ons must complete.
       if(is_new_basket)
         {
+         if(m_pause_new_active)
+           {
+            m_ai_log.LogSkip(features, "pause_new_flag");
+            if(m_logger.IsDetailed())
+               m_logger.LogInfo("Entry blocked: pause_new_flag");
+            return;
+           }
+
          string regime_reason = "";
          if(!m_regime.AllowsDirection(signal.direction, m_indicators, regime_reason))
            {
@@ -339,7 +455,7 @@ private:
         }
       else
         {
-         m_ai_log.LogSkip(features, "order_fail_" + IntegerToString(retcode));
+         m_ai_log.LogOrderFail(features, retcode, FemaIsTransientOrderFail(retcode), comment);
          m_logger.LogOrderResult(m_basket.BasketId(),
                                  signal.direction,
                                  signal.level_index,
@@ -350,7 +466,11 @@ private:
                                  comment);
          // Do not count market-closed / transient rejects toward permanent SUSPEND.
          if(!FemaIsTransientOrderFail(retcode))
+           {
             m_state.RegisterExecutionFailure(FEMA_EXECUTION_FAILURE_LIMIT);
+            if(m_state.GetState() == FEMA_STATE_SUSPENDED)
+               m_ai_log.LogLifecycle("SUSPEND", "EXEC_FAIL_LIMIT;retcode=" + IntegerToString(retcode));
+           }
          else
             m_logger.LogInfo("Transient order fail retcode=" + IntegerToString(retcode) +
                              " — not counted toward SUSPEND");
@@ -358,7 +478,7 @@ private:
      }
 
 public:
-                     CFemaEngine() : m_prev_position_count(0) {}
+                     CFemaEngine() : m_prev_position_count(0), m_pause_new_active(false) {}
 
    int               OnInit()
      {
@@ -430,8 +550,15 @@ public:
       m_exit.Init(InpBasketTp, InpUseBasketSl, InpBasketSl, InpMaxBasketBars,
                   InpUseExitRte, InpRteMinProfit,
                   InpUseBasketTrail, InpBasketTrailActivatePct, InpBasketTrailGivebackPct);
-      if(!m_ai_log.Init(InpUseAiEventLog, symbol, InpMagicNumber))
-         m_logger.LogWarn("AI0 event log failed to open — continuing without AI CSV");
+      if(!m_ai_log.Init(InpUseAiEventLog, symbol, InpMagicNumber,
+                         FEMA_VERSION, "PRODUCTION", InpUseAdxGate, InpBasketSl))
+         m_logger.LogWarn("AI event log failed to open — continuing without AI CSV");
+      else
+         m_ai_log.WriteRunConfigJson(BuildRunConfigJson());
+
+      m_pause_new_active = false;
+      RefreshPauseNewFlag();
+
       if(!m_regime.Update(m_indicators))
         {
          m_logger.LogWarn("Regime filter update failed on init");
@@ -460,7 +587,9 @@ public:
                        " ses=" + m_session.ActiveSummary() +
                        " exit=" + m_exit.ActiveSummary() +
                        " entry=" + entry_summary +
-                       " ai0=" + (InpUseAiEventLog ? "on" : "off") +
+                       " ai_log=" + (InpUseAiEventLog ? "on" : "off") +
+                       (InpUseAiEventLog ? (" run_id=" + m_ai_log.RunId()) : "") +
+                       " pause_flag=" + (InpReadPauseNewFlag ? (m_pause_new_active ? "ON" : "armed") : "off") +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),
                              m_indicators.EmaFast(),
@@ -487,6 +616,7 @@ public:
 
       if(m_helpers.IsNewBar())
         {
+         RefreshPauseNewFlag();
          if(!m_indicators.Update())
            {
             m_logger.LogWarn("Indicator update failed on new bar");

@@ -11,6 +11,10 @@
 
 **Critical:** `InpUseAdxGate=true` · `InpAdxMax=30` — without this you get BSL_25 bare (PF 1.27, +$176).
 
+**Run registry (INF-RUN):** cite `run_id` when a row is materially updated — format + CLI in [`AI/kb/runs/README.md`](AI/kb/runs/README.md).  
+**PRODUCTION lock baskets:** `run_id=20260101_PRODUCTION_13c52cd9` · collect 2020–2025: `run_id=20200101_PRODUCTION_abfae89a`  
+**EL0 baseline inventory:** [`AI/kb/el0_baseline_inventory.md`](AI/kb/el0_baseline_inventory.md) — started from `P1-BASELINE` → `PRODUCTION`
+
 ---
 
 ## Edge Model (validated by BSL_25)
@@ -48,6 +52,7 @@
 | **Trades** | **424** |
 | **Sharpe** | **1.90** |
 | **Journal check** | `InpUseAdxGate=true` · `adx_gate=on` · `bsl=25` |
+| **run_id** (basket AI0) | `20260101_PRODUCTION_13c52cd9` → [`AI/kb/runs/`](AI/kb/runs/) |
 
 **Do not deploy without ADX gate** — bare BSL_25 gives PF 1.27 (+$176). P2D builds on this preset.
 
@@ -154,45 +159,44 @@ Completed (P2B):
 ## Backtest Results Log
 
 Fill in as reports are uploaded. Keep date range consistent across rows.
+**EL1 run_id backfill:** documented ids in [`AI/kb/discovery_run_ids.json`](AI/kb/discovery_run_ids.json) / [`AI/kb/runs/`](AI/kb/runs/). Row 22 = live AI0 baskets.
 
-
-| #   | Preset                    | Task ID | Status            | PF       | Net P/L  | Max DD %     | Win %   | Avg W | Avg L  | Largest L | Trades | Notes                                              |
-| --- | ------------------------- | ------- | ----------------- | -------- | -------- | ------------ | ------- | ----- | ------ | --------- | ------ | -------------------------------------------------- |
-| 1   | `P1-BASELINE`             | P1      | ❌ Rejected        | 0.17     | −245     | 66%          | 83%     | +2.01 | −59.10 | −59.38    | 30     | No SL                                              |
-| 2   | `P2A-001_PSL_ATR15_RAW`   | P2A-001 | ❌ Rejected        | 0.00     | −20      | 5%           | 0%      | —     | −0.34  | −0.66     | 59     | Fixed ATR SL too tight                             |
-| 3   | `P2A-001_PSL_ATR20`       | P2A-001 | ⭐ Alternate       | 0.91     | −56      | 22%          | 21%     | +2.28 | −0.66  | −4.67     | 1229   | Strong R:R; unprofitable Jan–Feb                   |
-| 4   | `P2A-001_PSL_ATR15`       | P2A-001 | ⭐ Alternate       | 1.02     | +39      | 26%          | 42%     | +2.25 | −1.60  | −6.10     | 1819   | Prev. candidate; structure SL                      |
-| 5   | `P2A-002_BSL_15`          | P2A-002 | ⭐ Alternate       | 1.06     | +87      | 43%          | 61%     | +2.16 | −3.14  | −9.39     | 1166   | Basket SL $15; DD fails G1                         |
-| 6   | `P2A-002_BSL_25`          | P2A-002 | ⭐ Prev. candidate | 1.15     | +165     | 18%          | 73%     | +2.15 | −4.98  | −7.01     | 831    | Superseded by ATRP70                               |
-| 7   | `P2A-003_TIME_48B`        | P2A-003 | ❌ Rejected        | 0.17     | −245     | 66%          | 83%     | +2.01 | −59.10 | −59.38    | 30     | **Same as P1** — time exit alone; check date range |
-| 8   | `P2A-003_TIME_96B`        | P2A-003 | ❌ Rejected        | 0.17     | −245     | 66%          | 83%     | +2.01 | −59.10 | −59.38    | 30     | **Identical to 48B/P1** — time exit not firing     |
-| 9   | `P2A-004_DEPTH_L3`        | P2A-004 | ❌ Rejected        | 0.17     | −245     | 66%          | 83%     | +2.01 | −59.10 | −59.38    | 30     | Depth L3 only; **same as P1** — no exit layer      |
-| 10  | `P2A-005_CD_10B`          | P2A-005 | ❌ Rejected        | 1.00     | −7       | 32%          | 66%     | +2.13 | −4.07  | −8.09     | 1019   | BSL $20 + 10b SL cooldown; Jan–Jul                 |
-| 11  | `P2A-ALL_FULL`            | P2A-ALL | ❌ Rejected        | 1.00     | +6       | 28%          | 42%     | +2.23 | −1.61  | −5.98     | 1882   | Full stack worse than candidate                    |
-| 12  | `P2B-001_HTF_H1`          | P2B-001 | ❌ Rejected        | 0.85     | −171     | 57%          | 67%     | +2.26 | −5.35  | −24.25    | 662    | H1 EMA200 + BSL_25; **worse than candidate**       |
-| 13  | `P2B-002_HTF_H4`          | P2B-002 | ❌ Rejected        | 0.79     | −166     | 61%          | 64%     | +2.26 | −5.09  | −11.64    | 427    | H4 EMA200 + BSL_25; **worse than H1**              |
-| 14  | `P2B-003_HTF_SLOPE`       | P2B-003 | ❌ Rejected        | 0.85     | −171     | 57%          | 67%     | +2.26 | −5.35  | −24.25    | 662    | **Identical to H1** — slope inert on EMA200        |
-| 15  | `P2C-001_REG_ADX25`       | P2C-001 | ❌ Rejected        | 0.80     | −162     | 53%          | 63%     | +3.53 | −7.45  | —         | 287    | ADX>25; −65% trades, worse PF/DD                   |
-| 16  | `P2C-001_REG_ADX30`       | P2C-001 | 📁 2025 only       | 1.00     | +3       | 33%          | 70%     | +2.59 | −6.12  | −25.18    | 505    | 2025 slice — superseded by row 22                    |
-| 17  | `P2C-002_REG_ATRP70`      | P2C-002 | 📁 2025 only       | 1.34     | +181     | 18%          | 73%     | +2.79 | −5.65  | −17.17    | 349    | 2025 slice — **fails 2026** (see row 21)           |
-| 18  | `P2C-003_REG_EMASEP_3ATR` | P2C-003 | ❌ Rejected        | 0.95     | −61      | 33%          | 69%     | +2.27 | −5.24  | −23.85    | 715    | EMA sep >3×ATR; worse than ATRP70                  |
-| 19  | `P2C-004_REG_SLOPE`       | P2C-004 | ❌ Rejected        | 1.15     | +28      | 8%           | 68%     | +5.73 | −10.85 | −23.78    | 57     | EMA20 slope; **57 trades** — check date range      |
-| 20  | `P2C-005_BRK_SUSPEND`     | P2C-005 | ❌ Rejected        | 1.10     | +112     | 17% / 21% eq | 72%     | +2.22 | −5.24  | −27.04    | 753    | Breakout >3×ATR; PF fails vs ATRP70                |
-| 21  | `P2C002_ATRP70`           | P2C-002 | ❌ Rejected 2026   | 0.94     | −38      | ~32% / ~35% eq | 65%     | —     | —      | —         | 376    | 2026 — ATR gate hurts edge vs BSL_25                 |
-| 22  | `PRODUCTION` / `P2C-001_REG_ADX30` | PRODUCTION | 🏆 **Candidate**   | **1.36** | **+221** | **18% / 21% eq** | **71%** | +2.77 | −5.04  | −8.65     | 424    | **2026 canonical** — PF ~1.3 target met              |
-| 23  | `P2D-001_SES_NO23`        | P2D-001 | ⭐ **Alternate**   | **1.40** | **+237** | 19% / 22% eq | 72%     | +2.78 | −5.01  | −11.02    | 416    | Block h22-0; −8 trades; **G1 fail** (DD +1%) — filter works |
-| 24  | `P2D-002_SES_NOFRI`       | P2D-002 | ⭐ **Alternate**   | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | No new baskets Fri ≥20:00; **G1 fail** (DD +0.1%) — marginal |
-| 25  | `P2D-003_SES_NOSUN`       | P2D-003 | ❌ **Inert**       | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | Block Sun h0–1; **≈ identical to row 24** — filter works, no edge |
-| 26  | `P2D-004_SES_LDN_NY`      | P2D-004 | ❌ **Rejected**    | 1.05     | +27      | 38% / 41% eq | 63%     | +3.14 | −5.03  | −15.98    | 287    | Whitelist 08–12, 13–17; −137 trades; Asia edge lost |
-| 27  | `P2E-001_EXIT_RTE`        | P2E-001 | ❌ **Rejected**    | 0.54     | −107     | 31% / 32% eq | 75%     | +0.32 | −1.80  | −12.61    | 522    | RTE scalp; avg win 5× smaller than loss; **Jan–Feb only** ⚠️ |
-| 28  | `P2E-003_TRAIL_50`        | P2E-003 | ❌ **Rejected**    | 1.10     | +64      | 19% / 20% eq | 74%     | +1.68 | −4.42  | −8.83     | 589    | Trail cuts winners; +165 trades vs PRODUCTION; **G1 fail** |
-| 29  | `P2F-001_GRID_ATR15`      | P2F-001 | ❌ **Rejected**    | 1.08     | +40      | 28% / 29% eq | 66%     | +3.07 | −5.37  | −12.84    | 258    | ATR mult 1.5; −166 trades; deeper pullbacks miss edge |
-| 30  | `P2F-001_GRID_ATR20`      | P2F-001 | ❌ **Rejected**    | 0.93     | −35      | 34% / 36% eq | 60%     | +3.09 | −4.99  | −13.15    | 253    | ATR mult 2.0; worse than ATR15; long WR 49% — grid closed |
-| 31  | `P2F-002_1PERLEVEL`       | P2F-002 | ✅ **Control**     | **1.38** | **+229** | 18.14% / 21.19% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | No input change; ≈ PRODUCTION — 1-per-level verified |
-| 32  | `P2F-003_RSI_EXH`         | P2F-003 | ❌ **Inert**       | **1.38** | **+229** | 18.17% / 21.22% eq | 71% | +2.76 | −4.99  | −8.65     | 426    | RSI block >70/<30; **≈ identical to row 31** — filter inert |
-| 33  | `P2F-004_CONFIRM`         | P2F-004 | ❌ **Rejected**    | 0.94     | −40      | 46% / 51% eq | 63%     | +2.70 | −4.93  | −15.63    | 350    | Candle confirm; long WR 49%; −74 trades; delays good entries |
-| 34  | `PRODUCTION` **GBPUSD**   | G3      | ❌ **G3 fail**     | 0.80     | −172     | 65% eq       | 59%     | +3.08 | −5.41  | —         | 393    | Same preset EURUSD; long WR 48%; **edge EURUSD-specific** |
-
+| # | Preset | Task ID | run_id | Status | PF | Net | DD% | WR% | Trades | Notes |
+| - | ------ | ------- | ------ | ------ | -- | --- | --- | --- | ------ | ----- |
+| 1 | `P1-BASELINE` | P1 | `20260101_P1-BASELINE_4a41623a` | Rejected | 0.17 | -245 | 66 | 83 | 30 | No SL steamroller |
+| 2 | `P2A-001_PSL_ATR15_RAW` | P2A-001 | `20260101_P2A-001_PSL_ATR15_RAW_f67b382d` | Rejected | 0.0 | -20 | 5 | 0 | 59 | Fixed ATR SL too tight |
+| 3 | `P2A-001_PSL_ATR20` | P2A-001 | `20260101_P2A-001_PSL_ATR20_f49d3773` | Alternate | 0.91 | -56 | 22 | 21 | 1229 | Strong R:R; unprofitable Jan-Feb |
+| 4 | `P2A-001_PSL_ATR15` | P2A-001 | `20260101_P2A-001_PSL_ATR15_7fab2c11` | Alternate | 1.02 | 39 | 26 | 42 | 1819 | Prev candidate; structure SL |
+| 5 | `P2A-002_BSL_15` | P2A-002 | `20260101_P2A-002_BSL_15_0709f094` | Alternate | 1.06 | 87 | 43 | 61 | 1166 | BSL15; DD fails G1 |
+| 6 | `P2A-002_BSL_25` | P2A-002 | `20260101_P2A-002_BSL_25_5ea7b09b` | Prev candidate | 1.15 | 165 | 18 | 73 | 831 | Superseded by ATRP70 then PRODUCTION |
+| 7 | `P2A-003_TIME_48B` | P2A-003 | `20260101_P2A-003_TIME_48B_b4afaa4d` | Rejected | 0.17 | -245 | 66 | 83 | 30 | Same as P1 |
+| 8 | `P2A-003_TIME_96B` | P2A-003 | `20260101_P2A-003_TIME_96B_713527f9` | Rejected | 0.17 | -245 | 66 | 83 | 30 | Identical to 48B/P1 |
+| 9 | `P2A-004_DEPTH_L3` | P2A-004 | `20260101_P2A-004_DEPTH_L3_d8a6bb39` | Rejected | 0.17 | -245 | 66 | 83 | 30 | Same as P1 - no exit |
+| 10 | `P2A-005_CD_10B` | P2A-005 | `20260101_P2A-005_CD_10B_024b081c` | Rejected | 1.0 | -7 | 32 | 66 | 1019 | BSL20 + 10b cooldown |
+| 11 | `P2A-ALL_FULL` | P2A-ALL | `20260101_P2A-ALL_FULL_d5d5e42a` | Rejected | 1.0 | 6 | 28 | 42 | 1882 | Full stack worse than candidate |
+| 12 | `P2B-001_HTF_H1` | P2B-001 | `20260101_P2B-001_HTF_H1_3caf8cef` | Rejected | 0.85 | -171 | 57 | 67 | 662 | H1 EMA200 + BSL25 |
+| 13 | `P2B-002_HTF_H4` | P2B-002 | `20260101_P2B-002_HTF_H4_7735d085` | Rejected | 0.79 | -166 | 61 | 64 | 427 | H4 EMA200 + BSL25 |
+| 14 | `P2B-003_HTF_SLOPE` | P2B-003 | `20260101_P2B-003_HTF_SLOPE_cb5bbe01` | Rejected | 0.85 | -171 | 57 | 67 | 662 | Identical to H1 |
+| 15 | `P2C-001_REG_ADX25` | P2C-001 | `20260101_P2C-001_REG_ADX25_b66afbf5` | Rejected | 0.8 | -162 | 53 | 63 | 287 | ADX>25 |
+| 16 | `P2C-001_REG_ADX30` | P2C-001 | `20250101_P2C-001_REG_ADX30_1429db68` | 2025 only | 1.0 | 3 | 33 | 70 | 505 | 2025 slice superseded by row 22 |
+| 17 | `P2C-002_REG_ATRP70` | P2C-002 | `20250101_P2C-002_REG_ATRP70_735ce60b` | 2025 only | 1.34 | 181 | 18 | 73 | 349 | 2025 slice; fails 2026 row 21 |
+| 18 | `P2C-003_REG_EMASEP_3ATR` | P2C-003 | `20260101_P2C-003_REG_EMASEP_3ATR_4e1134cf` | Rejected | 0.95 | -61 | 33 | 69 | 715 | EMA sep >3xATR |
+| 19 | `P2C-004_REG_SLOPE` | P2C-004 | `20260101_P2C-004_REG_SLOPE_90dda6c1` | Rejected | 1.15 | 28 | 8 | 68 | 57 | 57 trades - check range |
+| 20 | `P2C-005_BRK_SUSPEND` | P2C-005 | `20260101_P2C-005_BRK_SUSPEND_44bdc4f9` | Rejected | 1.1 | 112 | 17 | 72 | 753 | Breakout suspend |
+| 21 | `P2C002_ATRP70` | P2C-002 | `20260101_P2C002_ATRP70_b5bac7a9` | Rejected 2026 | 0.94 | -38 | 32 | 65 | 376 | ATR gate hurts vs BSL25 |
+| 22 | `PRODUCTION` | PRODUCTION | `20260101_PRODUCTION_13c52cd9` | Candidate | 1.36 | 221 | 18 | 71 | 424 | 2026 canonical lock |
+| 23 | `P2D-001_SES_NO23` | P2D-001 | `20260101_P2D-001_SES_NO23_6f2c2b65` | Alternate | 1.4 | 237 | 19 | 72 | 416 | G1 fail DD+1% |
+| 24 | `P2D-002_SES_NOFRI` | P2D-002 | `20260101_P2D-002_SES_NOFRI_26e08aa5` | Alternate | 1.38 | 229 | 18.14 | 71 | 426 | G1 fail DD+0.1% |
+| 25 | `P2D-003_SES_NOSUN` | P2D-003 | `20260101_P2D-003_SES_NOSUN_c4677299` | Inert | 1.38 | 229 | 18.14 | 71 | 426 | Identical to row 24 |
+| 26 | `P2D-004_SES_LDN_NY` | P2D-004 | `20260101_P2D-004_SES_LDN_NY_02e60884` | Rejected | 1.05 | 27 | 38 | 63 | 287 | Whitelist cuts Asia |
+| 27 | `P2E-001_EXIT_RTE` | P2E-001 | `20260101_P2E-001_EXIT_RTE_e2338ab2` | Rejected | 0.54 | -107 | 31 | 75 | 522 | RTE scalp |
+| 28 | `P2E-003_TRAIL_50` | P2E-003 | `20260101_P2E-003_TRAIL_50_02617cf4` | Rejected | 1.1 | 64 | 19 | 74 | 589 | Trail G1 fail |
+| 29 | `P2F-001_GRID_ATR15` | P2F-001 | `20260101_P2F-001_GRID_ATR15_ccab473e` | Rejected | 1.08 | 40 | 28 | 66 | 258 | Wider grid |
+| 30 | `P2F-001_GRID_ATR20` | P2F-001 | `20260101_P2F-001_GRID_ATR20_d7e81c54` | Rejected | 0.93 | -35 | 34 | 60 | 253 | ATR mult 2.0 |
+| 31 | `P2F-002_1PERLEVEL` | P2F-002 | `20260101_P2F-002_1PERLEVEL_709bc61b` | Control | 1.38 | 229 | 18.14 | 71 | 426 | 1-per-level verified |
+| 32 | `P2F-003_RSI_EXH` | P2F-003 | `20260101_P2F-003_RSI_EXH_c39a9dd0` | Inert | 1.38 | 229 | 18.17 | 71 | 426 | RSI inert |
+| 33 | `P2F-004_CONFIRM` | P2F-004 | `20260101_P2F-004_CONFIRM_b442d1cb` | Rejected | 0.94 | -40 | 46 | 63 | 350 | Candle confirm |
+| 34 | `PRODUCTION` | G3 | `20260101_PRODUCTION_26e9ba7e` | G3 fail | 0.8 | -172 | 65 | 59 | 393 | EURUSD-specific edge |
 
 ---
 

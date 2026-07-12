@@ -13,14 +13,19 @@ import json
 import sys
 from pathlib import Path
 
+_AI_DIR = Path(__file__).resolve().parent
+if str(_AI_DIR) not in sys.path:
+    sys.path.insert(0, str(_AI_DIR))
+
+from csv_util import read_csv_rows  # noqa: E402
+
 
 def load_baskets(path: Path) -> list[dict]:
     rows: list[dict] = []
-    with path.open(newline="", encoding="utf-8-sig") as fh:
-        for raw in csv.DictReader(fh):
-            raw["_profit"] = float(raw.get("profit", 0) or 0)
-            raw["_id"] = str(raw.get("basket_id", ""))
-            rows.append(raw)
+    for raw in read_csv_rows(path):
+        raw["_profit"] = float(raw.get("profit", 0) or 0)
+        raw["_id"] = str(raw.get("basket_id", ""))
+        rows.append(raw)
     return rows
 
 

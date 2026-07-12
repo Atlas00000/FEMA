@@ -1,0 +1,116 @@
+{
+  "phase": "EL3-LOCK",
+  "id": "certificate_PRODUCTION_EURUSD",
+  "version": 1,
+  "preset": "FEMA_EURUSD_M5_PRODUCTION",
+  "alias": "P2C-001_REG_ADX30",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "lock_run_id": "20260101_PRODUCTION_13c52cd9",
+  "el3_confirm": "AI/kb/el3_lock_confirm.json",
+  "fingerprint": {
+    "adx_gate": true,
+    "adx_max": 30,
+    "bsl": 25.0,
+    "basket_tp": 10.0,
+    "magic_default": 20260707,
+    "load": "FEMA_EURUSD_M5_PRODUCTION.ini",
+    "preset_set": "Presets/PRODUCTION.set"
+  },
+  "discovery_window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31",
+    "role": "canonical lock / birth metrics"
+  },
+  "birth_metrics": {
+    "source": "System Profile EURUSD / Edge Discovery row 22 + EURUSD_20260707_baskets.csv",
+    "unit": "mt5_deals",
+    "profit_factor": 1.36,
+    "net_profit": 221.0,
+    "max_dd_balance_pct": 18.0,
+    "max_dd_equity_pct": 21.0,
+    "win_rate": 0.71,
+    "trades": 424,
+    "sharpe": 1.9,
+    "avg_win": 2.77,
+    "avg_loss": -5.04,
+    "largest_loss": -8.65,
+    "tp_hit_rate_approx": 0.71,
+    "avg_bars_alive": 320.5,
+    "avg_depth": 3.94,
+    "baskets_per_day": 0.596,
+    "bsl": 25.0,
+    "note": "Lock birth — health compares rolling live/demo to these bands, not to 2020-2025 collect PF. bars_alive = M5 bars."
+  },
+  "rolling_windows_baskets": [50, 100, 250],
+  "primary_window_baskets": 100,
+  "health_formula_version": "health_v0",
+  "health_weights": {
+    "profit_factor": 0.25,
+    "tp_hit_rate": 0.2,
+    "basket_duration": 0.15,
+    "basket_depth": 0.15,
+    "mae_mfe_efficiency": 0.1,
+    "trade_frequency": 0.05,
+    "spread_execution": 0.05,
+    "regime_match": 0.05
+  },
+  "persistence": {
+    "deteriorate_windows": 3,
+    "recover_windows": 2,
+    "update_cadence": "daily",
+    "ignore_single_bad_day": true
+  },
+  "bands": {
+    "green": {
+      "profit_factor_min": 1.25,
+      "profit_factor_target": [1.3, 1.45],
+      "win_rate_min": 0.68,
+      "win_rate_max": 0.78,
+      "tp_hit_rate_min": 0.68,
+      "avg_bars_alive_vs_birth_min": 0.7,
+      "avg_bars_alive_vs_birth_max": 1.3,
+      "avg_depth_vs_birth_max": 1.15,
+      "mae_vs_bsl_max": 0.6,
+      "trade_freq_vs_birth_min": 0.7,
+      "trade_freq_vs_birth_max": 1.3,
+      "spread_reject_rate_max": 0.05,
+      "regime_adx_ok_min": 0.7
+    },
+    "amber": {
+      "profit_factor_min": 1.1,
+      "profit_factor_max": 1.25,
+      "win_rate_min": 0.63,
+      "win_rate_max": 0.68,
+      "avg_bars_alive_vs_birth_min": 0.5,
+      "avg_bars_alive_vs_birth_max": 1.6,
+      "avg_depth_vs_birth_min": 1.15,
+      "avg_depth_vs_birth_max": 1.4
+    },
+    "red": {
+      "profit_factor_max": 1.1,
+      "win_rate_max": 0.63,
+      "avg_bars_alive_vs_birth_min_breach": 0.5,
+      "avg_bars_alive_vs_birth_max_breach": 1.6,
+      "avg_depth_vs_birth_min": 1.4,
+      "mae_vs_bsl_min": 0.8
+    },
+    "notes": "Duration/depth use birth-relative ratios (EA bars_alive = M5 bars; containment 2-6 was conceptual)."
+  },
+  "action_ladder": [
+    {"health_min": 85, "label": "normal", "action": "run"},
+    {"health_min": 70, "label": "investigate", "action": "human_review_no_ea_change"},
+    {"health_min": 50, "label": "watch", "action": "queue_offline_candidates_continue_prod"},
+    {"health_min": 30, "label": "re_discovery", "action": "launch_edge_discovery_human_promote"},
+    {"health_min": 0, "label": "retire", "action": "stop_new_capital_archive"}
+  ],
+  "pause_policy": {
+    "allowed": ["pause_new_baskets", "manage_open_with_engine_exits", "log", "monitor_health"],
+    "forbidden": ["live_ema_change", "live_tp_sl_change", "live_lot_change", "live_bsl_change", "live_optimize"]
+  },
+  "sources": {
+    "bands": "edgecontainment.md sections 1-3",
+    "birth": "System Profile EURUSD.md",
+    "baseline_json": "AI/baseline.json"
+  }
+}

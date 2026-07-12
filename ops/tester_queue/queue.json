@@ -1,0 +1,7 @@
+{
+  "schema": "fema_tester_queue_v0",
+  "updated": "2026-07-12",
+  "max_concurrent": 1,
+  "jobs": [],
+  "note": "Append jobs via enqueue.ps1; worker drains status=queued one at a time. Demo path never uses this queue."
+}
