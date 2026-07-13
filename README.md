@@ -18,7 +18,7 @@
 | **Birth** | PF **1.36** · WR **~71%** · DD **~18%** bal · lock `20260101_PRODUCTION_13c52cd9` |
 | **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` tooling live · `fema_ops pipeline` |
 
-**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · ops [`infrascaleup.md`](infrascaleup.md) · rediscovery [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
+**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · audit [`system_audit.md`](system_audit.md) · ops [`infrascaleup.md`](infrascaleup.md) · rediscovery [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
 
 ---
 
@@ -233,6 +233,7 @@ FEMA/
 │   └── data/live/           # pointers (CSVs gitignored)
 ├── ops/                     # Docker Postgres + read-only API + sync + tester queue
 ├── edgelifecycle.md         # ★ spine
+├── system_audit.md          # Main/subsystem map · status · improvements
 ├── infrascaleup.md          # Ops Plane roadmap §16
 ├── automated_edge_rediscovery_pipeline.md  # Terminal A/B Discovery (AER-P*)
 ├── System Profile EURUSD.md # Edge / trade profile
@@ -304,6 +305,7 @@ Details: [`ops/README.md`](ops/README.md) · [`AI/README.md`](AI/README.md)
 | Doc | Role |
 | --- | --- |
 | [`edgelifecycle.md`](edgelifecycle.md) | **Spine** — charter · INF · EL phases |
+| [`system_audit.md`](system_audit.md) | Main systems · subsystems · status · improvement backlog |
 | [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) | Terminal A/B Re-Discovery · `AER-P0`…`P6` **complete** (2026-07-13); lock unchanged |
 | [`infrascaleup.md`](infrascaleup.md) | Ops Plane · Waves 0–6 |
 | [`AI/STATUS.md`](AI/STATUS.md) | Operator / agent glance |
