@@ -1,7 +1,7 @@
 {
   "schema": "fema_preset_manifest_v1",
   "parent_lock": "PRODUCTION",
-  "updated": "2026-07-11",
+  "updated": "2026-07-13",
   "presets": [
     {
       "id": "PRODUCTION",
@@ -58,6 +58,18 @@
       "run_id": null,
       "notes": "INF-PRESET factory smoke \u2014 queued, not deploy",
       "cloned_at": "2026-07-11T20:47:19Z"
+    },
+    {
+      "id": "Candidate_X2",
+      "file": "Candidate_X2.set",
+      "parent": "PRODUCTION",
+      "alias_of": null,
+      "subsystem": "session",
+      "diff_summary": "InpUseSessionBlockFriClose:false->true",
+      "status": "queued",
+      "run_id": null,
+      "notes": "Manual factory propose for session: {'InpUseSessionBlockFriClose': 'true'}",
+      "cloned_at": "2026-07-13T00:57:03Z"
     }
   ]
 }

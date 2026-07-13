@@ -9,4 +9,4 @@ foreach ($j in $q.jobs) {
   Write-Host ("  {0}  {1}  {2}  {3}" -f $j.status, $j.id, $j.preset, $j.window)
 }
 $queued = @($q.jobs | Where-Object { $_.status -eq "queued" })
-Write-Host "queued=$($queued.Count)  (drain on Discovery box only — never demo Common)"
+Write-Host "queued=$($queued.Count)  (drain on Discovery box only - never demo Common)"

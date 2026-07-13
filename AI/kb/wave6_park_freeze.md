@@ -5,9 +5,9 @@
 
 | ID | Parked item | Why parked | Offline substitute (already shipped) |
 | -- | ----------- | ---------- | ------------------------------------ |
-| `PARK-01` | Auto-promote PRODUCTION | Human-only promote | `raci.md` · EL2 checklist · `cert-confirm` |
-| `PARK-02` | Live EMA/TP/SL/lot from AI | Charter break | Factory `recommend` / `factory` → human `clone` + Tester |
-| `PARK-03` | MT5 in Docker / K8s tester farm | Windows worker instead | `ops/tester_queue/` · `sync.ps1` · Agent FEMA_AI |
+| `PARK-01` | Auto-promote PRODUCTION | Human-only promote | `raci.md` · EL2 checklist · `decision.ps1` · `cert-confirm` |
+| `PARK-02` | Live EMA/TP/SL/lot from AI | Charter break | Factory `recommend` / `factory` → Terminal B Tester (AER) → human |
+| `PARK-03` | MT5 in Docker / K8s tester farm | Windows worker instead | `ops/tester_queue/` · AER drain · `sync.ps1` · Agent FEMA_AI |
 | `PARK-04` | AI model retrain drives **live** risk | Premature / risk | Shadow scoring only: `health` · `fingerprint` · `drift` · `pipeline` |
 | `PARK-05` | EC2 open-time fail predictor as main path | Superseded | Rolling `health_v0` + Observatory (fade path) |
 | `PARK-06` | Full platform UI / multi-EA control plane | API first | Read-only `ops/api` · `STATUS` · Observatory MD |

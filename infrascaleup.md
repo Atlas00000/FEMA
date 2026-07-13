@@ -582,7 +582,7 @@ IDs: `IS-…` = infra scale-up · `RG-…` = research/gap · `GOV-…` = governa
 | --- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | --------- | -------------------------------------------- |
 | 5.1 | `IS-P3-01`    | MinIO (or immutable `artifacts/runs/{run_id}/`) + rehydrate DB from blobs                                                                                  | §11 P3            | **done**  | `artifacts-*` / `db-rehydrate`               |
 | 5.2 | `IS-P3-02`    | CI schema gates on certificate, gates, fingerprint, API OpenAPI                                                                                            | §11 P3            | **done**  | `ci-gates` + `.github/workflows/ci.yml`      |
-| 5.3 | `IS-P4-01`    | Dedicated Windows tester queue (Discovery jobs ≠ demo box)                                                                                                 | §11 P4            | **done**  | `ops/tester_queue/`                          |
+| 5.3 | `IS-P4-01`    | Dedicated Windows tester queue (Discovery jobs ≠ demo box)                                                                                                 | §11 P4            | **done**  | `ops/tester_queue/` + AER `P0`–`P6` ([`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)) |
 | 5.4 | `IS-DRIFT-01` | Drift detection job (fingerprint / health components vs birth)                                                                                             | Platform umbrella | **done**  | `fema_ops drift` + Observatory section       |
 | 5.5 | `IS-PLAT-01`  | Name/document **Edge Operations Platform** modules (Observatory, Health, Drift, Factory, KB, Validation, Promotion, Archive) as *labels on shipped pieces* | §15.3 Long-term   | **done**  | `AI/kb/platform_modules.md` + §16.1 below    |
 
@@ -618,7 +618,10 @@ Wave 6 = parked forever until charter changes
 
 1. Monday+: Wave 0 demo unlock after basket close (`ingest --source demo`)
 2. After 2w+ trusted demo health: `IS-EL5-01` then reconsider `IS-EL6-01` wire sign-off
-3. Wave 6 stays parked until charter changes
+3. AER overnight waves when EL7 opens (or human `-Force`); next axes prefer non-session if session DD pattern persists
+4. Wave 6 stays parked until charter changes
+
+**AER (2026-07-13):** two-terminal Re-Discovery tooling `AER-P0`…`P6` complete on this machine; PRODUCTION lock unchanged (X1 Reject / X2 Alternate). See [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md).
 
 **Exit for "MVP Ops Plane":** Waves 0-1 complete + `GOV-RACI-01` + `RG-VER-01`.
 **Exit for "Intelligence v0":** Wave 3 items 3.1-3.5.
@@ -642,4 +645,4 @@ See also [`AI/kb/platform_modules.md`](AI/kb/platform_modules.md).
 | Promotion Pipeline | RACI + checklist + `cert-confirm` (human) |
 | Archive System | `AI/data/artifacts/runs/{run_id}/` + `db-rehydrate` |
 | Sync / API | `ops/sync` · `ops/api` |
-| Tester Queue | `ops/tester_queue/` |
+| Tester Queue | `ops/tester_queue/` (enqueue · launch · drain · scorecard · decision) · AER runbook |

@@ -1,7 +1,75 @@
-{
-  "schema": "fema_tester_queue_v0",
-  "updated": "2026-07-12",
-  "max_concurrent": 1,
-  "jobs": [],
-  "note": "Append jobs via enqueue.ps1; worker drains status=queued one at a time. Demo path never uses this queue."
+﻿{
+    "schema":  "fema_tester_queue_v0",
+    "updated":  "2026-07-13",
+    "max_concurrent":  1,
+    "jobs":  [
+                 {
+                     "id":  "job_20260713_003828",
+                     "preset":  "Candidate_X1",
+                     "symbol":  "EURUSD",
+                     "window":  "2026.01.01-2026.07.31",
+                     "notes":  "AER-P2 first candidate smoke (session NO23)",
+                     "status":  "finished",
+                     "enqueued":  "2026-07-12T23:38:28.4189297Z",
+                     "started":  null,
+                     "finished":  "2026-07-12T23:44:42.6616601Z",
+                     "run_id":  null
+                 },
+                 {
+                     "id":  "job_20260713_014119",
+                     "preset":  "PRODUCTION",
+                     "symbol":  "EURUSD",
+                     "window":  "2026.01.01-2026.07.31",
+                     "notes":  "AER-P4 dry-run smoke | cancelled before live launch",
+                     "status":  "cancelled",
+                     "enqueued":  "2026-07-13T00:41:19.7864009Z",
+                     "started":  null,
+                     "finished":  "2026-07-13T00:44:00.0000000Z",
+                     "run_id":  null
+                 },
+                 {
+                     "id":  "job_20260713_014426",
+                     "preset":  "Candidate_X1",
+                     "symbol":  "EURUSD",
+                     "window":  "2026.01.01-2026.07.31",
+                     "notes":  "AER-P4 live launch test",
+                     "status":  "finished",
+                     "enqueued":  "2026-07-13T00:44:26.1556399Z",
+                     "started":  "2026-07-13T00:45:35.3090878Z",
+                     "finished":  "2026-07-13T00:45:55.4989930Z",
+                     "run_id":  null,
+                     "ini":  "C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Experts\\FEMA\\ops\\tester_queue\\ini\\job_20260713_014426_Candidate_X1.ini",
+                     "report":  null
+                 },
+                 {
+                     "id":  "job_20260713_014807",
+                     "preset":  "Candidate_X1",
+                     "symbol":  "EURUSD",
+                     "window":  "2026.01.01-2026.07.31",
+                     "notes":  "AER-P4 relaunch after ini fix",
+                     "status":  "finished",
+                     "enqueued":  "2026-07-13T00:48:07.4653992Z",
+                     "started":  "2026-07-13T00:48:22.9702824Z",
+                     "finished":  "2026-07-13T00:51:13.9704780Z",
+                     "run_id":  null,
+                     "ini":  "C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Experts\\FEMA\\ops\\tester_queue\\ini\\job_20260713_014807_Candidate_X1.ini",
+                     "report":  null
+                 },
+                 {
+                     "id":  "job_20260713_015703",
+                     "preset":  "Candidate_X2",
+                     "symbol":  "EURUSD",
+                     "window":  "2026.01.01-2026.07.31",
+                     "notes":  "AER-P5 EL7 factory subsystem=session",
+                     "status":  "finished",
+                     "enqueued":  "2026-07-13T00:57:03.5105432Z",
+                     "started":  "2026-07-13T00:59:55.6856847Z",
+                     "finished":  "2026-07-13T01:03:22.0360189Z",
+                     "run_id":  null,
+                     "ini":  "C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\D0E8209F77C8CF37AD8BF550E51FF075\\MQL5\\Experts\\FEMA\\ops\\tester_queue\\ini\\job_20260713_015703_Candidate_X2.ini",
+                     "report":  "C:\\Users\\emili\\AppData\\Roaming\\MetaQuotes\\Terminal\\0E1EDD540A3CC541130B9A608E1932D2\\job_20260713_015703_Candidate_X2.htm",
+                     "dd_balance_pct":  18.13
+                 }
+             ],
+    "note":  "Append jobs via enqueue.ps1; worker drains status=queued one at a time. Demo path never uses this queue."
 }

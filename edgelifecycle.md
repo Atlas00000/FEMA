@@ -530,6 +530,7 @@ healthy again                 → resume (auto recover or clear flag)
 | `EL7-005` | If no promote: stay paused / last acceptable lock |
 
 **Trigger table:** [`AI/kb/el7_trigger_table.md`](AI/kb/el7_trigger_table.md) · CLI `python -m fema_ops el7-dry-run`  
+**Local automation:** [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) (`AER-P0`…`P6` · Terminal B)  
 **Rule:** Watch may **trigger**; it may not **author** the new preset.  
 **SOP:** [`AI/kb/research_loop_sop.md`](AI/kb/research_loop_sop.md) · runbook [`AI/kb/el7_rediscovery_runbook.md`](AI/kb/el7_rediscovery_runbook.md) · RACI [`AI/kb/raci.md`](AI/kb/raci.md) · lineage [`AI/kb/lineage.json`](AI/kb/lineage.json) · factory `recommend` / `factory`  
 **ESR:** `ESR-W10`–`W11`

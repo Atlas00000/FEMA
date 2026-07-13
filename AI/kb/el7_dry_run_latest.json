@@ -1,9 +1,9 @@
 {
   "schema": "fema_el7_dry_run_v0",
-  "computed_at": "2026-07-12T14:38:53Z",
+  "computed_at": "2026-07-13T00:57:39Z",
   "trigger": {
     "schema": "fema_el7_trigger_v0",
-    "computed_at": "2026-07-12T14:38:53Z",
+    "computed_at": "2026-07-13T00:57:39Z",
     "ladder": "normal",
     "health": 91.72,
     "warning_active": false,

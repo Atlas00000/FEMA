@@ -660,5 +660,73 @@
     "path": "runs/20260101_PRODUCTION_26e9ba7e/",
     "discovery_row": 34,
     "status": "documented"
+  },
+  {
+    "run_id": "20260101_Candidate_X1_bcc8b9b0",
+    "registered_at": "2026-07-12T23:44:41Z",
+    "role": "candidate",
+    "preset": "Candidate_X1",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 107,
+      "profit_factor": 1.4595,
+      "win_rate": 0.785,
+      "net": 266.63
+    },
+    "path": "runs/20260101_Candidate_X1_bcc8b9b0/"
+  },
+  {
+    "run_id": "20260101_Candidate_X1_bcc8b9b0_02",
+    "registered_at": "2026-07-13T00:45:55Z",
+    "role": "candidate",
+    "preset": "Candidate_X1",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 107,
+      "profit_factor": 1.4595,
+      "win_rate": 0.785,
+      "net": 266.63
+    },
+    "path": "runs/20260101_Candidate_X1_bcc8b9b0_02/"
+  },
+  {
+    "run_id": "20260101_Candidate_X1_bcc8b9b0_03",
+    "registered_at": "2026-07-13T00:51:13Z",
+    "role": "candidate",
+    "preset": "Candidate_X1",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 108,
+      "profit_factor": 1.477,
+      "win_rate": 0.787,
+      "net": 276.77
+    },
+    "path": "runs/20260101_Candidate_X1_bcc8b9b0_03/"
+  },
+  {
+    "run_id": "20260101_Candidate_X2_bcc8b9b0",
+    "registered_at": "2026-07-13T01:03:21Z",
+    "role": "candidate",
+    "preset": "Candidate_X2",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 110,
+      "profit_factor": 1.4316,
+      "win_rate": 0.7818,
+      "net": 261.25
+    },
+    "path": "runs/20260101_Candidate_X2_bcc8b9b0/"
   }
 ]

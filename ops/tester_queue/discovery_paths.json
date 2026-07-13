@@ -1,0 +1,31 @@
+{
+  "schema": "fema_discovery_paths_v1",
+  "updated": "2026-07-13",
+  "terminal_b": {
+    "role": "Discovery",
+    "install_dir": "C:\\MT5_FEMA_Discovery",
+    "terminal_exe": "C:\\MT5_FEMA_Discovery\\terminal64.exe",
+    "data_hash": "0E1EDD540A3CC541130B9A608E1932D2",
+    "expert": "FEMA\\FEMA.ex5",
+    "note": "Second local terminal only — never VPS"
+  },
+  "terminal_a": {
+    "role": "PRODUCTION",
+    "data_hash": "D0E8209F77C8CF37AD8BF550E51FF075",
+    "forbid_launch": true
+  },
+  "tester_defaults": {
+    "symbol": "EURUSD",
+    "period": "M5",
+    "model": 0,
+    "deposit": 400,
+    "currency": "USD",
+    "leverage": "500",
+    "profit_in_pips": 0,
+    "visual": 0,
+    "optimization": 0,
+    "shutdown_terminal": 1,
+    "replace_report": 1,
+    "window": "2026.01.01-2026.07.31"
+  }
+}

@@ -16,9 +16,9 @@
 | **Strategy** | Pullback continuation · floating ATR grid · basket TP/SL |
 | **Lock window** | 2026.01.01 → 2026.07.31 · EURUSD M5 · $400 · every tick |
 | **Birth** | PF **1.36** · WR **~71%** · DD **~18%** bal · lock `20260101_PRODUCTION_13c52cd9` |
-| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · `fema_ops pipeline` |
+| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` tooling live · `fema_ops pipeline` |
 
-**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · ops [`infrascaleup.md`](infrascaleup.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
+**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · ops [`infrascaleup.md`](infrascaleup.md) · rediscovery [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
 
 ---
 
@@ -63,37 +63,56 @@
 
 ## Architecture — three layers (do not mix jobs)
 
+**Hardware:** two **local** MT5 terminals — **A** = PRODUCTION chart, **B** = Discovery Tester. No VPS.  
+**Re-Discovery status (2026-07-13):** phases `AER-P0`…`AER-P6` tooling complete; PRODUCTION lock unchanged. Runbook: [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md).
+
 ```mermaid
 flowchart TB
-  subgraph Discover["EL-DISCOVER — offline"]
-    D1[Edge Discovery / Tester]
-    D2[Gates G1–G3 · KB · human promote]
-    D1 --> D2
+  subgraph Discover["EL-DISCOVER — Terminal B · offline"]
+    D0[factory / recommend / clone → Presets]
+    D1[tester_queue → Strategy Tester]
+    D2[sync tester → register → gate-check G1]
+    D3[human promote / reject]
+    D0 --> D1 --> D2 --> D3
   end
 
-  subgraph Run["EL-RUN — MT5"]
-    R1[Frozen PRODUCTION]
-    R2[Schema logs · fingerprint · FEMA_AI CSVs]
+  subgraph Run["EL-RUN — Terminal A · MT5"]
+    R1[Frozen PRODUCTION.set]
+    R2[Common FEMA_AI CSVs · fingerprint]
     R1 --> R2
   end
 
   subgraph Watch["EL-WATCH — Python ops"]
     W1[health_v0 · fingerprint · genome]
-    W2[Observatory · factory recommend]
+    W2[Observatory · drift]
     W3[Shadow pause · never live retune]
     W1 --> W2 --> W3
   end
 
-  D2 -->|lock certificate| R1
-  R2 -->|ingest / pipeline| W1
-  W3 -->|edge sick too long| Discover
+  D3 -->|lock certificate · redeploy A later| R1
+  R2 -->|sync demo / pipeline| W1
+  W3 -->|edge sick too long · EL7| D0
 ```
 
-| Layer | Owns | Must not |
-| --- | --- | --- |
-| **Discover** | Preset search, gates, promote/demote | Live experiments / auto-promote |
-| **Run** | Execute locked PRODUCTION | Self-retune mid-flight |
-| **Watch** | “Is *this* certificate still true?” | Redesign strategy inside `OnTick` |
+```text
+Terminal A — PRODUCTION          Terminal B — Discovery (Tester)
+Chart: PRODUCTION.set            Strategy Tester · queued .set
+Common\Files\FEMA_AI             Tester\...\Agent-*\...\FEMA_AI
+        │ sync demo                        │ sync tester
+        └────────────► fema_ops ◄──────────┘
+                 health | gate-check
+                        │
+                 human promote? ──no──► keep lock
+                                └──yes─► new certificate → redeploy A
+```
+
+| Layer | Terminal / host | Owns | Must not |
+| --- | --- | --- | --- |
+| **Discover** | **B** (second local) | Queue · Tester · G1 · KB · human promote | Touch demo path · auto-promote · TV as authority |
+| **Run** | **A** (primary) | Locked PRODUCTION execution + Common CSVs | Self-retune · Discovery Optimizer mid-basket |
+| **Watch** | Python / Docker ops | “Is *this* certificate still true?” | Redesign strategy in `OnTick` · live lots/TP/SL |
+
+**Hard rules:** never point demo health at tester CSVs; ≤3 candidates / EL7 wave; one-subsystem diffs; promote only via checklist ([`AI/templates/promotion_checklist.md`](AI/templates/promotion_checklist.md)).
 
 ---
 
@@ -215,6 +234,7 @@ FEMA/
 ├── ops/                     # Docker Postgres + read-only API + sync + tester queue
 ├── edgelifecycle.md         # ★ spine
 ├── infrascaleup.md          # Ops Plane roadmap §16
+├── automated_edge_rediscovery_pipeline.md  # Terminal A/B Discovery (AER-P*)
 ├── System Profile EURUSD.md # Edge / trade profile
 ├── Edge Discovery.md        # Lab table
 └── edgecontainment.md       # Vision · bands · ladder
@@ -240,6 +260,19 @@ python -m fema_ops ingest --source demo
 python -m fema_ops pipeline
 python -m fema_ops status
 ```
+
+### Discovery (Terminal B — AER)
+
+Two-terminal Re-Discovery is live (`AER-P0`…`P6`). Night/morning loop:
+
+```powershell
+powershell -File ops\tester_queue\el7_enqueue.ps1 -Force -Max 3   # or omit -Force when ladder opens
+powershell -File ops\tester_queue\drain.ps1 -Max 3
+powershell -File ops\tester_queue\scorecard.ps1
+powershell -File ops\tester_queue\decision.ps1 -Preset <id> -PF <pf> -DD <dd> -Decision Reject -Signer "operator"
+```
+
+Details: [`ops/tester_queue/README.md`](ops/tester_queue/README.md) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)
 
 ### Docker Ops API (optional)
 
@@ -271,6 +304,7 @@ Details: [`ops/README.md`](ops/README.md) · [`AI/README.md`](AI/README.md)
 | Doc | Role |
 | --- | --- |
 | [`edgelifecycle.md`](edgelifecycle.md) | **Spine** — charter · INF · EL phases |
+| [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) | Terminal A/B Re-Discovery · `AER-P0`…`P6` **complete** (2026-07-13); lock unchanged |
 | [`infrascaleup.md`](infrascaleup.md) | Ops Plane · Waves 0–6 |
 | [`AI/STATUS.md`](AI/STATUS.md) | Operator / agent glance |
 | [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md) | Edge / trade / performance profile |

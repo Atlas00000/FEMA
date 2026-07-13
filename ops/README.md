@@ -12,6 +12,7 @@ ops/
   api/                    # FastAPI read-only
   schemas/openapi.json    # CI snapshot (fema_ops ci-gates)
   sync/sync.ps1           # Windows → ops/incoming/{demo|tester}
+  scheduler/              # AER-P3 Task Scheduler glue
   incoming/demo|tester/   # drop zone
   tester_queue/           # Discovery jobs ≠ demo (IS-P4-01)
 ```
@@ -60,14 +61,24 @@ python -m fema_ops drift
 python -m fema_ops observatory
 ```
 
-## Windows sync / tester queue
+## Windows sync / tester queue / AER
+
+Two-terminal Re-Discovery (`AER-P0`…`P6`) is live — see [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md).
 
 ```powershell
 powershell -File ops\sync\sync.ps1 -Source demo
+powershell -File ops\sync\sync.ps1 -Source tester
+
 powershell -File ops\tester_queue\enqueue.ps1 -Preset Candidate_X1
 powershell -File ops\tester_queue\status.ps1
+powershell -File ops\tester_queue\launch.ps1 -DryRun
+powershell -File ops\tester_queue\el7_enqueue.ps1 -Force -Max 3
+powershell -File ops\tester_queue\drain.ps1 -Max 3
+powershell -File ops\tester_queue\scorecard.ps1
+powershell -File ops\tester_queue\decision.ps1 -Preset Candidate_X1 -PF 1.477 -DD 19.17 -Decision Reject -Signer "operator"
 ```
 
+Scheduler (L1): [`scheduler/README.md`](scheduler/README.md) · Queue details: [`tester_queue/README.md`](tester_queue/README.md)
 ## Auth
 
 Set `FEMA_API_TOKEN` in compose / env. API is **read-only** — no candidate create, promote, or retire routes.

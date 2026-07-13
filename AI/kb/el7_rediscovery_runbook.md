@@ -1,20 +1,28 @@
 # EL7 Re-Discovery runbook (IS-EL7-02)
 
 **Dry-run once:** `cd AI; python -m fema_ops el7-dry-run`  
-**Apply lineage retire stamp (human only):** `python -m fema_ops el7-dry-run --apply`
+**Apply lineage retire stamp (human only):** `python -m fema_ops el7-dry-run --apply`  
+**Local two-terminal automation:** [`../../automated_edge_rediscovery_pipeline.md`](../../automated_edge_rediscovery_pipeline.md) (`AER-P0`…`P6` tooling complete 2026-07-13)
 
 ## Steps
 
 1. **Confirm trigger** — table in [`el7_trigger_table.md`](el7_trigger_table.md); check Observatory + health persistence.
 2. **EL7-002 Snapshot** — set `lineage.json` `active_lock.retired_run_id` = current lock `run_id` (`--apply` or edit by hand). Parent remains PRODUCTION until a new lock promotes.
-3. **EL7-003 Open EL1** — same canonical window as lock (`2026.01.01`–`2026.07.31`).  
+3. **EL7-003 Open EL1** — same canonical window as lock (`2026.01.01`–`2026.07.31`). Prefer AER enqueue on Terminal B:
+   ```powershell
+   # From repo root — fills queue (needs open_discovery or -Force)
+   powershell -File ops\tester_queue\el7_enqueue.ps1
+   powershell -File ops\tester_queue\el7_enqueue.ps1 -Force -Max 3
+   powershell -File ops\tester_queue\drain.ps1 -Max 3
+   ```
+   Manual factory path (same cap ≤3):
    ```powershell
    python -m fema_ops recommend
    python -m fema_ops factory --apply --index 0   # or --subsystem adx
-   # Tester on new Presets/*.set — max 3 candidates
-   python -m fema_ops register --baskets ... --preset <id> --role candidate
+   powershell -File ops\tester_queue\enqueue.ps1 -Preset <id>
    ```
-4. **EL7-004 Validate** — `gate-check` / scorecard / [`../templates/promotion_checklist.md`](../templates/promotion_checklist.md). Human promote only ([`raci.md`](raci.md)).
+4. **EL7-004 Validate** — `scorecard.ps1` + `gate-check` + [`../templates/promotion_checklist.md`](../templates/promotion_checklist.md).  
+   Record with `ops/tester_queue/decision.ps1` (refuses Promote if G1 fail). Human only ([`raci.md`](raci.md)).
 5. **EL7-005 No promote** — keep last acceptable lock; clear panic; do not auto-wire pause.
 
 ## Dry-run record
@@ -27,3 +35,4 @@ Latest plan artifact: [`el7_dry_run_latest.json`](el7_dry_run_latest.json) (rege
 - Live EMA/TP/SL/lot from AI
 - >3 candidates in first wave
 - Treating Tester collect as demo health
+- Running Discovery Optimizer on Terminal A while a demo basket is open

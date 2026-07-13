@@ -1,4 +1,4 @@
-id,parent,subsystem,diffs,window,symbol,pf,wr,dd,status,failure_reason,run_id,notes
+﻿id,parent,subsystem,diffs,window,symbol,pf,wr,dd,status,failure_reason,run_id,notes
 P1-BASELINE,PRODUCTION,,No SL steamroller,2026.01.01-2026.07.31,EURUSD,0.17,0.83,66,reject,dd_breach,20260101_P1-BASELINE_4a41623a,EL2 row 1; reject
 P2A-001_PSL_ATR15_RAW,PRODUCTION,,Fixed ATR SL too tight,2026.01.01-2026.07.31,EURUSD,0.0,0.0,5,reject,regime,20260101_P2A-001_PSL_ATR15_RAW_f67b382d,EL2 row 2; reject
 P2A-001_PSL_ATR20,PRODUCTION,,Strong R:R; unprofitable Jan-Feb,2026.01.01-2026.07.31,EURUSD,0.91,0.21,22,candidate,dd_breach,20260101_P2A-001_PSL_ATR20_f49d3773,EL2 row 3; alternate_g1_fail
@@ -33,7 +33,7 @@ P2F-002_1PERLEVEL,PRODUCTION,,1-per-level verified,2026.01.01-2026.07.31,EURUSD,
 P2F-003_RSI_EXH,PRODUCTION,,RSI inert,2026.01.01-2026.07.31,EURUSD,1.38,0.71,18.17,reject,other,20260101_P2F-003_RSI_EXH_c39a9dd0,EL2 row 32; inert_or_control
 P2F-004_CONFIRM,PRODUCTION,,Candle confirm,2026.01.01-2026.07.31,EURUSD,0.94,0.63,46,reject,dd_breach,20260101_P2F-004_CONFIRM_b442d1cb,EL2 row 33; reject
 PRODUCTION,PRODUCTION,,EURUSD-specific edge,2026.01.01-2026.07.31,GBPUSD,0.8,0.59,65,reject,other,20260101_PRODUCTION_26e9ba7e,EL2 row 34; g3_fail
-Candidate_X1,PRODUCTION,session,InpUseSessionBlockNo23:false->true,,EURUSD,,,,queued,,,INF-PRESET factory smoke
-Candidate_W4T,PRODUCTION,adx,InpAdxMax:30->28,,EURUSD,,,,queued,,,wave4 unit
-Candidate_W4T,PRODUCTION,adx,InpAdxMax:30->28,,EURUSD,,,,queued,,,wave4 unit
-Candidate_W4T,PRODUCTION,adx,InpAdxMax:30->28,,EURUSD,,,,queued,,,wave4 unit
+Candidate_X1,PRODUCTION,session,InpUseSessionBlockNo23:false->true,,EURUSD,,,,reject,dd_breach,,INF-PRESET factory smoke
+
+
+Candidate_X2,PRODUCTION,session,InpUseSessionBlockFriClose:false->true,2026.01.01-2026.07.31,EURUSD,1.4316,,18.13,alternate,dd_breach,20260101_Candidate_X2_bcc8b9b0,AER-P6 FriClose; G1 fail DD

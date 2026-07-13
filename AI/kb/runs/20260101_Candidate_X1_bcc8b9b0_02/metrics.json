@@ -1,0 +1,29 @@
+{
+  "run_id": "20260101_Candidate_X1_bcc8b9b0_02",
+  "base_run_id": "20260101_Candidate_X1_bcc8b9b0",
+  "registered_at": "2026-07-13T00:45:55Z",
+  "preset": "Candidate_X1",
+  "preset_slug": "Candidate_X1",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "bcc8b9b0",
+  "role": "candidate",
+  "baskets_path": "AI/data/live/latest_baskets.csv",
+  "ea_run_id": "20260101_000000_EURUSD_20260707",
+  "metrics": {
+    "n": 107,
+    "profit_factor": 1.4595,
+    "win_rate": 0.785,
+    "net": 266.63,
+    "tp_hit_rate": 0.785,
+    "open_first": "2026.01.02 09:09:15",
+    "open_last": "2026.07.09 10:36:21"
+  },
+  "status": "recorded",
+  "notes": "AER postrun 2026-07-13",
+  "schema": "fema_run_v1"
+}

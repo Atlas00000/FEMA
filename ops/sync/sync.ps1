@@ -49,6 +49,20 @@ foreach ($dir in $candidates) {
 
 if (-not $src) {
     Write-Host "sync_fail: no $pattern under $Source paths"
+    $hb = Join-Path $RepoRoot "AI\data\live\sync_heartbeat.json"
+    New-Item -ItemType Directory -Force -Path (Split-Path $hb -Parent) | Out-Null
+    @{
+        synced_utc       = (Get-Date).ToUniversalTime().ToString("o")
+        source           = $Source
+        source_requested = $Source
+        ok               = $false
+        baskets_copied   = $false
+        stale            = $false
+        header_only      = $false
+        baskets_locked   = $false
+        wave             = "AER-P3"
+        note             = "no $pattern under $Source paths"
+    } | ConvertTo-Json | Set-Content -Path $hb -Encoding UTF8
     exit 2
 }
 
