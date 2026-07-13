@@ -1,8 +1,51 @@
+# --- Compiled / MetaTrader ---
 *.log
 *.ex5
 *.ex4
+*.exp
+*.mqh.bak
+*.mq5.bak
 
-# Fat telemetry / datasets — keep schemas & live README only
+# --- Secrets / local env ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# --- Python ---
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+
+# --- Editors / OS ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Fat telemetry / datasets (AI) ---
+# Keep schemas & live/artifacts README + .gitkeep only
 AI/data/**
 !AI/data/live/
 AI/data/live/**
@@ -13,6 +56,23 @@ AI/data/artifacts/**
 !AI/data/artifacts/README.md
 !AI/data/artifacts/.gitkeep
 
-AI/__pycache__/
-**/__pycache__/
-*.pyc
+# --- Ops drop zone (sync CSVs) ---
+# Keep directory markers; ignore synced baskets/events/meta
+ops/incoming/**
+!ops/incoming/demo/
+!ops/incoming/tester/
+!ops/incoming/demo/.gitkeep
+!ops/incoming/tester/.gitkeep
+
+# --- AER Tester artifacts ---
+# Large MT5 HTML reports (copied by launch.ps1)
+ops/tester_queue/reports/**
+!ops/tester_queue/reports/.gitkeep
+
+# Optional local scratch under queue (do not commit dumps)
+ops/tester_queue/*.tmp
+ops/tester_queue/*.bak
+
+# --- Docker local overrides ---
+docker-compose.override.yml
+ops/docker-compose.override.yml
