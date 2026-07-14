@@ -31,7 +31,7 @@ $bHash = $paths.terminal_b.data_hash
 $testerProfiles = Join-Path $env:APPDATA ("MetaQuotes\Terminal\$bHash\MQL5\Profiles\Tester")
 $presetsDir = Join-Path $RepoRoot "Presets"
 
-Write-Host "=== AER-P5-02 el7_enqueue Force=$Force Max=$Max ==="
+Write-Host "=== AER-P5-02 / DLR-P3 el7_enqueue Lane=A (default) Force=$Force Max=$Max ==="
 
 Push-Location $ai
 try {
@@ -121,11 +121,17 @@ try {
         if (Test-Path $bPresets) { Copy-Item $set.FullName $bPresets -Force }
 
         & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "enqueue.ps1") `
-            -Preset $presetId -Window $Window -Notes "AER-P5 EL7 factory subsystem=$sub" -QueuePath $QueuePath
+            -Preset $presetId -Window $Window `
+            -Notes "DLR-P1/AER Lane A EL7 factory subsystem=$sub" `
+            -Lane A -Parent PRODUCTION -Role candidate -Subsystem $sub `
+            -QueuePath $QueuePath -RepoRoot $RepoRoot
         $enqueued.Add([ordered]@{
             preset = $presetId
             subsystem = $sub
             set = $set.Name
+            lane = "A"
+            parent = "PRODUCTION"
+            role = "candidate"
         }) | Out-Null
         $i++
         Start-Sleep -Seconds 1  # unique job_ ids
@@ -135,16 +141,21 @@ try {
 }
 
 $out = [ordered]@{
-    schema         = "fema_aer_p5_el7_enqueue_v0"
+    schema         = "fema_dlr_p3_el7_enqueue_v0"
     ran_utc        = (Get-Date).ToUniversalTime().ToString("o")
     force          = [bool]$Force.IsPresent
     open_discovery = [bool]$open
+    lane           = "A"
+    parent         = "PRODUCTION"
+    role           = "candidate"
     enqueued       = @($enqueued | ForEach-Object { [PSCustomObject]$_ })
     max            = [int]$Max
-    note           = "NO AUTO-PROMOTE. Next: drain.ps1 then human checklist."
+    note           = "NO AUTO-PROMOTE. DLR-P3: el7_enqueue is Lane A only. For Lane B see el7_policy.ps1 then enqueue_lane_b.ps1."
 }
 $live = Join-Path $RepoRoot "AI\data\live"
 New-Item -ItemType Directory -Force -Path $live | Out-Null
 ($out | ConvertTo-Json -Depth 6) | Set-Content (Join-Path $live "el7_enqueue_latest.json") -Encoding utf8
 Write-Host "enqueued_n=$($enqueued.Count) -> AI/data/live/el7_enqueue_latest.json"
+# Surface dual-lane advice (read-only)
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "el7_policy.ps1") -RepoRoot $RepoRoot
 Write-Host "=== el7_enqueue done (no promote) ==="

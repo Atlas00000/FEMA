@@ -2,8 +2,8 @@
 
 **Purpose:** Track every **main system** and **subsystem** — what it does, where it lives, status, and improvement backlog.  
 **Charter:** MT5 executes · Python scores · Human promotes  
-**Updated:** 2026-07-13  
-**Related:** [`edgelifecycle.md`](edgelifecycle.md) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/kb/platform_modules.md`](AI/kb/platform_modules.md) · [`AI/STATUS.md`](AI/STATUS.md)
+**Updated:** 2026-07-14  
+**Related:** [`edgelifecycle.md`](edgelifecycle.md) · [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) (`DLR-P3` complete · hybrid MVP) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/kb/platform_modules.md`](AI/kb/platform_modules.md) · [`AI/STATUS.md`](AI/STATUS.md)
 
 ---
 
@@ -39,11 +39,14 @@ flowchart TB
   end
 
   subgraph M2["MAIN 2 — Edge Re-Discovery"]
-    FAC["Factory / recommend / clone"]
+    FAC["Factory / recommend / clone · Lane A"]
+    ROS["Challenger roster · Lane B"]
     Q["Tester queue · launch · drain"]
     VAL["Register · G1 · scorecard"]
     PROM["Human decision / promote pack"]
-    FAC --> Q --> VAL --> PROM
+    FAC --> Q
+    ROS --> Q
+    Q --> VAL --> PROM
   end
 
   subgraph M3["MAIN 3 — Ops Plane"]
@@ -67,9 +70,77 @@ flowchart TB
   PROM -.->|never auto| EA
 ```
 
-**Subsystem catalog** — complete chip grids (Markdown; Mermaid preview was truncating to ~4 chips/main). IDs match the tables below.
+**Subsystem catalog** — chip grids (Mermaid rows). Full ID tables below match these chips.
 
-### MAIN 1 — Execution Engine · 14
+```mermaid
+flowchart TB
+  subgraph EX["MAIN 1 — Execution Engine · 14"]
+    direction TB
+    subgraph EX_r1[" "]
+      direction LR
+      EX01["EX-01 Trend / EMA"] --- EX02["EX-02 ATR spacing"] --- EX03["EX-03 Floating grid"] --- EX04["EX-04 Basket TP / BSL"]
+    end
+    subgraph EX_r2[" "]
+      direction LR
+      EX05["EX-05 Regime / ADX"] --- EX06["EX-06 Session"] --- EX07["EX-07 HTF"] --- EX08["EX-08 Entry filters"]
+    end
+    subgraph EX_r3[" "]
+      direction LR
+      EX09["EX-09 Cooldown"] --- EX10["EX-10 Lot sizing"] --- EX11["EX-11 Broker exec"] --- EX12["EX-12 State machine"]
+    end
+    subgraph EX_r4[" "]
+      direction LR
+      EX13["EX-13 Telemetry / AI0"] --- EX14["EX-14 Config / presets"]
+    end
+    EX_r1 ~~~ EX_r2 ~~~ EX_r3 ~~~ EX_r4
+  end
+
+  subgraph RD["MAIN 2 — Edge Re-Discovery · 13"]
+    direction TB
+    subgraph RD_r1[" "]
+      direction LR
+      RD01["RD-01 Search map"] --- RD02["RD-02 Candidate factory"] --- RD03["RD-03 Terminal B"] --- RD04["RD-04 Tester queue"]
+    end
+    subgraph RD_r2[" "]
+      direction LR
+      RD05["RD-05 Scripted launch"] --- RD06["RD-06 Sync / postrun"] --- RD07["RD-07 Validation G1"] --- RD08["RD-08 Scorecard"]
+    end
+    subgraph RD_r3[" "]
+      direction LR
+      RD09["RD-09 Promotion gate"] --- RD10["RD-10 Run KB / lineage"] --- RD11["RD-11 EL7 A enqueue"] --- RD12["RD-12 Challenger roster"]
+    end
+    subgraph RD_r4[" "]
+      direction LR
+      RD13["RD-13 Dual-lane policy"]
+    end
+    RD_r1 ~~~ RD_r2 ~~~ RD_r3 ~~~ RD_r4
+  end
+
+  subgraph OP["MAIN 3 — Ops Plane · 14"]
+    direction TB
+    subgraph OP_r1[" "]
+      direction LR
+      OP01["OP-01 Edge lifecycle"] --- OP02["OP-02 Health / decay"] --- OP03["OP-03 Certificate / lock"] --- OP04["OP-04 Fingerprint / genome"]
+    end
+    subgraph OP_r2[" "]
+      direction LR
+      OP05["OP-05 Drift"] --- OP06["OP-06 Observatory"] --- OP07["OP-07 Sync / ingest"] --- OP08["OP-08 Scheduler"]
+    end
+    subgraph OP_r3[" "]
+      direction LR
+      OP09["OP-09 Pause shadow"] --- OP10["OP-10 Archive"] --- OP11["OP-11 Read API / DB"] --- OP12["OP-12 Governance / RACI"]
+    end
+    subgraph OP_r4[" "]
+      direction LR
+      OP13["OP-13 CI schema gates"] --- OP14["OP-14 Operator STATUS"]
+    end
+    OP_r1 ~~~ OP_r2 ~~~ OP_r3 ~~~ OP_r4
+  end
+```
+
+### ID index (same chips)
+
+#### MAIN 1 — Execution Engine · 14
 
 | | | | |
 | --- | --- | --- | --- |
@@ -78,16 +149,16 @@ flowchart TB
 | `EX-09` Cooldown / exposure | `EX-10` Lot sizing | `EX-11` Broker execution | `EX-12` State machine |
 | `EX-13` Telemetry / AI0 log | `EX-14` Config / presets | | |
 
-### MAIN 2 — Edge Re-Discovery · 11
+#### MAIN 2 — Edge Re-Discovery · 13
 
-| | | |
-| --- | --- | --- |
-| `RD-01` Search map / playbook | `RD-02` Candidate factory | `RD-03` Terminal B host |
-| `RD-04` Tester queue AER | `RD-05` Scripted Tester launch | `RD-06` Tester sync / postrun |
-| `RD-07` Validation G1 | `RD-08` Morning scorecard | `RD-09` Promotion gate |
-| `RD-10` Run KB / lineage | `RD-11` EL7 trigger / enqueue | |
+| | | | |
+| --- | --- | --- | --- |
+| `RD-01` Search map / playbook | `RD-02` Candidate factory | `RD-03` Terminal B host | `RD-04` Tester queue AER/DLR |
+| `RD-05` Scripted Tester launch | `RD-06` Tester sync / postrun | `RD-07` Validation G1 | `RD-08` Morning scorecard |
+| `RD-09` Promotion gate | `RD-10` Run KB / lineage | `RD-11` EL7 trigger / enqueue | `RD-12` Challenger roster (Lane B) |
+| `RD-13` Dual-lane EL7 policy | | | |
 
-### MAIN 3 — Ops Plane · 14
+#### MAIN 3 — Ops Plane · 14
 
 | | | | |
 | --- | --- | --- | --- |
@@ -103,7 +174,7 @@ flowchart TB
 | Main | Overall | Notes |
 | ---- | ------- | ----- |
 | **1. Execution Engine** | `live` | PRODUCTION lock `20260101_PRODUCTION_13c52cd9` · EA v1.26 |
-| **2. Edge Re-Discovery** | `tooling` | AER `P0`–`P6` complete · no G1 pass this cycle · PRODUCTION unchanged |
+| **2. Edge Re-Discovery** | `tooling` / `live` | AER `P0`–`P6` · **DLR `P0`–`P3` hybrid MVP** · no G1 promote this cycle · PRODUCTION unchanged |
 | **3. Ops Plane** | `live` / `shadow` | Health + Observatory live · pause wire **not signed** · Wave 6 parks hold |
 
 ---
@@ -141,36 +212,42 @@ flowchart TB
 
 ## MAIN 2 — Edge Re-Discovery
 
-**One-liner:** Offline search for a better lock on Terminal B; score vs G1; human alone may promote.  
-**Owns:** AER pipeline · factory · tester queue · gates · decision pack  
-**Must not:** Auto-promote · treat Tester CSV as demo health · Discovery on Terminal A.
+**One-liner:** Offline dual-lane search for a better lock on Terminal B; score vs G1; human alone may promote.  
+**Owns:** AER pipeline · DLR hybrid (Lane A + Lane B) · factory · roster · tester queue · gates · decision pack  
+**Must not:** Auto-promote · treat Tester CSV as demo health · Discovery on Terminal A · overnight-default Lane B.
 
 | ID | Subsystem | Use | Status | Primary paths | Improvement |
 | -- | --------- | --- | ------ | ------------- | ----------- |
-| `RD-01` | Search map / playbook | One-axis pair list for clones | `live` | `kb/search_map.md` · `clone_playbook.md` | Prefer non-session axes next wave |
-| `RD-02` | Candidate factory | Recommend ≤3 · one-axis clone | `live` | `fema_ops recommend/factory` · `Presets/Candidate_*` | Empty cloneable when compat=100 |
+| `RD-01` | Search map / playbook | One-axis pair list for Lane A clones | `live` | `kb/search_map.md` · `clone_playbook.md` | Prefer non-session axes next wave |
+| `RD-02` | Candidate factory | Recommend ≤3 · one-axis clone from PRODUCTION | `live` | `fema_ops recommend/factory` · `Presets/Candidate_*` | Empty cloneable when compat=100 |
 | `RD-03` | Terminal B host | Dedicated Discovery MT5 install | `live` | `C:\MT5_FEMA_Discovery` · `discovery_paths.json` | Never Discovery on PRODUCTION chart |
-| `RD-04` | Tester queue (AER) | Enqueue · status · FIFO ≤3 | `tooling` | `ops/tester_queue/enqueue|status|drain` | Overnight only when Discovery open |
+| `RD-04` | Tester queue (AER/DLR) | Enqueue A/B tags · status · FIFO | `tooling` | `ops/tester_queue/*` · `queue.json` v1 | Overnight only when Discovery open |
 | `RD-05` | Scripted Tester launch | `.ini` · `/config` · report DD parse | `tooling` | `build_ini.ps1` · `launch.ps1` | Keep Terminal A guard |
 | `RD-06` | Tester sync / postrun | Agent CSV → ingest → register | `tooling` | `sync -Source tester` · `postrun.ps1` | Stamp DD on every finished job |
 | `RD-07` | Validation (G1) | PF≥1.36 **and** DD≤18% | `live` | `gate_rules.json` · `gate-check` | Holdout note still human |
-| `RD-08` | Morning scorecard | Pack PF/DD vs PRODUCTION | `tooling` | `scorecard.ps1` · `discovery_scorecard_latest.*` | Include decision outcomes |
+| `RD-08` | Morning scorecard | Pack PF/DD + lane/parent/profile | `tooling` | `scorecard.ps1` · `discovery_scorecard_latest.*` | Compare A vs B pedigrees |
 | `RD-09` | Promotion gate | Checklist · refuse Promote if G1 fail | `tooling` / `armed` | `decision.ps1` · `kb/decisions/` | AER-P6-03/04 after real G1 pass |
 | `RD-10` | Run KB / lineage | Immutable metrics + parent lock | `live` | `AI/kb/runs/` · `lineage.json` | Dedupe register hash if needed |
-| `RD-11` | EL7 trigger / enqueue | Ladder → factory → queue | `shadow` | `el7-dry-run` · `el7_enqueue.ps1` | `-Force` only when human opens |
+| `RD-11` | EL7 trigger / Lane A enqueue | Ladder → factory → A-only queue | `shadow` | `el7-dry-run` · `el7_enqueue.ps1` | `-Force` only when human opens |
+| `RD-12` | Challenger roster (Lane B) | Bases + profile cards · no amnesia | `live` | `kb/challenger_roster.*` · `kb/profiles/` · `enqueue_lane_b.ps1` | Grow roster only with evidence |
+| `RD-13` | Dual-lane EL7 policy | Default A; escalate B after ≥2 A fails | `live` | `kb/dlr_policy.json` · `el7_policy.ps1` | Human still enqueues B |
 
-**Recent evidence (2026-07-13):**
+**Recent evidence (2026-07-13 AER cycle):**
 
 | Candidate | Axis | PF | DD | Decision |
 | --------- | ---- | --: | --: | -------- |
 | `Candidate_X1` | session NO23 | 1.477 | 19.17% | **Reject** |
-| `Candidate_X2` | session FriClose | 1.432 | 18.13% | **Alternate** |
+| `Candidate_X2` | session FriClose | 1.432 | 18.13% | **Alternate** (kept on roster) |
+
+**Hybrid MVP (2026-07-14):** `DLR-P0`…`P3` complete — Lane A tagged; Lane B roster/enqueue; policy advisor; A+B scorecard smoke. PRODUCTION lock unchanged.
 
 **Improve (rediscovery-level):**
 
-1. Next Forced wave: `adx` / `grid` / `basket_exit` — not another session clone.  
-2. Re-enable overnight `drain.ps1` only when Discovery is intentionally open.  
-3. Keep TradingView (if any) **upstream of enqueue only** — never G1 authority.
+1. Next Forced wave: Lane A `adx` / `grid` / `basket_exit` — not another session clone.  
+2. When `el7_policy` recommends B: **1×** `enqueue_lane_b.ps1` from `P1-BASELINE` (or roster alternate).  
+3. Re-enable overnight `drain.ps1` only when Discovery is intentionally open.  
+4. Keep TradingView (if any) **upstream of enqueue only** — never G1 authority.  
+5. Promote remains human AER-P6 only — [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md).
 
 ---
 
@@ -235,7 +312,7 @@ flowchart TB
 | Pri | Item | Main | Why |
 | --- | ---- | ---- | --- |
 | 1 | Demo path unlock after basket close | Ops | Enables trusted EL5 |
-| 2 | Next AER wave non-session axes | Re-Discovery | Session DD pattern exhausted |
+| 2 | Next Forced wave: Lane A non-session + optional 1× B | Re-Discovery | Policy already recommends B after A fails |
 | 3 | Re-enable scheduler + optional Docker when operating | Ops | Morning scorecard / health |
 | 4 | Scorecard DD completeness on all jobs | Re-Discovery | Cleaner morning pack |
 | 5 | Signed promote path rehearsal (dry) | Re-Discovery | AER-P6-03/04 armed but unused |
@@ -251,5 +328,7 @@ flowchart TB
 4. Refresh date + link evidence (`STATUS`, scorecard, promote decision).
 
 **Owner glance:** [`AI/STATUS.md`](AI/STATUS.md)  
-**Re-Discovery detail:** [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)  
+**Re-Discovery snapshot:** [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md)  
+**Dual-lane MVP:** [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md)  
+**Lane A runbook:** [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)  
 **Lifecycle spine:** [`edgelifecycle.md`](edgelifecycle.md)

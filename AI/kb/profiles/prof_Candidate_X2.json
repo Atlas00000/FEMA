@@ -1,0 +1,19 @@
+{
+  "schema": "fema_dlr_p2_profile_v0",
+  "profile_id": "prof_Candidate_X2",
+  "preset": "Candidate_X2",
+  "parent": "PRODUCTION",
+  "lane_origin": "A",
+  "window": "2026.01.01-2026.07.31",
+  "symbol": "EURUSD",
+  "pf": 1.4316,
+  "dd": 18.13,
+  "g1_pass": false,
+  "status": "alternate",
+  "failure_reason": "dd_breach",
+  "run_id": "20260101_Candidate_X2_bcc8b9b0",
+  "eligible_lane_b": true,
+  "subsystem": "session",
+  "notes": "FriClose near-miss — keep on roster (no amnesia)",
+  "updated_utc": "2026-07-14T00:00:00Z"
+}

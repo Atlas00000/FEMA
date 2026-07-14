@@ -19,12 +19,42 @@ param(
     [string]$Window = "2026.01.01-2026.07.31",
     [string]$Signer = "operator",
     [string]$Notes = "",
-    [string]$RepoRoot = ""
+    [string]$Lane = "",
+    [string]$Parent = "",
+    [string]$Role = "",
+    [string]$ProfileId = "",
+    [string]$Subsystem = "",
+    [string]$RepoRoot = "",
+    [string]$QueuePath = ""
 )
 
 $ErrorActionPreference = "Stop"
 if (-not $RepoRoot) {
     $RepoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+}
+if (-not $QueuePath) {
+    $QueuePath = Join-Path $PSScriptRoot "queue.json"
+}
+
+# DLR-P1-03: prefer explicit tags; else latest matching queue job; else Lane A defaults
+if ((-not $Lane -or -not $Parent -or -not $Role) -and (Test-Path $QueuePath)) {
+    $qLookup = Get-Content -Raw $QueuePath | ConvertFrom-Json
+    $hit = @($qLookup.jobs | Where-Object { $_.preset -eq $Preset } | Sort-Object enqueued -Descending) | Select-Object -First 1
+    if ($hit) {
+        if (-not $Lane -and $hit.lane) { $Lane = [string]$hit.lane }
+        if (-not $Parent -and $hit.parent) { $Parent = [string]$hit.parent }
+        if (-not $Role -and $hit.role) { $Role = [string]$hit.role }
+        if (-not $ProfileId -and $hit.profile_id) { $ProfileId = [string]$hit.profile_id }
+        if (-not $Subsystem -and $hit.subsystem) { $Subsystem = [string]$hit.subsystem }
+    }
+}
+if (-not $Lane) { $Lane = "A" }
+if (-not $Parent) { $Parent = "PRODUCTION" }
+if (-not $Role) { $Role = "candidate" }
+
+. (Join-Path $PSScriptRoot "lib_roster.ps1")
+if (-not $ProfileId) {
+    $ProfileId = Resolve-FemaProfileId -ProfileId "" -Preset $Preset -Parent $Parent
 }
 
 $ai = Join-Path $RepoRoot "AI"
@@ -101,11 +131,14 @@ if ($Decision -eq "Promote") {
 }
 
 $md = @"
-# Promotion checklist (filled) - AER-P6
+# Promotion checklist (filled) - AER-P6 / DLR-P1
 
 **Candidate id:** ``$Preset``
 **run_id:** ``$RunId``
-**Parent lock:** ``PRODUCTION`` (``$lockRun``)
+**Lane / parent / role:** ``$Lane`` / ``$Parent`` / ``$Role``
+**profile_id:** ``$(if ($ProfileId) { $ProfileId } else { '-' })``
+**subsystem:** ``$(if ($Subsystem) { $Subsystem } else { '-' })``
+**Parent lock (G1 bench):** ``PRODUCTION`` (``$lockRun``)
 **Window:** ``$Window`` EURUSD M5
 **Generated:** $utc
 **Signer:** $Signer
@@ -150,12 +183,15 @@ $md | Set-Content -Path $filledPath -Encoding utf8
 $leaf = Split-Path $filledPath -Leaf
 $append = @"
 
-## AER-P6 - $Preset ($stamp)
+## AER-P6 / DLR-P1 - $Preset ($stamp)
 
 | Field | Value |
 | ----- | ----- |
 | Decision | **$decUpper** |
 | Preset | ``$Preset`` |
+| lane / parent / role | ``$Lane`` / ``$Parent`` / ``$Role`` |
+| profile_id | $(if ($ProfileId) { $ProfileId } else { '-' }) |
+| subsystem | $(if ($Subsystem) { $Subsystem } else { '-' }) |
 | run_id | ``$RunId`` |
 | PF / DD | $PF / $DD% |
 | G1 | $g1Label (bench PF $benchPf / DD $benchDd%) |
@@ -201,12 +237,46 @@ if (Test-Path $csvPath) {
     }
 }
 
+# DLR-P2-05: reject/alternate upsert profile onto roster (never delete). Promote marks card pending.
+$rosterUpsert = $null
+if ($Decision -in @("Reject", "Alternate", "Promote")) {
+    $statusCard = switch ($Decision) {
+        "Promote" { "promote_pending" }
+        "Reject" { "reject" }
+        "Alternate" { "alternate" }
+    }
+    # Keep all decided cards on roster (no amnesia); operator can flip eligible_lane_b later
+    $rosterUpsert = Upsert-FemaProfileCard `
+        -RepoRoot $RepoRoot `
+        -Preset $Preset `
+        -ProfileId $ProfileId `
+        -Parent $Parent `
+        -Lane $Lane `
+        -Role $Role `
+        -Subsystem $Subsystem `
+        -Window $Window `
+        -PF $PF `
+        -DD $DD `
+        -G1Pass $g1Pass `
+        -Status $statusCard `
+        -FailureReason $FailureReason `
+        -RunId $RunId `
+        -Notes $Notes `
+        -EligibleLaneB $true
+    Write-Host "roster upsert profile_id=$($rosterUpsert.profile_id)"
+}
+
 $relCheck = ($filledPath.Substring($RepoRoot.Length).TrimStart("\", "/")).Replace("\", "/")
 $payload = [ordered]@{
-    schema         = "fema_aer_p6_decision_v0"
+    schema         = "fema_dlr_p2_decision_v0"
     ran_utc        = $utc
     preset         = $Preset
     run_id         = $RunId
+    lane           = $Lane
+    parent         = $Parent
+    role           = $Role
+    profile_id     = $ProfileId
+    subsystem      = $Subsystem
     pf             = $PF
     dd             = $DD
     g1_pass        = $g1Pass
@@ -214,7 +284,8 @@ $payload = [ordered]@{
     failure_reason = $FailureReason
     signer         = $Signer
     checklist      = $relCheck
-    note           = "NO AUTO-PROMOTE. Promote requires manual Terminal A redeploy."
+    roster_upsert  = if ($rosterUpsert) { $rosterUpsert.profile_id } else { $null }
+    note           = "NO AUTO-PROMOTE. Promote requires manual Terminal A redeploy. Profiles stay on roster (no amnesia)."
 }
 $live = Join-Path $ai "data\live"
 New-Item -ItemType Directory -Force -Path $live | Out-Null

@@ -1,8 +1,13 @@
-# Windows tester queue (IS-P4-01 + AER-P4 + AER-P5 + AER-P6)
+# Windows tester queue (IS-P4-01 + AER-P4…P6 + DLR-P1…P3)
 
 **Goal:** Discovery / Strategy Tester jobs must **not** starve or overwrite the demo Common `FEMA_AI` path.
 
 **Hard rule:** scripts enqueue / launch / drain / score — they **never** promote PRODUCTION (`PARK-01`).
+
+**DLR dual-lane:** every job carries `lane` · `parent` · `role` · `profile_id` · `subsystem`.  
+- **Lane A** (default EL7): `parent=PRODUCTION`; max **3** queued A.  
+- **Lane B**: parent on [`challenger_roster.json`](../../AI/kb/challenger_roster.json); max **2** queued B; human `enqueue_lane_b.ps1` only.  
+- **Policy:** [`dlr_policy.json`](../../AI/kb/dlr_policy.json) · `el7_policy.ps1` (advise B after ≥2 A fails; never auto-enqueue B).
 
 ## Split
 
@@ -21,6 +26,10 @@ Never point demo health at tester CSVs. Never run heavy optimizers on the same t
 
 ```powershell
 powershell -File ops\tester_queue\enqueue.ps1 -Preset Candidate_X1 -Window "2026.01.01-2026.07.31"
+powershell -File ops\tester_queue\enqueue.ps1 -Preset Candidate_X3 -Lane A -Parent PRODUCTION -Subsystem adx
+powershell -File ops\tester_queue\enqueue_lane_b.ps1 -Preset Challenger_P1BASE_adx_01 -Parent P1-BASELINE -Subsystem adx
+powershell -File ops\tester_queue\el7_policy.ps1
+powershell -File ops\tester_queue\smoke_dlr_p3.ps1
 powershell -File ops\tester_queue\status.ps1
 ```
 

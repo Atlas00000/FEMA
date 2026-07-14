@@ -16,9 +16,11 @@
 | **Strategy** | Pullback continuation · floating ATR grid · basket TP/SL |
 | **Lock window** | 2026.01.01 → 2026.07.31 · EURUSD M5 · $400 · every tick |
 | **Birth** | PF **1.36** · WR **~71%** · DD **~18%** bal · lock `20260101_PRODUCTION_13c52cd9` |
-| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` tooling live · `fema_ops pipeline` |
+| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` · **DLR `P0`–`P3` hybrid MVP** · `fema_ops pipeline` |
 
-**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · audit [`system_audit.md`](system_audit.md) · ops [`infrascaleup.md`](infrascaleup.md) · rediscovery [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
+**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · audit [`system_audit.md`](system_audit.md) · rediscovery overview [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · hybrid [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · phases [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · ops [`infrascaleup.md`](infrascaleup.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
+
+**Docs layout:** new high-level MDs go under [`doc/`](doc/README.md); root keeps spine + README.
 
 ---
 
@@ -64,16 +66,20 @@
 ## Architecture — three layers (do not mix jobs)
 
 **Hardware:** two **local** MT5 terminals — **A** = PRODUCTION chart, **B** = Discovery Tester. No VPS.  
-**Re-Discovery status (2026-07-13):** phases `AER-P0`…`AER-P6` tooling complete; PRODUCTION lock unchanged. Runbook: [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md).
+**Re-Discovery status (2026-07-14):** AER `P0`–`P6` + hybrid dual-lane **`DLR-P0`…`P3` MVP** complete; PRODUCTION lock unchanged.  
+Snapshot: [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · dual-lane: [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · Lane A runbook: [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md).
 
 ```mermaid
 flowchart TB
-  subgraph Discover["EL-DISCOVER — Terminal B · offline"]
-    D0[factory / recommend / clone → Presets]
+  subgraph Discover["EL-DISCOVER — Terminal B · dual-lane offline"]
+    D0A[Lane A · factory clone PRODUCTION]
+    D0B[Lane B · challenger roster parent]
     D1[tester_queue → Strategy Tester]
     D2[sync tester → register → gate-check G1]
-    D3[human promote / reject]
-    D0 --> D1 --> D2 --> D3
+    D3[human promote / reject / alternate]
+    D0A --> D1
+    D0B --> D1
+    D1 --> D2 --> D3
   end
 
   subgraph Run["EL-RUN — Terminal A · MT5"]
@@ -91,7 +97,7 @@ flowchart TB
 
   D3 -->|lock certificate · redeploy A later| R1
   R2 -->|sync demo / pipeline| W1
-  W3 -->|edge sick too long · EL7| D0
+  W3 -->|edge sick too long · EL7| D0A
 ```
 
 ```text
@@ -108,7 +114,7 @@ Common\Files\FEMA_AI             Tester\...\Agent-*\...\FEMA_AI
 
 | Layer | Terminal / host | Owns | Must not |
 | --- | --- | --- | --- |
-| **Discover** | **B** (second local) | Queue · Tester · G1 · KB · human promote | Touch demo path · auto-promote · TV as authority |
+| **Discover** | **B** (second local) | Dual-lane queue · Tester · G1 · KB · human promote | Touch demo path · auto-promote · TV as authority · overnight-default Lane B |
 | **Run** | **A** (primary) | Locked PRODUCTION execution + Common CSVs | Self-retune · Discovery Optimizer mid-basket |
 | **Watch** | Python / Docker ops | “Is *this* certificate still true?” | Redesign strategy in `OnTick` · live lots/TP/SL |
 
@@ -235,7 +241,11 @@ FEMA/
 ├── edgelifecycle.md         # ★ spine
 ├── system_audit.md          # Main/subsystem map · status · improvements
 ├── infrascaleup.md          # Ops Plane roadmap §16
-├── automated_edge_rediscovery_pipeline.md  # Terminal A/B Discovery (AER-P*)
+├── automated_edge_rediscovery_pipeline.md  # AER Lane A runbook (P0–P6)
+├── doc/                     # New high-level guides / snapshots (keep root neat)
+│   ├── README.md
+│   ├── edge_rediscovery_system.md          # Discover snapshot + changelog
+│   └── dual_lane_rediscovery_pipeline.md   # Hybrid DLR-P0…P3 MVP
 ├── System Profile EURUSD.md # Edge / trade profile
 ├── Edge Discovery.md        # Lab table
 └── edgecontainment.md       # Vision · bands · ladder
@@ -262,18 +272,21 @@ python -m fema_ops pipeline
 python -m fema_ops status
 ```
 
-### Discovery (Terminal B — AER)
+### Discovery (Terminal B — AER + DLR)
 
-Two-terminal Re-Discovery is live (`AER-P0`…`P6`). Night/morning loop:
+Two-terminal Re-Discovery is live (`AER-P0`…`P6` + hybrid **`DLR-P3` MVP**). Default wave = **Lane A**; policy may advise **1× Lane B** after ≥2 A fails.
 
 ```powershell
-powershell -File ops\tester_queue\el7_enqueue.ps1 -Force -Max 3   # or omit -Force when ladder opens
+powershell -File ops\tester_queue\el7_policy.ps1                  # read-only A / A+B advice
+powershell -File ops\tester_queue\el7_enqueue.ps1 -Force -Max 3   # Lane A only (or omit -Force when ladder opens)
+# When policy recommend_b=true (human):
+powershell -File ops\tester_queue\enqueue_lane_b.ps1 -Preset Challenger_P1BASE_adx_01 -Parent P1-BASELINE -Subsystem adx
 powershell -File ops\tester_queue\drain.ps1 -Max 3
 powershell -File ops\tester_queue\scorecard.ps1
 powershell -File ops\tester_queue\decision.ps1 -Preset <id> -PF <pf> -DD <dd> -Decision Reject -Signer "operator"
 ```
 
-Details: [`ops/tester_queue/README.md`](ops/tester_queue/README.md) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)
+Details: [`ops/tester_queue/README.md`](ops/tester_queue/README.md) · [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md)
 
 ### Docker Ops API (optional)
 
@@ -306,7 +319,12 @@ Details: [`ops/README.md`](ops/README.md) · [`AI/README.md`](AI/README.md)
 | --- | --- |
 | [`edgelifecycle.md`](edgelifecycle.md) | **Spine** — charter · INF · EL phases |
 | [`system_audit.md`](system_audit.md) | Main systems · subsystems · status · improvement backlog |
-| [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) | Terminal A/B Re-Discovery · `AER-P0`…`P6` **complete** (2026-07-13); lock unchanged |
+| [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) | Discover-plane snapshot + changelog |
+| [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) | Hybrid dual-lane · **`DLR-P3` MVP complete** (2026-07-14) |
+| [`doc/README.md`](doc/README.md) | Convention: new MDs under `doc/` |
+| [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) | Lane A AER runbook · `AER-P0`…`P6` complete; lock unchanged |
+| [`AI/kb/challenger_roster.md`](AI/kb/challenger_roster.md) | Lane B bases + profile cards |
+| [`AI/kb/dlr_policy.json`](AI/kb/dlr_policy.json) | EL7 A-default · escalate B after ≥2 A fails |
 | [`infrascaleup.md`](infrascaleup.md) | Ops Plane · Waves 0–6 |
 | [`AI/STATUS.md`](AI/STATUS.md) | Operator / agent glance |
 | [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md) | Edge / trade / performance profile |

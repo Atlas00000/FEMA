@@ -1,4 +1,4 @@
-# AER-P5-03 - Morning Discovery scorecard (PF/DD vs PRODUCTION + G1)
+# AER-P5-03 / DLR-P1-02 - Morning Discovery scorecard (PF/DD vs PRODUCTION + G1)
 # Usage:
 #   powershell -File ops\tester_queue\scorecard.ps1
 #
@@ -16,6 +16,14 @@ if (-not $RepoRoot) {
 }
 if (-not $QueuePath) {
     $QueuePath = Join-Path $PSScriptRoot "queue.json"
+}
+
+function Get-JobTag {
+    param($Job, [string]$Name, [string]$Default)
+    if ($null -eq $Job) { return $Default }
+    $p = $Job.PSObject.Properties[$Name]
+    if ($p -and $p.Value -ne $null -and "$($p.Value)" -ne "") { return [string]$p.Value }
+    return $Default
 }
 
 $ai = Join-Path $RepoRoot "AI"
@@ -41,19 +49,28 @@ if (Test-Path $runsDir) {
         $reg = $null
         try { $reg = [datetime]$m.registered_at } catch { return }
         if ($reg -lt $cutoff) { return }
-        # Prefer Discovery wave presets (Candidate_*) or anything finished in queue lookback
-        $isWave = ($m.preset -like "Candidate_*") -or ($jobPresets -contains $m.preset)
+        $isWave = ($m.preset -like "Candidate_*") -or ($m.preset -like "Challenger_*") -or ($jobPresets -contains $m.preset)
         if (-not $isWave) { return }
         $pf = [double]$m.metrics.profit_factor
         $dd = 0.0
-        $jobDd = @($jobs | Where-Object { $_.preset -eq $m.preset -and $_.dd_balance_pct }) | Select-Object -First 1
-        if ($jobDd) { $dd = [double]$jobDd.dd_balance_pct }
+        $jobMatch = @($jobs | Where-Object { $_.preset -eq $m.preset } | Sort-Object finished -Descending) | Select-Object -First 1
+        if ($jobMatch -and $jobMatch.dd_balance_pct) { $dd = [double]$jobMatch.dd_balance_pct }
+        $lane = Get-JobTag $jobMatch "lane" "A"
+        $parent = Get-JobTag $jobMatch "parent" "PRODUCTION"
+        $role = Get-JobTag $jobMatch "role" "candidate"
+        $profileId = Get-JobTag $jobMatch "profile_id" ""
+        $subsystem = Get-JobTag $jobMatch "subsystem" ""
         $g1Pf = ($pf -ge $benchPf)
         $g1Pass = $g1Pf -and ($dd -gt 0) -and ($dd -le $benchDd)
         $decision = if ($dd -le 0) { "need_dd" } elseif ($g1Pass) { "g1_pass_review" } elseif (-not $g1Pf) { "reject_pf" } else { "reject_dd" }
         $runRows += [ordered]@{
             run_id = $m.run_id
             preset = $m.preset
+            lane = $lane
+            parent = $parent
+            role = $role
+            profile_id = $profileId
+            subsystem = $subsystem
             pf = $pf
             net = $m.metrics.net
             n = $m.metrics.n
@@ -70,33 +87,44 @@ New-Item -ItemType Directory -Force -Path $live | Out-Null
 $jsonPath = Join-Path $live "discovery_scorecard_latest.json"
 $mdPath = Join-Path $live "discovery_scorecard_latest.md"
 
-$payload = @{
-    schema = "fema_aer_p5_scorecard_v0"
+$payload = [ordered]@{
+    schema = "fema_dlr_p2_scorecard_v0"
     ran_utc = (Get-Date).ToUniversalTime().ToString("o")
     lookback_hours = $LookbackHours
     production = @{ pf = $benchPf; max_dd_balance_pct = $benchDd; run_id = $gates.production_benchmark.run_id }
-    jobs_finished = @($jobs | ForEach-Object { [ordered]@{ id = $_.id; preset = $_.preset; status = $_.status; dd = $_.dd_balance_pct; finished = $_.finished } })
+    jobs_finished = @($jobs | ForEach-Object {
+        [ordered]@{
+            id = $_.id
+            preset = $_.preset
+            status = $_.status
+            lane = (Get-JobTag $_ "lane" "A")
+            parent = (Get-JobTag $_ "parent" "PRODUCTION")
+            role = (Get-JobTag $_ "role" "candidate")
+            dd = $_.dd_balance_pct
+            finished = $_.finished
+        }
+    })
     candidates = $runRows
-    note = "NO AUTO-PROMOTE. Use AI/templates/promotion_checklist.md. Keep PRODUCTION unless human signs."
+    note = "NO AUTO-PROMOTE. DLR-P1 tags: lane/parent/role. Keep PRODUCTION unless human signs."
 }
 ($payload | ConvertTo-Json -Depth 8) | Set-Content $jsonPath -Encoding utf8
 
 $md = New-Object System.Collections.Generic.List[string]
-$md.Add("# Discovery scorecard (AER-P5-03)") | Out-Null
+$md.Add("# Discovery scorecard (AER-P5 / DLR-P2)") | Out-Null
 $md.Add("") | Out-Null
 $md.Add("Generated: $($payload.ran_utc)") | Out-Null
 $md.Add("") | Out-Null
 $md.Add("**PRODUCTION bench:** PF >= **$benchPf** and max DD bal <= **$benchDd%**") | Out-Null
 $md.Add("") | Out-Null
-$md.Add("**NO AUTO-PROMOTE** - human checklist only.") | Out-Null
+$md.Add("**NO AUTO-PROMOTE** - human checklist only. Lane A = lock retune; Lane B = roster parent. Untagged legacy → A/PRODUCTION.") | Out-Null
 $md.Add("") | Out-Null
-$md.Add("| preset | run_id | PF | net | n | DD% | G1 | decision |") | Out-Null
-$md.Add("| --- | --- | ---: | ---: | ---: | ---: | --- | --- |") | Out-Null
+$md.Add("| lane | parent | role | profile | preset | subsystem | PF | DD% | G1 | decision |") | Out-Null
+$md.Add("| --- | --- | --- | --- | --- | --- | ---: | ---: | --- | --- |") | Out-Null
 foreach ($r in $runRows) {
-    $md.Add("| $($r.preset) | $($r.run_id) | $($r.pf) | $($r.net) | $($r.n) | $($r.dd) | $(if ($r.g1_pass) { 'PASS' } else { 'FAIL' }) | $($r.decision) |") | Out-Null
+    $md.Add("| $($r.lane) | $($r.parent) | $($r.role) | $($r.profile_id) | $($r.preset) | $($r.subsystem) | $($r.pf) | $($r.dd) | $(if ($r.g1_pass) { 'PASS' } else { 'FAIL' }) | $($r.decision) |") | Out-Null
 }
 if ($runRows.Count -eq 0) {
-    $md.Add("| _(none in lookback)_ | | | | | | | |") | Out-Null
+    $md.Add("| _(none in lookback)_ | | | | | | | | | |") | Out-Null
 }
 $md.Add("") | Out-Null
 $md.Add("Queue finished (lookback): $($jobs.Count)") | Out-Null

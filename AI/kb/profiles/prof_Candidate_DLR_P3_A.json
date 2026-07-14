@@ -1,0 +1,20 @@
+﻿{
+    "schema":  "fema_dlr_p2_profile_v0",
+    "profile_id":  "prof_Candidate_DLR_P3_A",
+    "preset":  "Candidate_DLR_P3_A",
+    "parent":  "PRODUCTION",
+    "lane_origin":  "A",
+    "role":  "candidate",
+    "window":  "2026.01.01-2026.07.31",
+    "symbol":  "EURUSD",
+    "pf":  1.41,
+    "dd":  19.5,
+    "g1_pass":  false,
+    "status":  "reject",
+    "failure_reason":  "dd_breach",
+    "run_id":  "20260101_Candidate_DLR_P3_A_p3smoke",
+    "eligible_lane_b":  true,
+    "subsystem":  "adx",
+    "notes":  "",
+    "updated_utc":  "2026-07-14T14:05:16.4668669Z"
+}

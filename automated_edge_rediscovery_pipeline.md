@@ -1,11 +1,12 @@
 # Automated Edge Re-Discovery Pipeline
 
 **Status:** Phases `AER-P0`–`AER-P6` tooling complete (2026-07-13); PRODUCTION lock unchanged this cycle  
+**Next design (adopted):** Hybrid dual-lane [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) — **`DLR-P3` complete** (hybrid MVP); this file stays the shipped **Lane A** runbook  
 **Charter fit:** Discover offline → score in `fema_ops` → human promote → PRODUCTION on MT5 stays frozen  
 **Hardware rule:** Discovery uses a **second local MT5 terminal** on the same machine (or a second install). **No VPS** in this plan.  
 **Non-goals:** TradingView as promote authority · MT5-in-Docker · auto-promote · live EMA/TP/SL/lot retune
 
-**Spine links:** [`edgelifecycle.md`](edgelifecycle.md) (EL7) · [`infrascaleup.md`](infrascaleup.md) § IS-P4 · [`AI/kb/el7_rediscovery_runbook.md`](AI/kb/el7_rediscovery_runbook.md) · [`AI/kb/wave6_park_freeze.md`](AI/kb/wave6_park_freeze.md)
+**Spine links:** [`edgelifecycle.md`](edgelifecycle.md) (EL7) · [`infrascaleup.md`](infrascaleup.md) § IS-P4 · [`AI/kb/el7_rediscovery_runbook.md`](AI/kb/el7_rediscovery_runbook.md) · [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · [`AI/kb/wave6_park_freeze.md`](AI/kb/wave6_park_freeze.md)
 
 ---
 

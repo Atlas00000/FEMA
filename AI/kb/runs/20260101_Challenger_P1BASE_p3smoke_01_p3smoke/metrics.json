@@ -1,0 +1,14 @@
+﻿{
+    "schema":  "fema_run_v1",
+    "run_id":  "20260101_Challenger_P1BASE_p3smoke_01_p3smoke",
+    "preset":  "Challenger_P1BASE_p3smoke_01",
+    "role":  "candidate",
+    "registered_at":  "2026-07-14T14:05:13.8094423Z",
+    "metrics":  {
+                    "profit_factor":  1.38,
+                    "net":  90,
+                    "n":  48
+                },
+    "notes":  "DLR-P3-02 smoke synthetic - NOT a production run",
+    "status":  "recorded"
+}

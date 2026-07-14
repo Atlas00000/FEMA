@@ -1,6 +1,7 @@
 # Clone playbook (INF-PRESET / ESR-W10 / Wave 4 factory)
 
-**Goal:** Fork PRODUCTION → one candidate with **one subsystem** changed. Bookkeeping only — not genetic search.
+**Goal:** Fork a **parent** preset → one candidate (Lane A: PRODUCTION + one subsystem). Bookkeeping only — not genetic search.  
+**Hybrid (adopted):** [`../../doc/dual_lane_rediscovery_pipeline.md`](../../doc/dual_lane_rediscovery_pipeline.md) — Lane A = this playbook; Lane B = multi-base challengers (`DLR-P3` MVP · [`challenger_roster.md`](challenger_roster.md) · [`dlr_policy.json`](dlr_policy.json)).
 
 ## Factory path (preferred when genome mismatches)
 
@@ -26,7 +27,9 @@ python -m fema_ops clone --id Candidate_X1 --subsystem session --set InpUseSessi
 
 ## Limits
 
-- ≤ **3** active queued candidates from a Watch ladder (not 30).
+- ≤ **3** active queued candidates from a Watch ladder (not 30) — **Lane A** wave.
+- ≤ **2** queued **Lane B** challengers (separate cap) — see [`challenger_roster.md`](challenger_roster.md).
+- Lane B presets: `Challenger_{ParentToken}_{ThesisToken}_{NN}` (never overnight-default).
 - Do not touch frozen axes (lot philosophy, execution architecture).
 - Never auto-promote to PRODUCTION.
-- Re-Discovery: [`el7_rediscovery_runbook.md`](el7_rediscovery_runbook.md)
+- Re-Discovery: [`el7_rediscovery_runbook.md`](el7_rediscovery_runbook.md) · snapshot [`../../doc/edge_rediscovery_system.md`](../../doc/edge_rediscovery_system.md)

@@ -6,25 +6,27 @@ _Generated: `2026-07-13` (AER cycle) - refresh health with `cd AI && python -m f
 
 | Field | Value |
 | ----- | ----- |
-| **Phase** | Wave 6 park freeze · **AER `P0`–`P6` tooling live** |
+| **Phase** | Wave 6 park freeze · AER `P0`–`P6` live · **`DLR-P3` complete** (hybrid dual-lane MVP) |
 | **Open ESR** | Wave 6 park-freeze; after demo basket close run pipeline for `on_demo_path` |
 | **EA build** | v1.26 |
 | **Preset** | `FEMA_EURUSD_M5_PRODUCTION` |
 | **Lineage lock** | `20260101_PRODUCTION_13c52cd9` · parent=`P2A-002_BSL_25` |
-| **Re-Discovery** | Terminal B live · queue empty · X1 **Reject** / X2 **Alternate** (G1 DD fail) · PRODUCTION kept |
+| **Re-Discovery** | Terminal B · Lane A default · Lane B after ≥2 A fails · human promote only |
 | **Pause wire** | false (default - do not wire yet) |
 
 ## Start here (agents)
 
 1. [`../edgelifecycle.md`](../edgelifecycle.md) - spine
 2. [`../system_audit.md`](../system_audit.md) - main/subsystem map
-3. [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) - Terminal A/B Discovery (`AER-P0`…`P6`)
-4. [`../infrascaleup.md`](../infrascaleup.md) - Ops Plane / §16 roadmap
-5. This file - glance
-6. [`kb/versions.json`](kb/versions.json) · [`kb/lineage.json`](kb/lineage.json) · [`kb/raci.md`](kb/raci.md)
-7. [`certificate_PRODUCTION_EURUSD.json`](certificate_PRODUCTION_EURUSD.json) - bands
-8. [`data/live/observatory_daily.md`](data/live/observatory_daily.md) - daily note
-9. [`../System Profile EURUSD.md`](../System%20Profile%20EURUSD.md) - lock profile
+3. [`../doc/edge_rediscovery_system.md`](../doc/edge_rediscovery_system.md) - Discover snapshot + changelog
+4. [`../doc/dual_lane_rediscovery_pipeline.md`](../doc/dual_lane_rediscovery_pipeline.md) - Hybrid dual-lane (`DLR-P3` complete · MVP)
+5. [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) - AER phases (`P0`…`P6`)
+6. [`../infrascaleup.md`](../infrascaleup.md) - Ops Plane / §16 roadmap
+7. This file - glance
+8. [`kb/versions.json`](kb/versions.json) · [`kb/lineage.json`](kb/lineage.json) · [`kb/raci.md`](kb/raci.md)
+9. [`certificate_PRODUCTION_EURUSD.json`](certificate_PRODUCTION_EURUSD.json) - bands
+10. [`data/live/observatory_daily.md`](data/live/observatory_daily.md) - daily note
+11. [`../System Profile EURUSD.md`](../System%20Profile%20EURUSD.md) - lock profile
 
 ## Recent Discovery (AER 2026-07-13)
 
@@ -57,6 +59,10 @@ powershell -File ops\tester_queue\scorecard.ps1
 | --- | ---- |
 | [`edgelifecycle.md`](../edgelifecycle.md) | Spine / TOC |
 | [`system_audit.md`](../system_audit.md) | Main systems · subsystems · status |
+| [`doc/edge_rediscovery_system.md`](../doc/edge_rediscovery_system.md) | Discover snapshot + changelog |
+| [`doc/dual_lane_rediscovery_pipeline.md`](../doc/dual_lane_rediscovery_pipeline.md) | Hybrid dual-lane · `DLR-P3` complete (MVP) |
+| [`AI/kb/challenger_roster.md`](kb/challenger_roster.md) | Lane B bases + profile cards |
+| [`AI/kb/dlr_policy.json`](kb/dlr_policy.json) | EL7 A-default · escalate B after N A-fails |
 | [`automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) | A/B Re-Discovery · AER phases |
 | [`infrascaleup.md`](../infrascaleup.md) | Ops Plane + §16 roadmap |
 | [`edgescaleuproadmap.md`](../edgescaleuproadmap.md) | Weekly ESR |

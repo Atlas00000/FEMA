@@ -68,3 +68,193 @@ EL2 polish: gates as data Â· KB scorecard regenerated Â· this decision file 
 | Notes | AER-P5/P6 FriClose factory; PF beats lock, DD +0.13pp fails G1. Keep PRODUCTION. |
 
 **PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Candidate_X2 (20260714_143251)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **ALTERNATE** |
+| Preset | `Candidate_X2` |
+| lane / parent / role | `A` / `PRODUCTION` / `candidate` |
+| profile_id | - |
+| subsystem | session |
+| run_id | `20260101_Candidate_X2_bcc8b9b0` |
+| PF / DD | 1.4316 / 18.13% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | dd_breach |
+| Signer | dlr_p1_smoke |
+| Checklist | `kb/decisions/20260714_143251_Candidate_X2_Alternate.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - DLR_P1_VERIFY_DUMMY (20260714_143632)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `DLR_P1_VERIFY_DUMMY` |
+| lane / parent / role | `A` / `PRODUCTION` / `candidate` |
+| profile_id | - |
+| subsystem | adx |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1.2 / 20% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach |
+| Signer | verify_p01 |
+| Checklist | `kb/decisions/20260714_143632_DLR_P1_VERIFY_DUMMY_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Lookup_Tag (20260714_143633)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `Lookup_Tag` |
+| lane / parent / role | `A` / `PRODUCTION` / `candidate` |
+| profile_id | - |
+| subsystem | htf |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1.1 / 22% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach |
+| Signer | verify_lookup |
+| Checklist | `kb/decisions/20260714_143633_Lookup_Tag_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P1BASE_adx_01 (20260714_144322)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `Challenger_P1BASE_adx_01` |
+| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
+| profile_id | prof_Challenger_P1BASE_adx_01 |
+| subsystem | adx |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1.1 / 22% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach |
+| Signer | p2_smoke |
+| Checklist | `kb/decisions/20260714_144322_Challenger_P1BASE_adx_01_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P1BASE_adx_01 (20260714_144345)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `Challenger_P1BASE_adx_01` |
+| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
+| profile_id | prof_Challenger_P1BASE_adx_01 |
+| subsystem | adx |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1.1 / 22% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach |
+| Signer | p2_smoke |
+| Checklist | `kb/decisions/20260714_144345_Challenger_P1BASE_adx_01_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P1BASE_adx_02 (20260714_144416)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **ALTERNATE** |
+| Preset | `Challenger_P1BASE_adx_02` |
+| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
+| profile_id | prof_Challenger_P1BASE_adx_02 |
+| subsystem | - |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1 / 25% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | dd_breach |
+| Signer | p2_smoke2 |
+| Checklist | `kb/decisions/20260714_144416_Challenger_P1BASE_adx_02_Alternate.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P2_VERIFY_ALT (20260714_145618)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **ALTERNATE** |
+| Preset | `Challenger_P2_VERIFY_ALT` |
+| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
+| profile_id | prof_Challenger_P2_VERIFY_ALT |
+| subsystem | adx |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1.45 / 18.5% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | dd_breach |
+| Signer | dlr_p2_verify |
+| Checklist | `kb/decisions/20260714_145618_Challenger_P2_VERIFY_ALT_Alternate.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P2_VERIFY_REJ (20260714_145619)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `Challenger_P2_VERIFY_REJ` |
+| lane / parent / role | `B` / `Candidate_X2` / `challenger` |
+| profile_id | prof_Challenger_P2_VERIFY_REJ |
+| subsystem | - |
+| run_id | `(unknown - fill from kb/runs)` |
+| PF / DD | 1 / 25% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach |
+| Signer | dlr_p2_verify |
+| Checklist | `kb/decisions/20260714_145619_Challenger_P2_VERIFY_REJ_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Candidate_DLR_P3_A (20260714_150516)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **REJECT** |
+| Preset | `Candidate_DLR_P3_A` |
+| lane / parent / role | `A` / `PRODUCTION` / `candidate` |
+| profile_id | prof_Candidate_DLR_P3_A |
+| subsystem | adx |
+| run_id | `20260101_Candidate_DLR_P3_A_p3smoke` |
+| PF / DD | 1.41 / 19.5% |
+| G1 | FAIL (bench PF 1.36 / DD 18%) |
+| failure_reason | dd_breach |
+| Signer | dlr_p3_smoke |
+| Checklist | `kb/decisions/20260714_150516_Candidate_DLR_P3_A_Reject.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+
+## AER-P6 / DLR-P1 - Challenger_P1BASE_p3smoke_01 (20260714_150517)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **ALTERNATE** |
+| Preset | `Challenger_P1BASE_p3smoke_01` |
+| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
+| profile_id | prof_Challenger_P1BASE_p3smoke_01 |
+| subsystem | adx |
+| run_id | `20260101_Challenger_P1BASE_p3smoke_01_p3smoke` |
+| PF / DD | 1.38 / 17.5% |
+| G1 | PASS (bench PF 1.36 / DD 18%) |
+| failure_reason | dd_breach |
+| Signer | dlr_p3_smoke |
+| Checklist | `kb/decisions/20260714_150517_Challenger_P1BASE_p3smoke_01_Alternate.md` |
+| Notes |  |
+
+**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**

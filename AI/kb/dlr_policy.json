@@ -1,0 +1,19 @@
+{
+  "schema": "fema_dlr_p3_policy_v0",
+  "updated": "2026-07-14",
+  "default_lane": "A",
+  "escalate_b_after_a_fails": 2,
+  "max_lane_a_per_wave": 3,
+  "max_lane_b_per_cycle": 1,
+  "overnight_default": "A_only",
+  "lane_b_requires_human": true,
+  "preferred_b_parent": "P1-BASELINE",
+  "promote": {
+    "authority": "human",
+    "tool": "ops/tester_queue/decision.ps1",
+    "path": "AER-P6",
+    "auto_promote": false,
+    "note": "decision.ps1 writes checklist only — never swaps Terminal A / PRODUCTION.set"
+  },
+  "note": "DLR-P3: EL7 defaults Lane A. After N consecutive A non-promotes in lookback, advisor recommends 1× B from roster. Never overnight-default B. Never auto-promote."
+}
