@@ -1,0 +1,20 @@
+﻿{
+    "schema":  "fema_dlr_p2_profile_v0",
+    "profile_id":  "prof_Challenger_P2_VERIFY_ALT",
+    "preset":  "Challenger_P2_VERIFY_ALT",
+    "parent":  "P1-BASELINE",
+    "lane_origin":  "B",
+    "role":  "challenger",
+    "window":  "2026.01.01-2026.07.31",
+    "symbol":  "EURUSD",
+    "pf":  1.45,
+    "dd":  18.5,
+    "g1_pass":  false,
+    "status":  "alternate",
+    "failure_reason":  "dd_breach",
+    "run_id":  "(unknown - fill from kb/runs)",
+    "eligible_lane_b":  true,
+    "subsystem":  "adx",
+    "notes":  "",
+    "updated_utc":  "2026-07-14T13:56:18.3546908Z"
+}

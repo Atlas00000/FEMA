@@ -20,7 +20,7 @@ Never point demo health at tester CSVs. Never run heavy optimizers on the same t
 
 ## Paths (Terminal B)
 
-[`discovery_paths.json`](discovery_paths.json) — install `C:\MT5_FEMA_Discovery`, data hash `0E1EDD...`. Launch **refuses** Terminal A (`D0E8...`).
+[`discovery_paths.json`](discovery_paths.json) — install `C:\MT5 Discovery`, data hash `158041E5...`. Launch **refuses** Terminal A (`D0E8...`).
 
 ## Queue
 

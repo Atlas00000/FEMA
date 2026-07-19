@@ -728,5 +728,59 @@
       "net": 261.25
     },
     "path": "runs/20260101_Candidate_X2_bcc8b9b0/"
+  },
+  {
+    "run_id": "20260101_PRODUCTION_bcc8b9b0",
+    "registered_at": "2026-07-15T08:24:54Z",
+    "role": "candidate",
+    "preset": "PRODUCTION",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 111,
+      "profit_factor": 1.4479,
+      "win_rate": 0.7838,
+      "net": 271.12
+    },
+    "path": "runs/20260101_PRODUCTION_bcc8b9b0/"
+  },
+  {
+    "run_id": "20260101_PRODUCTION_bcc8b9b0_02",
+    "registered_at": "2026-07-15T08:25:43Z",
+    "role": "candidate",
+    "preset": "PRODUCTION",
+    "window": {
+      "start": "2026.01.01",
+      "end": "2026.07.31"
+    },
+    "metrics": {
+      "n": 111,
+      "profit_factor": 1.4479,
+      "win_rate": 0.7838,
+      "net": 271.12
+    },
+    "path": "runs/20260101_PRODUCTION_bcc8b9b0_02/"
+  },
+  {
+    "run_id": "20210101_P1-BASELINE_60e646e5",
+    "registered_at": "2026-07-15T11:30:00Z",
+    "role": "other",
+    "preset": "P1-BASELINE",
+    "window": {
+      "start": "2021.01.01",
+      "end": "2025.12.31"
+    },
+    "metrics": {
+      "n": 687,
+      "profit_factor": 2.21,
+      "win_rate": 0.9578,
+      "net": 936.62,
+      "max_dd_balance_pct": 36.14
+    },
+    "path": "runs/20210101_P1-BASELINE_60e646e5/",
+    "status": "documented",
+    "task_id": "ERG-P0"
   }
 ]

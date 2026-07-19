@@ -1,0 +1,3 @@
+AI/data/erg/p0_p1_baseline_2021_2025/P1-BASELINE_2021_2025_baskets.csv
+MT5 Backtest report (operator screenshot) — deal metrics in metrics.json
+doc/ERG_P0_baseline_pack.md

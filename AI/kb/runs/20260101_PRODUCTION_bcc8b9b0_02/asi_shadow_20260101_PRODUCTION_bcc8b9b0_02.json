@@ -1,0 +1,89 @@
+{
+  "schema": "fema_asi_shadow_run_v1",
+  "computed_at": "2026-07-17T06:59:38Z",
+  "asi_track": "tep",
+  "baskets_path": "AI/data/live/latest_baskets.csv",
+  "model_path": "AI/kb/asi/tep_model.pkl",
+  "threshold": 0.580541,
+  "deposit": 400.0,
+  "shadow": {
+    "n": 111,
+    "skip_n": 8,
+    "skip_rate": 0.0721,
+    "steamroller_precision": 0.25,
+    "steamroller_recall": 0.0833,
+    "false_skip_winners": 6,
+    "skipped_steamrollers": 2,
+    "net_skipped": 8.0,
+    "net_kept": 263.12,
+    "kept_pf": 1.4769,
+    "kept_n": 103,
+    "kept_wr": 0.7864,
+    "threshold": 0.580541,
+    "skipped_pnl": 8.0,
+    "dd_all_pct": 18.14,
+    "dd_if_skipped_pct": 18.37,
+    "dd_delta_pct": -0.23,
+    "baseline": {
+      "n": 111,
+      "profit_factor": 1.4479,
+      "win_rate": 0.7838,
+      "net": 271.12,
+      "steamroller_rate": 0.2162
+    },
+    "kept": {
+      "n": 103,
+      "profit_factor": 1.4769,
+      "win_rate": 0.7864,
+      "net": 263.12,
+      "steamroller_rate": 0.2136
+    },
+    "net_delta": -8.0
+  },
+  "kill": {
+    "status": "kill",
+    "action": "retune_threshold_or_stop",
+    "reasons": [
+      "precision 25.0% < 30%",
+      "false_skip_winners 6 > 2.0x steamrollers 2",
+      "net_skipped +8.00 > 0 (cutting winners)"
+    ],
+    "gates": {
+      "max_false_win_ratio": 2.0,
+      "min_steamroller_precision": 0.3,
+      "max_skip": 0.12
+    }
+  },
+  "skipped_ids": [
+    "32",
+    "33",
+    "34",
+    "35",
+    "50",
+    "67",
+    "70",
+    "75"
+  ],
+  "proba_summary": {
+    "min": 0.1442,
+    "max": 0.6409,
+    "mean": 0.4842,
+    "p90": 0.5683
+  },
+  "run_id": "20260101_PRODUCTION_bcc8b9b0_02",
+  "preset": "PRODUCTION",
+  "role": "candidate",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "run_metrics": {
+    "n": 111,
+    "profit_factor": 1.4479,
+    "win_rate": 0.7838,
+    "net": 271.12,
+    "tp_hit_rate": 0.7838,
+    "open_first": "2026.01.02 09:09:15",
+    "open_last": "2026.07.12 23:41:02"
+  }
+}

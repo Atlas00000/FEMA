@@ -1,0 +1,20 @@
+﻿{
+    "schema":  "fema_dlr_p2_profile_v0",
+    "profile_id":  "prof_Challenger_P2_VERIFY_REJ",
+    "preset":  "Challenger_P2_VERIFY_REJ",
+    "parent":  "Candidate_X2",
+    "lane_origin":  "B",
+    "role":  "challenger",
+    "window":  "2026.01.01-2026.07.31",
+    "symbol":  "EURUSD",
+    "pf":  1,
+    "dd":  25,
+    "g1_pass":  false,
+    "status":  "reject",
+    "failure_reason":  "pf_breach",
+    "run_id":  "(unknown - fill from kb/runs)",
+    "eligible_lane_b":  true,
+    "subsystem":  "",
+    "notes":  "",
+    "updated_utc":  "2026-07-14T13:56:19.8705877Z"
+}

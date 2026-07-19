@@ -1,0 +1,42 @@
+{
+  "run_id": "20260101_PRODUCTION_bcc8b9b0_02",
+  "base_run_id": "20260101_PRODUCTION_bcc8b9b0",
+  "registered_at": "2026-07-15T08:25:43Z",
+  "preset": "PRODUCTION",
+  "preset_slug": "PRODUCTION",
+  "symbol": "EURUSD",
+  "timeframe": "M5",
+  "window": {
+    "start": "2026.01.01",
+    "end": "2026.07.31"
+  },
+  "window_hash": "bcc8b9b0",
+  "role": "candidate",
+  "baskets_path": "AI/data/live/latest_baskets.csv",
+  "ea_run_id": "20260101_000000_EURUSD_20260707",
+  "metrics": {
+    "n": 111,
+    "profit_factor": 1.4479,
+    "win_rate": 0.7838,
+    "net": 271.12,
+    "tp_hit_rate": 0.7838,
+    "open_first": "2026.01.02 09:09:15",
+    "open_last": "2026.07.12 23:41:02"
+  },
+  "status": "recorded",
+  "notes": "Terminal B reinstall smoke 2026-07-15",
+  "schema": "fema_run_v1",
+  "asi_shadow": {
+    "schema": "fema_asi_shadow_stamp_v1",
+    "computed_at": "2026-07-17T06:59:38Z",
+    "skip_n": 8,
+    "skip_rate": 0.0721,
+    "skipped_pnl": 8.0,
+    "dd_if_skipped_pct": 18.37,
+    "dd_all_pct": 18.14,
+    "false_skip_winners": 6,
+    "steamroller_precision": 0.25,
+    "kill_status": "kill",
+    "path": "AI/kb/runs/20260101_PRODUCTION_bcc8b9b0_02/asi_shadow_20260101_PRODUCTION_bcc8b9b0_02.json"
+  }
+}

@@ -23,27 +23,52 @@ New-Item -ItemType Directory -Force -Path $Incoming | Out-Null
 
 $AppData = $env:APPDATA
 $candidates = @()
+$pattern = "EURUSD_${Magic}_baskets.csv"
+$src = $null
 
 if ($Source -eq "demo") {
     $candidates += Join-Path $AppData "MetaQuotes\Terminal\Common\Files\FEMA_AI"
     Get-ChildItem (Join-Path $AppData "MetaQuotes\Terminal") -Directory -ErrorAction SilentlyContinue | ForEach-Object {
         $candidates += Join-Path $_.FullName "MQL5\Files\FEMA_AI"
     }
-} else {
-    Get-ChildItem (Join-Path $AppData "MetaQuotes\Tester") -Directory -ErrorAction SilentlyContinue | ForEach-Object {
-        Get-ChildItem $_.FullName -Recurse -Directory -Filter "FEMA_AI" -ErrorAction SilentlyContinue | ForEach-Object {
-            $candidates += $_.FullName
+    foreach ($dir in $candidates) {
+        $p = Join-Path $dir $pattern
+        if (Test-Path $p) {
+            $src = Get-Item $p
+            break
         }
     }
-}
-
-$pattern = "EURUSD_${Magic}_baskets.csv"
-$src = $null
-foreach ($dir in $candidates) {
-    $p = Join-Path $dir $pattern
-    if (Test-Path $p) {
-        $src = Get-Item $p
-        break
+} else {
+    # Prefer Terminal B data_hash from discovery_paths.json when present; else newest baskets.csv
+    $preferredHash = $null
+    $dp = Join-Path $RepoRoot "ops\tester_queue\discovery_paths.json"
+    if (Test-Path $dp) {
+        try { $preferredHash = (Get-Content -Raw $dp | ConvertFrom-Json).terminal_b.data_hash } catch {}
+    }
+    $found = New-Object System.Collections.Generic.List[object]
+    Get-ChildItem (Join-Path $AppData "MetaQuotes\Tester") -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+        Get-ChildItem $_.FullName -Recurse -Directory -Filter "FEMA_AI" -ErrorAction SilentlyContinue | ForEach-Object {
+            $p = Join-Path $_.FullName $pattern
+            if (Test-Path $p) {
+                $item = Get-Item $p
+                $found.Add([PSCustomObject]@{
+                    Path = $item.FullName
+                    Length = $item.Length
+                    LastWriteTimeUtc = $item.LastWriteTimeUtc
+                    HashHint = $_.FullName
+                }) | Out-Null
+            }
+        }
+    }
+    if ($preferredHash) {
+        $hit = @($found | Where-Object { $_.HashHint -like "*\$preferredHash\*" } | Sort-Object LastWriteTimeUtc -Descending)
+        if ($hit.Count -gt 0) {
+            $src = Get-Item $hit[0].Path
+        }
+    }
+    if (-not $src -and $found.Count -gt 0) {
+        $best = @($found | Sort-Object LastWriteTimeUtc -Descending)[0]
+        $src = Get-Item $best.Path
     }
 }
 

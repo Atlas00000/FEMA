@@ -1,0 +1,66 @@
+; ID: ERG_P1_bexit_BSL20_01
+; parent=P1-BASELINE | axis=basket_exit | phase=ERG-P1-02
+; thesis: Tighter BSL $20 plateau probe (run AFTER BSL25 scored)
+; research_window=2021.01.01-2025.12.31 | canon=2026.01.01-2026.07.31
+; compare_to: ERG_P1_bexit_BSL25_01 (need plateau, not knife-edge)
+; diff vs P1: InpUseBasketSl=true, InpBasketSl=20
+; status: ready_to_test
+; LOAD: Inputs -> ERG_P1_bexit_BSL20_01.set | Terminal B | Every tick | $400
+
+InpEmaFastPeriod=20
+InpEmaTrendPeriod=100
+InpAtrPeriod=14
+InpAtrMultiplier=1.0
+InpGridLevels=5
+InpGridRebuildAtr=0.25
+InpBasketTp=10.0
+InpUsePerTradeSl=false
+InpSlAtrMultiplier=1.5
+InpSlUseGridStructure=true
+InpUseBasketSl=true
+InpBasketSl=20.0
+InpMaxBasketBars=0
+InpMaxEntryDepth=5
+InpCooldownBarsAfterSl=1
+InpUseHtfFilter=false
+InpHtfTimeframe=16385
+InpHtfEmaPeriod=200
+InpHtfRequireSlope=false
+InpUseAdxGate=false
+InpAdxMax=30.0
+InpAdxPeriod=14
+InpUseAtrPercentileGate=false
+InpAtrPercentileMax=70.0
+InpAtrPercentileLookback=100
+InpUseEmaSepGate=false
+InpEmaSepAtrMult=3.0
+InpUseEmaSlopeGate=false
+InpUseBreakoutSuspend=false
+InpBreakoutAtrMult=3.0
+InpUseSessionBlockNo23=false
+InpUseSessionBlockFriClose=false
+InpUseSessionBlockSunOpen=false
+InpUseSessionWhitelistLdnNy=false
+InpUseExitRte=false
+InpRteMinProfit=0.0
+InpUseBasketTrail=false
+InpBasketTrailActivatePct=50.0
+InpBasketTrailGivebackPct=50.0
+InpUseCandleConfirm=false
+InpUseRsiExhaustionFilter=false
+InpRsiPeriod=14
+InpRsiBuyMax=70.0
+InpRsiSellMin=30.0
+InpBaseLot=0.01
+InpRiskPercent=0.0
+InpSpreadFilter=true
+InpMaxSpreadPoints=30
+InpSlippagePoints=5
+InpCooldownBars=1
+InpMaxOpenTrades=5
+InpMinEquity=0.0
+InpMagicNumber=20260707
+InpTradePermission=0
+InpManualSuspend=false
+InpLogMode=0
+InpUseAiEventLog=true
