@@ -1,0 +1,59 @@
+{
+  "schema": "fema_asi_shadow_report_v1",
+  "computed_at": "2026-07-17T15:20:05Z",
+  "splits": {
+    "train": 1489,
+    "calibrate": 217,
+    "promote_frozen": 0,
+    "other": 0
+  },
+  "all": {
+    "schema": "fema_asi_shadow_v0",
+    "method": "impulse_score >= train p90 (provisional \u2014 replaced in P2)",
+    "skip_quantile": 0.9,
+    "threshold": 28.4835,
+    "skip_rate": 0.0962,
+    "skipped": {
+      "n": 175,
+      "net": -64.37,
+      "steamroller_n": 52,
+      "winner_n": 123
+    },
+    "kept": {
+      "n": 1645,
+      "net": 106.83,
+      "steamroller_n": 469,
+      "winner_n": 1176
+    },
+    "skipped_steamrollers": 52,
+    "skipped_winners_false": 123,
+    "net_if_skipped": -64.37,
+    "net_kept": 106.83,
+    "net_all": 42.46
+  },
+  "calibrate": {
+    "schema": "fema_asi_shadow_v0",
+    "method": "impulse_score >= train p90 (provisional \u2014 replaced in P2)",
+    "skip_quantile": 0.9,
+    "threshold": 28.4835,
+    "skip_rate": 0.0737,
+    "skipped": {
+      "n": 16,
+      "net": 55.39,
+      "steamroller_n": 3,
+      "winner_n": 13
+    },
+    "kept": {
+      "n": 201,
+      "net": 18.91,
+      "steamroller_n": 58,
+      "winner_n": 143
+    },
+    "skipped_steamrollers": 3,
+    "skipped_winners_false": 13,
+    "net_if_skipped": 55.39,
+    "net_kept": 18.91,
+    "net_all": 74.3
+  },
+  "promote_frozen": null
+}

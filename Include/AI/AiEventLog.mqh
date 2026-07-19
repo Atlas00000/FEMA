@@ -201,7 +201,9 @@ private:
       if(gross_loss > 0.0)
          pf = gross_win / gross_loss;
       else
-         pf = (gross_win > 0.0 ? 99.0 : 0.0);
+         pf = (gross_win > 0.0 ? 5.0 : 0.0);  // was 99 — caps TEP feature scale
+      if(pf > 5.0)
+         pf = 5.0;
      }
 
    void              PushRoll(const double profit)
@@ -533,6 +535,16 @@ public:
 
       PushRoll(profit);
       m_track.active = false;
+     }
+
+   bool              CopyActiveOpenFeatures(SFemaAiFeatures &out,
+                                            ENUM_FEMA_DIRECTION &dir) const
+     {
+      if(!m_track.active)
+         return false;
+      out = m_track.open_features;
+      dir = m_track.direction;
+      return true;
      }
 
    void              OnBasketAborted()

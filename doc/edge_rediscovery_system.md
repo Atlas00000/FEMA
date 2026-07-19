@@ -2,9 +2,10 @@
 
 **Role:** Snapshot + high-level changelog for the Discover plane (not the phase runbook).  
 **Charter:** MT5 executes · Python scores · Human promotes  
-**Updated:** 2026-07-14  
+**Updated:** 2026-07-19  
 **Phase detail (Lane A):** [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) (`AER-P0`…`P6`)  
 **Dual-lane MVP:** [`dual_lane_rediscovery_pipeline.md`](dual_lane_rediscovery_pipeline.md) (`DLR-P0`…`P3` **complete**)  
+**Adaptive selection:** [`adaptive_selection_phases.md`](adaptive_selection_phases.md) (`ASI-P5` **COMPLETE** · Mode B Alternate · `ASI-P4` Alternate)
 **Subsystem audit:** [`../system_audit.md`](../system_audit.md) · MAIN 2  
 **EL7 runbook:** [`../AI/kb/el7_rediscovery_runbook.md`](../AI/kb/el7_rediscovery_runbook.md)  
 **Policy:** [`../AI/kb/dlr_policy.json`](../AI/kb/dlr_policy.json) · roster [`../AI/kb/challenger_roster.md`](../AI/kb/challenger_roster.md)
@@ -128,7 +129,61 @@ powershell -File ops\tester_queue\decision.ps1 -Preset <id> -PF <pf> -DD <dd> -D
 
 ## High-level changelog
 
-Append a dated bullet when the Discover plane's shape or status changes (not every script tweak — that stays in git / AER / DLR phase docs).
+Append a dated bullet when the Discover plane's shape or status changes (not every script tweak — that stays in git / AER / DLR / ASI phase docs).
+
+### 2026-07-17 — Adaptive selection charter (`ASI-P0`)
+
+- Adopted **ASI**: selection over signal rewrite; structural failures accepted; adaptive tracks (TEP first).
+- Success contract: G1 PF/DD hard · n ≥90% / WR ±3pp soft · skip budget ≤10% · anti-overfit split.
+- Search-map bookkeeping: shadow = `asi_track=tep`; P4 tags `regime_extra` / `tep` until dedicated keys.
+- Code deferred to `ASI-P1` (labels). PRODUCTION unchanged.
+
+### 2026-07-17 — ASI labels + dataset (`ASI-P1`)
+
+- **`python -m fema_ops asi-build`**: steamroller labels · TEP open features · train/calibrate/promote splits.
+- Artifacts: `AI/kb/asi/` (1315 research baskets + 111 promote-frozen PRODUCTION canon).
+- Shadow v0: provisional impulse p90 skip (replaced in P2). No live gate.
+
+### 2026-07-17 — ASI offline TEP (`ASI-P2`)
+
+- **`python -m fema_ops asi-train`**: logistic TEP · threshold **0.581** locked on calibrate (5% skip).
+- Ablation: TEP full beats static + ADX-only on calibrate AUC.
+- Promote-frozen one-shot: kept PF **1.48** vs **1.45** baseline (n=103); not tuned on this window.
+- Artifacts: `tep_model_card.json` · `asi_shadow_tep.json`. No live gate until P4.
+
+### 2026-07-17 — ASI shadow ops (`ASI-P3`)
+
+- `asi-shadow` / `asi-review` · postrun hook · scorecard ASI columns.
+- Review pack vs PRODUCTION canon: **kill** — precision 25%, false-skip winners dominate, DD proxy 18.14→18.37.
+- **P4 live gate blocked** until retune or stop. No auto-promote.
+
+### 2026-07-17 — ASI guardrail gate (`ASI-P4`)
+
+- Philosophy: **guardrails not gates** — holdout kill=ok, not beat PRODUCTION on demo.
+- `long_train` split: fit 2020–2024 · holdout 2025 · threshold **~0.605** · skip **2.8%** · precision **67%**.
+- Wired: `InpUseAiTepGate` · `AiTepGate.mqh` · `asi-export-gate` · preset `ASI_P4_TEP_GUARD_01`.
+- Pack: [`ASI_P4_tep_guard_pack.md`](ASI_P4_tep_guard_pack.md). Next: Terminal B test · 2018+ basket collect.
+
+### 2026-07-19 — ASI-P4 Alternate (keep guardrail)
+
+- Tester 2018–2025: PF~1.00 · DD~55% · gate healthy (`p~0.65`, not lock).
+- Window addendum: **2026.01–07 PF 1.38** · **2025–2026.07 PF 1.20** — competitive, still not promote.
+- Decision: **Alternate** — keep `ASI_P4_TEP_GUARD_01` as opt-in guardrail candidate; do not replace PRODUCTION.
+- Profile `prof_ASI_P4_TEP_GUARD_01` · decision `AI/kb/decisions/20260719_ASI_P4_TEP_GUARD_01_Alternate.md`.
+
+### 2026-07-19 — ASI mid-basket warn (`ASI-P5`) started
+
+- Offline MVP: depth-milestone rows · `y_mid_steamroller` · warn-only ADR.
+- CLI: `asi-mid-build` / `asi-mid-train` / `asi-mid-review` / `asi-export-mid-gate` / `asi-mid-shadow`.
+- Stacked presets: `ASI_P5_TEP_MID_01` (Mode A) · `ASI_P5_TEP_MID_BSL_01` (Mode B early close, EA v1.28).
+- Pack: [`ASI_P5_midbasket_pack.md`](ASI_P5_midbasket_pack.md).
+
+### 2026-07-19 — ASI-P5 Mode B Alternate (own preset)
+
+- Promote bar: **survival across regimes** (not beat PRODUCTION).
+- Tester deposit 400: **2026** PF1.44 / DD~19%; **2018–25** PF1.35 / DD~23% (vs TEP-only ~PF1 / DD~55%).
+- Decision: **Alternate** — keep `ASI_P5_TEP_MID_BSL_01` separate from Mode A / P4 / PRODUCTION.
+- Profile `prof_ASI_P5_TEP_MID_BSL_01` · decision `AI/kb/decisions/20260719_ASI_P5_TEP_MID_BSL_01_Alternate.md`.
 
 ### 2026-07-13 — Initial AER MVP live
 
@@ -156,6 +211,10 @@ Append a dated bullet when the Discover plane's shape or status changes (not eve
 
 | Path | Role |
 | ---- | ---- |
+| `doc/adaptive_selection_phases.md` | ASI tracks · P5 Complete · Mode B Alternate |
+| `doc/ASI_P4_tep_guard_pack.md` | TEP guardrail gate |
+| `doc/ASI_P5_midbasket_pack.md` | Mid-basket Mode A + Mode B (own presets) |
+| `doc/backtesting_guide.md` | Systematic backtesting · anti-overfitting · time splits · FEMA gates |
 | `doc/dual_lane_rediscovery_pipeline.md` | Hybrid dual-lane · `DLR-P0`…`P3` MVP |
 | `AI/kb/challenger_roster.md` | Lane B bases + naming |
 | `AI/kb/dlr_policy.json` | EL7 dual-lane rules |

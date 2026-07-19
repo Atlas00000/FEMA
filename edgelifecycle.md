@@ -3,7 +3,7 @@
 **Status:** **Active charter** — two build groups: **A Infra** → **B Lifecycle**  
 **Job:** Keep a **living edge** honest: Discovery finds it, the EA runs it frozen, health watches death, Discovery returns only when the edge is dead.  
 **Live / demo now:** `FEMA_EURUSD_M5_PRODUCTION` unchanged (see [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)).  
-**Operator glance:** [`AI/STATUS.md`](AI/STATUS.md) · **System map:** [`system_audit.md`](system_audit.md) · **Weekly plan:** [`edgescaleuproadmap.md`](edgescaleuproadmap.md) · **Vision / bands:** [`edgecontainment.md`](edgecontainment.md) · **Ops plane:** [`infrascaleup.md`](infrascaleup.md)
+**Operator glance:** [`AI/STATUS.md`](AI/STATUS.md) · **System map:** [`system_audit.md`](system_audit.md) · **Weekly plan:** [`edgescaleuproadmap.md`](edgescaleuproadmap.md) · **Vision / bands:** [`edgecontainment.md`](edgecontainment.md) · **Ops plane:** [`infrascaleup.md`](infrascaleup.md) · **ASI:** [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md)
 
 > **Spine doc.** Other AI notes are chapters/archives — not competing roadmaps.  
 > [`aiedgecontain.md`](aiedgecontain.md) = offline contain experiments · [`ai_enhance.md`](ai_enhance.md) = legacy beat-2026.

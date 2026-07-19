@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -353,6 +354,303 @@ def cmd_factory(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_asi_build(args: argparse.Namespace) -> int:
+    from paths import KB_DIR, LATEST_BASKETS
+
+    from fema_ops.asi.dataset import build_asi_dataset, write_asi_build_report
+
+    default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2020_2025_uid.csv"
+    if not default_baskets.is_file():
+        alt = _AI_DIR / "data" / "EURUSD_baskets_2020_2025.csv"
+        default_baskets = alt if alt.is_file() else default_baskets
+
+    baskets = Path(args.baskets) if args.baskets else default_baskets
+    if not baskets.is_file():
+        print(f"asi_build_fail: baskets not found: {baskets}", file=sys.stderr)
+        return 1
+
+    promote = Path(args.promote_baskets) if args.promote_baskets else LATEST_BASKETS
+    if args.no_promote:
+        promote = None
+
+    out_dir = Path(args.out_dir) if args.out_dir else KB_DIR / "asi"
+    try:
+        report = build_asi_dataset(
+            baskets_path=baskets,
+            out_dir=out_dir,
+            promote_baskets_path=promote,
+            split_profile=args.split_profile,
+            skip_quantile=float(args.skip_quantile),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_build_fail: {e}", file=sys.stderr)
+        return 1
+
+    md = write_asi_build_report(report)
+    (out_dir / "asi_build_report.md").write_text(md, encoding="utf-8")
+    print(md)
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_train(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.tep import train_tep, write_tep_train_report
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = train_tep(
+            asi_dir=asi_dir,
+            max_skip=float(args.max_skip),
+            strict=bool(args.strict),
+            guardrail=bool(args.guardrail),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_train_fail: {e}", file=sys.stderr)
+        return 1
+
+    md = write_tep_train_report(report)
+    (asi_dir / "tep_train_report.md").write_text(md, encoding="utf-8")
+    print(md)
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_export_gate(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.gate import export_tep_gate
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = export_tep_gate(
+            asi_dir=asi_dir,
+            out_name=args.out_name,
+            require_guardrail_ok=not bool(args.force),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_export_gate_fail: {e}", file=sys.stderr)
+        return 1
+
+    print(
+        f"asi_export_gate ok threshold={report.get('threshold')} "
+        f"n_features={report.get('n_features')} guardrail={report.get('guardrail_kill')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    print(
+        "copy gate to MT5 Common\\Files\\FEMA_AI\\tep_gate_v1.txt "
+        "(or path in InpAiTepGateFile) before enabling InpUseAiTepGate"
+    )
+    return 0
+
+
+def cmd_asi_mid_build(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.midbasket import build_mid_dataset
+
+    default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2018_2025.csv"
+    if not default_baskets.is_file():
+        default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2020_2025_uid.csv"
+    baskets = Path(args.baskets) if args.baskets else default_baskets
+    if not baskets.is_file():
+        print(f"asi_mid_build_fail: baskets not found: {baskets}", file=sys.stderr)
+        return 1
+    out_dir = Path(args.out_dir) if args.out_dir else KB_DIR / "asi"
+    try:
+        report = build_mid_dataset(
+            baskets_path=baskets,
+            out_dir=out_dir,
+            split_profile=args.split_profile,
+            min_depth=int(args.min_depth),
+            max_warn=int(args.max_warn),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_mid_build_fail: {e}", file=sys.stderr)
+        return 1
+    print(
+        f"asi_mid_build ok mid_rows={report.get('n_mid_rows')} "
+        f"steam_rate={report.get('y_mid_steamroller_rate')} "
+        f"counts={report.get('counts')}"
+    )
+    return 0
+
+
+def cmd_asi_mid_train(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.midbasket import train_mid
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = train_mid(asi_dir=asi_dir, max_skip=float(args.max_skip))
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_mid_train_fail: {e}", file=sys.stderr)
+        return 1
+    cal = report.get("calibrate") or {}
+    print(
+        f"asi_mid_train ok thr={report.get('threshold')} "
+        f"auc={report.get('auc_calibrate')} "
+        f"warn_n={cal.get('skip_n')} prec={cal.get('precision')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_mid_review(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.midbasket import write_mid_review
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        pack = write_mid_review(asi_dir)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_mid_review_fail: {e}", file=sys.stderr)
+        return 1
+    print(f"asi_mid_review: {pack.get('verdict_hint')}")
+    for k, v in (pack.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_export_mid_gate(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.midbasket import export_mid_gate
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = export_mid_gate(asi_dir=asi_dir, out_name=args.out_name)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_export_mid_gate_fail: {e}", file=sys.stderr)
+        return 1
+    print(
+        f"asi_export_mid_gate ok threshold={report.get('threshold')} "
+        f"n_features={report.get('n_features')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    print(
+        "copy mid gate to MT5 Common\\Files\\FEMA_AI\\mid_gate_v1.txt "
+        "(or path in InpAiMidGateFile) before enabling InpUseAiMidWarn"
+    )
+    return 0
+
+
+def cmd_asi_mid_shadow(args: argparse.Namespace) -> int:
+    from fema_ops.asi.midbasket import score_mid_baskets, score_mid_run
+
+    try:
+        if args.run_id:
+            report = score_mid_run(args.run_id)
+        elif args.baskets:
+            report = score_mid_baskets(Path(args.baskets))
+            out = Path(args.out) if args.out else Path("asi_mid_shadow_ad_hoc.json")
+            out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+            report.setdefault("paths", {})["ad_hoc"] = str(out)
+        else:
+            print("asi_mid_shadow_fail: need --run-id or --baskets", file=sys.stderr)
+            return 1
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_mid_shadow_fail: {e}", file=sys.stderr)
+        return 1
+
+    sh = report.get("shadow") or {}
+    print(
+        f"asi_mid_shadow ok warn_n={sh.get('warn_n')} rate={sh.get('warn_rate')} "
+        f"prec={sh.get('precision_rows')} net={sh.get('net_warned_baskets')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_shadow(args: argparse.Namespace) -> int:
+    from fema_ops.asi.shadow import score_baskets, score_run
+
+    try:
+        if args.run_id:
+            report = score_run(args.run_id, deposit=float(args.deposit))
+        elif args.baskets:
+            report = score_baskets(Path(args.baskets), deposit=float(args.deposit))
+            out = Path(args.out) if args.out else Path("asi_shadow_ad_hoc.json")
+            out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+            report.setdefault("paths", {})["ad_hoc"] = str(out)
+        else:
+            print("asi_shadow_fail: need --run-id or --baskets", file=sys.stderr)
+            return 1
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_shadow_fail: {e}", file=sys.stderr)
+        return 1
+
+    sh = report.get("shadow") or {}
+    kill = report.get("kill") or {}
+    print(
+        f"asi_shadow run={report.get('run_id') or 'ad_hoc'} "
+        f"skip_n={sh.get('skip_n')} skip_rate={sh.get('skip_rate')} "
+        f"skipped_pnl={sh.get('skipped_pnl')} "
+        f"dd_all={sh.get('dd_all_pct')} dd_if_skipped={sh.get('dd_if_skipped_pct')} "
+        f"kill={kill.get('status')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_review(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.shadow import (
+        patch_model_card_kill,
+        write_guardrail_review_pack,
+        write_review_pack,
+    )
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        if args.guardrail:
+            pack = write_guardrail_review_pack(asi_dir=asi_dir)
+        else:
+            pack = write_review_pack(
+                production_run_id=args.production_run_id,
+                asi_dir=asi_dir,
+            )
+        patch_model_card_kill(asi_dir)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_review_fail: {e}", file=sys.stderr)
+        return 1
+
+    kill = pack.get("kill") or {}
+    print(f"asi_review mode={'guardrail' if args.guardrail else 'production'} "
+          f"kill={kill.get('status')} action={kill.get('action')}")
+    if args.guardrail:
+        h = pack.get("holdout") or {}
+        print(
+            f"holdout n={h.get('n')} skip_n={h.get('skip_n')} "
+            f"precision={h.get('steamroller_precision')} "
+            f"net_skipped={h.get('net_skipped')} "
+            f"dd_delta={h.get('dd_delta_pct')}%"
+        )
+    else:
+        c = pack.get("compare") or {}
+        print(
+            f"baseline PF={c.get('baseline_pf')} n={c.get('baseline_n')} | "
+            f"kept PF={c.get('kept_pf')} n={c.get('kept_n')} | "
+            f"skip_n={c.get('skip_n')} skipped_pnl={c.get('skipped_pnl')} "
+            f"dd {c.get('dd_all_pct')}->{c.get('dd_if_skipped_pct')}"
+        )
+    print(f"verdict: {pack.get('verdict_hint')}")
+    for k, v in (pack.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
 def cmd_el7_dry_run(args: argparse.Namespace) -> int:
     from fema_ops.el7 import el7_dry_run
 
@@ -642,6 +940,155 @@ def main(argv: list[str] | None = None) -> int:
         help="Write Presets/*.set (default is dry-run)",
     )
     fac.set_defaults(func=cmd_factory)
+
+    ab = sub.add_parser(
+        "asi-build",
+        help="ASI-P1: labeled dataset + splits + baseline + shadow v0",
+    )
+    ab.add_argument(
+        "--baskets",
+        default=None,
+        help="Research baskets CSV (default AI/data/EURUSD_baskets_2020_2025_uid.csv)",
+    )
+    ab.add_argument(
+        "--promote-baskets",
+        default=None,
+        help="Canonical G1 baskets (default AI/data/live/latest_baskets.csv)",
+    )
+    ab.add_argument("--no-promote", action="store_true", help="Omit promote_frozen split")
+    ab.add_argument(
+        "--out-dir",
+        default=None,
+        help="Output dir (default AI/kb/asi)",
+    )
+    ab.add_argument(
+        "--skip-quantile",
+        type=float,
+        default=0.90,
+        help="Train percentile for shadow v0 skip threshold",
+    )
+    ab.add_argument(
+        "--split-profile",
+        choices=("default", "long"),
+        default="default",
+        help="long = train 2018-2024, calibrate 2025 (guardrail holdout)",
+    )
+    ab.set_defaults(func=cmd_asi_build)
+
+    at = sub.add_parser(
+        "asi-train",
+        help="ASI-P2: train offline TEP + calibrate threshold + ablation",
+    )
+    at.add_argument("--asi-dir", default=None, help="ASI kb dir (default AI/kb/asi)")
+    at.add_argument(
+        "--max-skip",
+        type=float,
+        default=0.10,
+        help="Max skip rate on calibrate (default 0.10; use 0.05 with --strict)",
+    )
+    at.add_argument(
+        "--strict",
+        action="store_true",
+        help="Strict retune: precision-first threshold scan",
+    )
+    at.add_argument(
+        "--guardrail",
+        action="store_true",
+        help="Guardrail candidate: skip promote-frozen downgrade",
+    )
+    at.set_defaults(func=cmd_asi_train)
+
+    aeg = sub.add_parser(
+        "asi-export-gate",
+        help="ASI-P4: export tep_gate_v1.txt for MT5 InpUseAiTepGate",
+    )
+    aeg.add_argument("--asi-dir", default=None)
+    aeg.add_argument("--out-name", default="tep_gate_v1.txt")
+    aeg.add_argument(
+        "--force",
+        action="store_true",
+        help="Export even if guardrail review is not ok",
+    )
+    aeg.set_defaults(func=cmd_asi_export_gate)
+
+    amb = sub.add_parser(
+        "asi-mid-build",
+        help="ASI-P5: expand baskets into mid-depth steamroller warn rows",
+    )
+    amb.add_argument("--baskets", default=None)
+    amb.add_argument("--out-dir", default=None)
+    amb.add_argument(
+        "--split-profile",
+        choices=("default", "long"),
+        default="long",
+        help="long = train 2018-2024, calibrate 2025 (default for P5)",
+    )
+    amb.add_argument("--min-depth", type=int, default=2)
+    amb.add_argument("--max-warn", type=int, default=5)
+    amb.set_defaults(func=cmd_asi_mid_build)
+
+    amt = sub.add_parser(
+        "asi-mid-train",
+        help="ASI-P5: train mid-basket P(eventual steamroller) warn model",
+    )
+    amt.add_argument("--asi-dir", default=None)
+    amt.add_argument(
+        "--max-skip",
+        type=float,
+        default=0.15,
+        help="Max warn rate on calibrate mid-rows (default 0.15)",
+    )
+    amt.set_defaults(func=cmd_asi_mid_train)
+
+    amr = sub.add_parser(
+        "asi-mid-review",
+        help="ASI-P5: mid-basket warn review pack",
+    )
+    amr.add_argument("--asi-dir", default=None)
+    amr.set_defaults(func=cmd_asi_mid_review)
+
+    aem = sub.add_parser(
+        "asi-export-mid-gate",
+        help="ASI-P5: export mid_gate_v1.txt for MT5 InpUseAiMidWarn (warn-only)",
+    )
+    aem.add_argument("--asi-dir", default=None)
+    aem.add_argument("--out-name", default="mid_gate_v1.txt")
+    aem.set_defaults(func=cmd_asi_export_mid_gate)
+
+    ams = sub.add_parser(
+        "asi-mid-shadow",
+        help="ASI-P5: score run/baskets with mid-warn shadow (no live action)",
+    )
+    ams.add_argument("--run-id", default=None)
+    ams.add_argument("--baskets", default=None)
+    ams.add_argument("--out", default=None)
+    ams.set_defaults(func=cmd_asi_mid_shadow)
+
+    ash = sub.add_parser(
+        "asi-shadow",
+        help="ASI-P3: score run/baskets with TEP shadow (no live skip)",
+    )
+    ash.add_argument("--run-id", default=None, help="Registered run id under AI/kb/runs/")
+    ash.add_argument("--baskets", default=None, help="Basket CSV path (ad-hoc)")
+    ash.add_argument("--out", default=None, help="Ad-hoc output JSON path")
+    ash.add_argument("--deposit", type=float, default=400.0)
+    ash.set_defaults(func=cmd_asi_shadow)
+
+    arv = sub.add_parser(
+        "asi-review",
+        help="ASI-P3: review pack TEP shadow vs PRODUCTION canon",
+    )
+    arv.add_argument("--asi-dir", default=None)
+    arv.add_argument(
+        "--production-run-id",
+        default="20260101_PRODUCTION_bcc8b9b0_02",
+    )
+    arv.add_argument(
+        "--guardrail",
+        action="store_true",
+        help="Guardrail review on calibrate holdout (not production parity)",
+    )
+    arv.set_defaults(func=cmd_asi_review)
 
     e7 = sub.add_parser(
         "el7-dry-run",

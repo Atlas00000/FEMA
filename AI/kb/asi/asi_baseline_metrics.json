@@ -1,0 +1,56 @@
+{
+  "schema": "fema_asi_baseline_v1",
+  "computed_at": "2026-07-17T15:20:05Z",
+  "source_baskets": "AI/data/EURUSD_baskets_2018_2025.csv",
+  "source_meta": {
+    "schema": "fema_baskets_v2",
+    "run_id": "20180101_000000_EURUSD_20260707",
+    "magic": "20260707",
+    "ea_build": "1.26",
+    "fingerprint": "adx_gate=on;bsl=25;preset=PRODUCTION",
+    "created": "2018.01.01 00:00:00"
+  },
+  "promote_baskets": null,
+  "promote_meta": null,
+  "labels": {
+    "n": 1820,
+    "y_steamroller": 521,
+    "y_steamroller_rate": 0.2863,
+    "y_fail": 625,
+    "y_fail_rate": 0.3434,
+    "label_class": {
+      "winner": 1299,
+      "steamroller_bsl": 521
+    }
+  },
+  "promote_labels": null,
+  "metrics": {
+    "all": {
+      "n": 1820,
+      "profit_factor": 1.0032,
+      "win_rate": 0.7137,
+      "net": 42.46,
+      "steamroller_rate": 0.2863
+    },
+    "train": {
+      "n": 1489,
+      "profit_factor": 0.9762,
+      "win_rate": 0.7085,
+      "net": -258.66,
+      "steamroller_rate": 0.2915
+    },
+    "calibrate": {
+      "n": 217,
+      "profit_factor": 1.0486,
+      "win_rate": 0.7189,
+      "net": 74.3,
+      "steamroller_rate": 0.2811
+    },
+    "promote_frozen": {
+      "n": 0,
+      "profit_factor": 0.0,
+      "win_rate": 0.0,
+      "net": 0.0
+    }
+  }
+}

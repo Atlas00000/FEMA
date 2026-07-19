@@ -1,0 +1,94 @@
+{
+  "schema": "fema_asi_guardrail_review_v1",
+  "computed_at": "2026-07-17T16:51:24Z",
+  "philosophy": "guardrails_not_gates",
+  "split_profile": "long_train",
+  "threshold": 0.649755,
+  "holdout": {
+    "slice": "holdout_calibrate",
+    "window": "2025.01.01\u20132025.12.31",
+    "n": 217,
+    "skip_n": 5,
+    "skip_rate": 0.023,
+    "steamroller_precision": 0.6,
+    "false_skip_winners": 2,
+    "skipped_steamrollers": 3,
+    "net_skipped": -55.13,
+    "dd_all_pct": 48.93,
+    "dd_if_skipped_pct": 45.71,
+    "dd_delta_pct": 3.22,
+    "kept_pf": 1.0891,
+    "kept_n": 212,
+    "kill_status": "ok"
+  },
+  "slices": [
+    {
+      "slice": "holdout_calibrate",
+      "window": "2025.01.01\u20132025.12.31",
+      "n": 217,
+      "skip_n": 5,
+      "skip_rate": 0.023,
+      "steamroller_precision": 0.6,
+      "false_skip_winners": 2,
+      "skipped_steamrollers": 3,
+      "net_skipped": -55.13,
+      "dd_all_pct": 48.93,
+      "dd_if_skipped_pct": 45.71,
+      "dd_delta_pct": 3.22,
+      "kept_pf": 1.0891,
+      "kept_n": 212,
+      "kill_status": "ok"
+    },
+    {
+      "slice": "train_in_sample",
+      "window": "2018.01.01\u20132024.12.31",
+      "n": 1489,
+      "skip_n": 17,
+      "skip_rate": 0.0114,
+      "steamroller_precision": 0.8235,
+      "false_skip_winners": 3,
+      "skipped_steamrollers": 14,
+      "net_skipped": -320.71,
+      "dd_all_pct": 83.86,
+      "dd_if_skipped_pct": 61.39,
+      "dd_delta_pct": 22.47,
+      "kept_pf": 1.0059,
+      "kept_n": 1472,
+      "kill_status": "ok"
+    },
+    {
+      "slice": "research_full",
+      "window": "research_full",
+      "n": 1820,
+      "skip_n": 29,
+      "skip_rate": 0.0159,
+      "steamroller_precision": 0.6552,
+      "false_skip_winners": 10,
+      "skipped_steamrollers": 19,
+      "net_skipped": -375.69,
+      "dd_all_pct": 96.56,
+      "dd_if_skipped_pct": 69.69,
+      "dd_delta_pct": 26.87,
+      "kept_pf": 1.0332,
+      "kept_n": 1791,
+      "kill_status": "ok"
+    }
+  ],
+  "kill": {
+    "status": "ok",
+    "action": "continue_shadow",
+    "reasons": [],
+    "gates": {
+      "max_false_win_ratio": 2.0,
+      "min_steamroller_precision": 0.3,
+      "max_skip": 0.12
+    }
+  },
+  "operator_signoff": {
+    "guardrails_acceptable": null,
+    "signed_by": null,
+    "signed_at": null,
+    "notes": "Pass = holdout kill ok or empty_skip observe; not production PF parity"
+  },
+  "verdict_hint": "GUARDRAIL OK \u2014 holdout passes kill gates"
+}

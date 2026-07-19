@@ -63,6 +63,16 @@ if (Test-Path $runsDir) {
         $g1Pf = ($pf -ge $benchPf)
         $g1Pass = $g1Pf -and ($dd -gt 0) -and ($dd -le $benchDd)
         $decision = if ($dd -le 0) { "need_dd" } elseif ($g1Pass) { "g1_pass_review" } elseif (-not $g1Pf) { "reject_pf" } else { "reject_dd" }
+        $asiSkipN = $null
+        $asiSkippedPnl = $null
+        $asiDdIf = $null
+        $asiKill = ""
+        if ($m.asi_shadow) {
+            $asiSkipN = $m.asi_shadow.skip_n
+            $asiSkippedPnl = $m.asi_shadow.skipped_pnl
+            $asiDdIf = $m.asi_shadow.dd_if_skipped_pct
+            $asiKill = [string]$m.asi_shadow.kill_status
+        }
         $runRows += [ordered]@{
             run_id = $m.run_id
             preset = $m.preset
@@ -78,6 +88,10 @@ if (Test-Path $runsDir) {
             g1_pass = $g1Pass
             decision = $decision
             registered_at = $m.registered_at
+            asi_skip_n = $asiSkipN
+            asi_skipped_pnl = $asiSkippedPnl
+            asi_dd_if_skipped = $asiDdIf
+            asi_kill = $asiKill
         }
     }
 }
@@ -105,7 +119,7 @@ $payload = [ordered]@{
         }
     })
     candidates = $runRows
-    note = "NO AUTO-PROMOTE. DLR-P1 tags: lane/parent/role. Keep PRODUCTION unless human signs."
+    note = "NO AUTO-PROMOTE. DLR tags + ASI-P3 shadow cols when asi_shadow stamped. Keep PRODUCTION unless human signs."
 }
 ($payload | ConvertTo-Json -Depth 8) | Set-Content $jsonPath -Encoding utf8
 
@@ -118,13 +132,13 @@ $md.Add("**PRODUCTION bench:** PF >= **$benchPf** and max DD bal <= **$benchDd%*
 $md.Add("") | Out-Null
 $md.Add("**NO AUTO-PROMOTE** - human checklist only. Lane A = lock retune; Lane B = roster parent. Untagged legacy → A/PRODUCTION.") | Out-Null
 $md.Add("") | Out-Null
-$md.Add("| lane | parent | role | profile | preset | subsystem | PF | DD% | G1 | decision |") | Out-Null
-$md.Add("| --- | --- | --- | --- | --- | --- | ---: | ---: | --- | --- |") | Out-Null
+$md.Add("| lane | parent | role | profile | preset | subsystem | PF | DD% | G1 | decision | asi_skip_n | asi_skipped_pnl | asi_dd_if | asi_kill |") | Out-Null
+$md.Add("| --- | --- | --- | --- | --- | --- | ---: | ---: | --- | --- | ---: | ---: | ---: | --- |") | Out-Null
 foreach ($r in $runRows) {
-    $md.Add("| $($r.lane) | $($r.parent) | $($r.role) | $($r.profile_id) | $($r.preset) | $($r.subsystem) | $($r.pf) | $($r.dd) | $(if ($r.g1_pass) { 'PASS' } else { 'FAIL' }) | $($r.decision) |") | Out-Null
+    $md.Add("| $($r.lane) | $($r.parent) | $($r.role) | $($r.profile_id) | $($r.preset) | $($r.subsystem) | $($r.pf) | $($r.dd) | $(if ($r.g1_pass) { 'PASS' } else { 'FAIL' }) | $($r.decision) | $($r.asi_skip_n) | $($r.asi_skipped_pnl) | $($r.asi_dd_if_skipped) | $($r.asi_kill) |") | Out-Null
 }
 if ($runRows.Count -eq 0) {
-    $md.Add("| _(none in lookback)_ | | | | | | | | | |") | Out-Null
+    $md.Add("| _(none in lookback)_ | | | | | | | | | | | | | |") | Out-Null
 }
 $md.Add("") | Out-Null
 $md.Add("Queue finished (lookback): $($jobs.Count)") | Out-Null

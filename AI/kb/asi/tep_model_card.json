@@ -1,0 +1,147 @@
+{
+  "schema": "fema_asi_tep_model_card_v1",
+  "computed_at": "2026-07-17T16:51:21Z",
+  "phase": "ASI-P2_strict",
+  "label": "y_steamroller",
+  "model_kind": "logistic_regression",
+  "tune_mode": "strict",
+  "guardrail_mode": true,
+  "variant_selected": "tep_full",
+  "feature_names": [
+    "ema_sep_atr",
+    "ema_slope",
+    "atr",
+    "adx",
+    "dist_ema_trend_atr",
+    "spread_points",
+    "hour",
+    "dow",
+    "roll_wr",
+    "roll_pf",
+    "roll_n",
+    "ema_slope_accel",
+    "adx_accel",
+    "atr_expansion_rate",
+    "consecutive_same_dir",
+    "dist_ema_abs",
+    "impulse_score",
+    "adx_x_atr_expand",
+    "slope_x_consec",
+    "impulse_x_dist",
+    "is_sell"
+  ],
+  "threshold": 0.649755,
+  "calibrate_threshold": 0.649755,
+  "threshold_guard": null,
+  "skip_quantile_cal": 0.023,
+  "max_skip": 0.08,
+  "auc_train": 0.5752,
+  "auc_calibrate": 0.5525,
+  "calibrate_eval": {
+    "n": 217,
+    "skip_n": 5,
+    "skip_rate": 0.023,
+    "steamroller_precision": 0.6,
+    "steamroller_recall": 0.0492,
+    "false_skip_winners": 2,
+    "skipped_steamrollers": 3,
+    "net_skipped": -55.13,
+    "net_kept": 129.43,
+    "kept_pf": 1.0891,
+    "kept_n": 212,
+    "kept_wr": 0.7264,
+    "threshold": 0.649755
+  },
+  "promote_frozen_eval": null,
+  "ablation": {
+    "tep_full_auc_cal": 0.5525,
+    "static_only_auc_cal": 0.5561,
+    "adx_only_auc_cal": 0.5371,
+    "tep_beats_static": false,
+    "tep_beats_adx": true,
+    "prefer_policy": true,
+    "winner": "tep_full"
+  },
+  "ablation_detail": {
+    "tep_full": {
+      "auc_train": 0.5752,
+      "auc_calibrate": 0.5525,
+      "calibrate_eval": {
+        "n": 217,
+        "skip_n": 5,
+        "skip_rate": 0.023,
+        "steamroller_precision": 0.6,
+        "steamroller_recall": 0.0492,
+        "false_skip_winners": 2,
+        "skipped_steamrollers": 3,
+        "net_skipped": -55.13,
+        "net_kept": 129.43,
+        "kept_pf": 1.0891,
+        "kept_n": 212,
+        "kept_wr": 0.7264,
+        "threshold": 0.649755
+      }
+    },
+    "static_only": {
+      "auc_train": 0.5519,
+      "auc_calibrate": 0.5561,
+      "calibrate_eval": {
+        "n": 217,
+        "skip_n": 0,
+        "skip_rate": 0.0,
+        "steamroller_precision": 0.0,
+        "steamroller_recall": 0.0,
+        "false_skip_winners": 0,
+        "skipped_steamrollers": 0,
+        "net_skipped": 0,
+        "net_kept": 74.3,
+        "kept_pf": 1.0486,
+        "kept_n": 217,
+        "kept_wr": 0.7189,
+        "threshold": 1.0
+      }
+    },
+    "adx_only": {
+      "auc_train": 0.5331,
+      "auc_calibrate": 0.5371,
+      "calibrate_eval": {
+        "n": 217,
+        "skip_n": 0,
+        "skip_rate": 0.0,
+        "steamroller_precision": 0.0,
+        "steamroller_recall": 0.0,
+        "false_skip_winners": 0,
+        "skipped_steamrollers": 0,
+        "net_skipped": 0,
+        "net_kept": 74.3,
+        "kept_pf": 1.0486,
+        "kept_n": 217,
+        "kept_wr": 0.7189,
+        "threshold": 1.0
+      }
+    }
+  },
+  "impulse_v0_calibrate": {
+    "skip_rate": 0.0737,
+    "skipped_steamrollers": 3,
+    "false_skip_winners": 13
+  },
+  "non_goals": [
+    "no live MT5 gate (P4)",
+    "no threshold tune on promote_frozen",
+    "permissive skip only"
+  ],
+  "next": "ASI-P4 after operator signs asi_p3_review_pack",
+  "kill_criteria": {
+    "schema": "fema_asi_kill_v1",
+    "rules": [
+      "skip_rate > 12% \u2192 kill",
+      "steamroller_precision < 30% \u2192 kill",
+      "false_skip_winners > 2\u00d7 skipped_steamrollers \u2192 kill",
+      "net_skipped > 0 (cutting winners) \u2192 kill",
+      "empty skip \u2192 observe only"
+    ],
+    "action_on_kill": "retune threshold on calibrate or stop Track A gate",
+    "updated_at": "2026-07-17T16:51:24Z"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "fema_mid_gate_v1",
+  "exported_at": "2026-07-19T17:21:18Z",
+  "phase": "ASI-P5",
+  "policy": "warn_only_default",
+  "threshold": 0.659223,
+  "intercept": -0.02232995450457867,
+  "feature_names": [
+    "ema_sep_atr",
+    "ema_slope",
+    "atr",
+    "adx",
+    "dist_ema_trend_atr",
+    "spread_points",
+    "hour",
+    "dow",
+    "roll_wr",
+    "roll_pf",
+    "roll_n",
+    "ema_slope_accel",
+    "adx_accel",
+    "atr_expansion_rate",
+    "consecutive_same_dir",
+    "dist_ema_abs",
+    "impulse_score",
+    "warn_depth",
+    "is_sell"
+  ],
+  "paths": {
+    "txt": "mid_gate_v1.txt"
+  }
+}

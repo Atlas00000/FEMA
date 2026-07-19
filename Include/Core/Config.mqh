@@ -95,4 +95,13 @@ input ENUM_FEMA_LOG_MODE InpLogMode = FEMA_LOG_DETAILED;
 input group "=== AI0: Event Pipeline ==="
 input bool   InpUseAiEventLog = true;  // CSV features/events/labels to Common\\Files\\FEMA_AI
 
+input group "=== ASI-P4: TEP guardrail gate (opt-in) ==="
+input bool   InpUseAiTepGate = false;  // Skip new basket when offline TEP P(steamroller) >= threshold
+input string InpAiTepGateFile = "FEMA_AI\\tep_gate_v1.txt";  // Common\\Files or MQL5\\Files
+
+input group "=== ASI-P5: Mid-basket steamroller warn (opt-in) ==="
+input bool   InpUseAiMidWarn = false;  // Log mid_warn when P(eventual steamroller|depth) >= threshold
+input string InpAiMidGateFile = "FEMA_AI\\mid_gate_v1.txt";  // Common\\Files or MQL5\\Files
+input bool   InpUseAiMidEarlyBsl = false;  // Mode B: close basket early when mid_warn fires (requires MidWarn)
+
 #endif

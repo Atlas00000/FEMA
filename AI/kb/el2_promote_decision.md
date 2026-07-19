@@ -240,21 +240,40 @@ EL2 polish: gates as data Â· KB scorecard regenerated Â· this decision file 
 
 **PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
 
-## AER-P6 / DLR-P1 - Challenger_P1BASE_p3smoke_01 (20260714_150517)
+## ERG-P7 - ERG_P3_adx_ADX28_01 (20260716_190850)
 
 | Field | Value |
 | ----- | ----- |
-| Decision | **ALTERNATE** |
-| Preset | `Challenger_P1BASE_p3smoke_01` |
-| lane / parent / role | `B` / `P1-BASELINE` / `challenger` |
-| profile_id | prof_Challenger_P1BASE_p3smoke_01 |
+| Decision | **REJECT** |
+| Preset | `ERG_P3_adx_ADX28_01` |
+| lane / parent / role | `B` / `P1-BASELINE→BSL25` / `research_survivor` |
+| profile_id | `prof_ERG_P3_adx_ADX28_01` |
 | subsystem | adx |
-| run_id | `20260101_Challenger_P1BASE_p3smoke_01_p3smoke` |
-| PF / DD | 1.38 / 17.5% |
-| G1 | PASS (bench PF 1.36 / DD 18%) |
-| failure_reason | dd_breach |
-| Signer | dlr_p3_smoke |
-| Checklist | `kb/decisions/20260714_150517_Challenger_P1BASE_p3smoke_01_Alternate.md` |
-| Notes |  |
+| run_id | `mt5_canon_20260716` |
+| PF / DD | 1.21 / 24.62% (eq 27.27%) · Net +147.86 · 443 trades |
+| G1 | FAIL dual (bench PF 1.36 / DD 18%) |
+| failure_reason | pf_breach (also dd_breach) |
+| Signer | human (ERG-P7) |
+| Checklist | `kb/decisions/20260716_190850_ERG_P3_adx_ADX28_01_Reject.md` |
+| Pack | `doc/ERG_P6_g1_pack.md` |
+| Notes | 2021–25 research centre; canon underperforms PRODUCTION (ADX30). Not a lock successor. |
 
-**PRODUCTION lock unchanged unless Decision=PROMOTE and human completes AER-P6-03/04.**
+**PRODUCTION lock unchanged.** Keep `PRODUCTION.set` (BSL25 + ADX30 + TP10).
+
+## ASI-P5 Mode B - ASI_P5_TEP_MID_BSL_01 (20260719)
+
+| Field | Value |
+| ----- | ----- |
+| Decision | **ALTERNATE** (own preset) |
+| Preset | `ASI_P5_TEP_MID_BSL_01` |
+| lane / parent / role | `A` / `ASI_P5_TEP_MID_01` / `guardrail_candidate` |
+| profile_id | `prof_ASI_P5_TEP_MID_BSL_01` |
+| subsystem | regime_extra |
+| Promote bar | Survival across regimes (not beat PRODUCTION) |
+| 2026 | PF 1.44 · DD~19% · net +200 · n 409 |
+| 2018–25 | PF 1.35 · DD~23% · net +162 · n 517 |
+| Checklist | `kb/decisions/20260719_ASI_P5_TEP_MID_BSL_01_Alternate.md` |
+| Pack | `doc/ASI_P5_midbasket_pack.md` |
+| Notes | Keep separate from Mode A / P4 / PRODUCTION. |
+
+**PRODUCTION lock unchanged.**

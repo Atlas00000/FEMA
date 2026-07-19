@@ -1,0 +1,22 @@
+{
+  "schema": "fema_asi_shadow_tep_v1",
+  "computed_at": "2026-07-17T16:51:21Z",
+  "model_card": "tep_model_card.json",
+  "calibrate": {
+    "n": 217,
+    "skip_n": 5,
+    "skip_rate": 0.023,
+    "steamroller_precision": 0.6,
+    "steamroller_recall": 0.0492,
+    "false_skip_winners": 2,
+    "skipped_steamrollers": 3,
+    "net_skipped": -55.13,
+    "net_kept": 129.43,
+    "kept_pf": 1.0891,
+    "kept_n": 212,
+    "kept_wr": 0.7264,
+    "threshold": 0.649755,
+    "method": "TEP P(steamroller) >= 0.649755"
+  },
+  "promote_frozen": null
+}

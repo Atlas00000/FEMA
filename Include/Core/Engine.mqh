@@ -24,6 +24,8 @@
 #include "../Utils/Helpers.mqh"
 #include "../Utils/Logger.mqh"
 #include "../AI/AiEventLog.mqh"
+#include "../AI/AiTepGate.mqh"
+#include "../AI/AiMidWarn.mqh"
 
 #define FEMA_EXECUTION_FAILURE_LIMIT 3
 
@@ -70,8 +72,11 @@ private:
    CFemaValidation       m_validation;
    CFemaExecution        m_execution;
    CFemaAiEventLog       m_ai_log;
+   CFemaAiTepGate        m_tep_gate;
+   CFemaAiMidWarn        m_mid_warn;
    int                   m_prev_position_count;
    bool                  m_pause_new_active;
+   int                   m_tep_pending_consec;
 
    void              WireLoggers()
      {
@@ -87,6 +92,8 @@ private:
       m_basket.SetLogger(m_logger);
       m_exit.SetLogger(m_logger);
       m_ai_log.SetLogger(m_logger);
+      m_tep_gate.SetLogger(m_logger);
+      m_mid_warn.SetLogger(m_logger);
      }
 
    string            JsonEsc(const string s) const
@@ -128,7 +135,12 @@ private:
       j += "\"InpBaseLot\":" + DoubleToString(InpBaseLot, 2) + ",";
       j += "\"InpMagicNumber\":" + IntegerToString((long)InpMagicNumber) + ",";
       j += "\"InpReadPauseNewFlag\":" + (InpReadPauseNewFlag ? "true" : "false") + ",";
-      j += "\"InpUseAiEventLog\":" + (InpUseAiEventLog ? "true" : "false");
+      j += "\"InpUseAiEventLog\":" + (InpUseAiEventLog ? "true" : "false") + ",";
+      j += "\"InpUseAiTepGate\":" + (InpUseAiTepGate ? "true" : "false") + ",";
+      j += "\"InpAiTepGateFile\":\"" + JsonEsc(InpAiTepGateFile) + "\",";
+      j += "\"InpUseAiMidWarn\":" + (InpUseAiMidWarn ? "true" : "false") + ",";
+      j += "\"InpAiMidGateFile\":\"" + JsonEsc(InpAiMidGateFile) + "\",";
+      j += "\"InpUseAiMidEarlyBsl\":" + (InpUseAiMidEarlyBsl ? "true" : "false");
       j += "}\r\n";
       return j;
      }
@@ -301,18 +313,30 @@ private:
 
       const int age_bars = m_basket.AgeBars();
       if(m_exit.CloseBasket(m_basket, m_execution, reason))
-        {
-         m_ai_log.OnBasketClosed(profit, reason, age_bars);
-         m_basket.OnBasketClosed();
-         m_grid.ResetFiredFlags();
+         FinalizeBasketClose(profit, reason, age_bars);
+     }
 
-         if(reason == FEMA_EXIT_BASKET_SL)
-            m_filters.StartCooldownAfterSl();
-         else
-            m_filters.StartCooldownAfterTp();
+   void              FinalizeBasketClose(const double profit,
+                                         const ENUM_FEMA_EXIT_REASON reason,
+                                         const int age_bars)
+     {
+      SFemaAiFeatures closed_open;
+      ENUM_FEMA_DIRECTION closed_dir = FEMA_DIR_NONE;
+      const bool had_open = m_ai_log.CopyActiveOpenFeatures(closed_open, closed_dir);
+      m_ai_log.OnBasketClosed(profit, reason, age_bars);
+      if(had_open && InpUseAiTepGate && m_tep_gate.Loaded())
+         m_tep_gate.OnBasketClosed(closed_open, closed_dir, m_tep_pending_consec);
+      if(had_open && (InpUseAiMidWarn || InpUseAiMidEarlyBsl) && m_mid_warn.Loaded())
+         m_mid_warn.OnBasketClosed(closed_open, closed_dir);
+      m_basket.OnBasketClosed();
+      m_grid.ResetFiredFlags();
 
-         m_state.StartCooldown(iTime(_Symbol, _Period, 0));
-        }
+      if(reason == FEMA_EXIT_BASKET_SL || reason == FEMA_EXIT_MID_WARN)
+         m_filters.StartCooldownAfterSl();
+      else
+         m_filters.StartCooldownAfterTp();
+
+      m_state.StartCooldown(iTime(_Symbol, _Period, 0));
      }
 
    void              ProcessEntry()
@@ -359,6 +383,20 @@ private:
             if(regime_reason != "" && m_logger.IsDetailed())
                m_logger.LogInfo("Entry blocked: " + regime_reason);
             return;
+           }
+
+         if(InpUseAiTepGate && m_tep_gate.Loaded())
+           {
+            double tep_proba = 0.0;
+            if(m_tep_gate.ShouldSkip(features, tep_proba))
+              {
+               const string tep_reason = "tep_gate;p=" + DoubleToString(tep_proba, 4);
+               m_ai_log.LogSkip(features, tep_reason);
+               if(m_logger.IsDetailed())
+                  m_logger.LogInfo("Entry blocked: " + tep_reason);
+               return;
+              }
+            m_tep_pending_consec = m_tep_gate.LastConsecutive();
            }
         }
 
@@ -427,6 +465,8 @@ private:
             m_basket.OnBasketStart(iTime(_Symbol, _Period, 0));
             features.basket_id = m_basket.BasketId();
             m_ai_log.OnBasketOpened(m_basket.BasketId(), features);
+            if((InpUseAiMidWarn || InpUseAiMidEarlyBsl) && m_mid_warn.Loaded())
+               m_mid_warn.OnBasketOpened(features);
            }
 
          m_ai_log.OnLegFilled(signal.level_index);
@@ -447,6 +487,35 @@ private:
 
          m_filters.RegisterEntry();
          m_state.RegisterExecutionSuccess();
+
+         if((InpUseAiMidWarn || InpUseAiMidEarlyBsl) && m_mid_warn.Loaded() && signal.level_index >= 2)
+           {
+            double mid_p = 0.0;
+            if(m_mid_warn.ShouldWarn(signal.level_index, mid_p))
+              {
+               const string mid_detail = "p=" + DoubleToString(mid_p, 4) +
+                                         ";depth=" + IntegerToString(signal.level_index);
+               m_ai_log.LogLifecycle("mid_warn", mid_detail);
+
+               if(InpUseAiMidEarlyBsl)
+                 {
+                  const double mid_profit = m_basket.FloatingProfit();
+                  const int mid_age = m_basket.AgeBars();
+                  m_ai_log.LogLifecycle("mid_early_bsl", mid_detail);
+                  if(m_logger.IsDetailed())
+                     m_logger.LogInfo("Mid Mode B early close: " + mid_detail +
+                                      " profit=" + DoubleToString(mid_profit, 2));
+                  if(m_exit.CloseBasket(m_basket, m_execution, FEMA_EXIT_MID_WARN))
+                    {
+                     FinalizeBasketClose(mid_profit, FEMA_EXIT_MID_WARN, mid_age);
+                     return;
+                    }
+                  m_logger.LogWarn("Mid Mode B close incomplete — basket still open");
+                 }
+               else if(m_logger.IsDetailed())
+                  m_logger.LogInfo("Mid-warn (log only): " + mid_detail);
+              }
+           }
 
          if(m_exposure.CountOpenPositions() <= 1)
             m_state.SetInTrade();
@@ -478,7 +547,7 @@ private:
      }
 
 public:
-                     CFemaEngine() : m_prev_position_count(0), m_pause_new_active(false) {}
+                     CFemaEngine() : m_prev_position_count(0), m_pause_new_active(false), m_tep_pending_consec(1) {}
 
    int               OnInit()
      {
@@ -556,6 +625,14 @@ public:
       else
          m_ai_log.WriteRunConfigJson(BuildRunConfigJson());
 
+      if(!m_tep_gate.Init(InpUseAiTepGate, InpAiTepGateFile) && InpUseAiTepGate)
+         m_logger.LogWarn("TEP guardrail gate disabled — check gate file export");
+      if(!m_mid_warn.Init(InpUseAiMidWarn || InpUseAiMidEarlyBsl, InpAiMidGateFile) &&
+         (InpUseAiMidWarn || InpUseAiMidEarlyBsl))
+         m_logger.LogWarn("Mid-warn/Mode B disabled — check mid_gate_v1.txt export");
+      if(InpUseAiMidEarlyBsl && !InpUseAiMidWarn)
+         m_logger.LogInfo("Mode B early BSL on — mid gate loaded for scoring (warn log optional)");
+
       m_pause_new_active = false;
       RefreshPauseNewFlag();
 
@@ -589,6 +666,9 @@ public:
                        " entry=" + entry_summary +
                        " ai_log=" + (InpUseAiEventLog ? "on" : "off") +
                        (InpUseAiEventLog ? (" run_id=" + m_ai_log.RunId()) : "") +
+                       " tep_gate=" + (InpUseAiTepGate ? (m_tep_gate.Loaded() ? "on" : "missing") : "off") +
+                       " mid_warn=" + ((InpUseAiMidWarn || InpUseAiMidEarlyBsl) ? (m_mid_warn.Loaded() ? "on" : "missing") : "off") +
+                       " mid_bsl=" + (InpUseAiMidEarlyBsl ? "on" : "off") +
                        " pause_flag=" + (InpReadPauseNewFlag ? (m_pause_new_active ? "ON" : "armed") : "off") +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),

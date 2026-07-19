@@ -1,0 +1,70 @@
+; ID: ASI_P4_TEP_GUARD_01
+; parent=PRODUCTION | axis=regime_extra | phase=ASI-P4
+; thesis: offline TEP guardrail — skip new basket when P(steamroller) >= threshold
+; diff vs PRODUCTION: InpUseAiTepGate=true (requires FEMA_AI\tep_gate_v1.txt)
+; promote bar: guardrail holdout kill=ok — NOT required to beat demo PRODUCTION PF
+; status: ready_to_test · compile EA v1.26+ before load
+; LOAD: Strategy Tester -> Inputs -> FEMA_EURUSD_M5_ASI_P4_TEP_GUARD_01.set
+; (also in Experts/FEMA/Presets/ASI_P4_TEP_GUARD_01.set)
+
+InpEmaFastPeriod=20
+InpEmaTrendPeriod=100
+InpAtrPeriod=14
+InpAtrMultiplier=1.0
+InpGridLevels=5
+InpGridRebuildAtr=0.25
+InpBasketTp=10.0
+InpUsePerTradeSl=false
+InpSlAtrMultiplier=1.5
+InpSlUseGridStructure=true
+InpUseBasketSl=true
+InpBasketSl=25.0
+InpMaxBasketBars=0
+InpMaxEntryDepth=5
+InpCooldownBarsAfterSl=1
+InpUseHtfFilter=false
+InpHtfTimeframe=16385
+InpHtfEmaPeriod=200
+InpHtfRequireSlope=false
+InpUseAdxGate=true
+InpAdxMax=30.0
+InpAdxPeriod=14
+InpUseAtrPercentileGate=false
+InpAtrPercentileMax=70.0
+InpAtrPercentileLookback=100
+InpUseEmaSepGate=false
+InpEmaSepAtrMult=3.0
+InpUseEmaSlopeGate=false
+InpUseBreakoutSuspend=false
+InpBreakoutAtrMult=3.0
+InpUseSessionBlockNo23=false
+InpUseSessionBlockFriClose=false
+InpUseSessionBlockSunOpen=false
+InpUseSessionWhitelistLdnNy=false
+InpUseExitRte=false
+InpRteMinProfit=0.0
+InpUseBasketTrail=false
+InpBasketTrailActivatePct=50.0
+InpBasketTrailGivebackPct=50.0
+InpUseCandleConfirm=false
+InpUseRsiExhaustionFilter=false
+InpRsiPeriod=14
+InpRsiBuyMax=70.0
+InpRsiSellMin=30.0
+InpBaseLot=0.01
+InpRiskPercent=0.0
+InpSpreadFilter=true
+InpMaxSpreadPoints=30
+InpSlippagePoints=5
+InpCooldownBars=1
+InpMaxOpenTrades=5
+InpMinEquity=0.0
+InpMagicNumber=20260707
+InpTradePermission=0
+InpManualSuspend=false
+InpReadPauseNewFlag=false
+InpPauseNewFlagFile=FEMA_AI\pause_new.flag
+InpLogMode=0
+InpUseAiEventLog=true
+InpUseAiTepGate=true
+InpAiTepGateFile=FEMA_AI\tep_gate_v1.txt

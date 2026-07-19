@@ -42,6 +42,14 @@ try {
         $regArgs += @("--meta", $meta)
     }
     python @regArgs
+    # ASI-P3: TEP shadow on newly registered run (no live skip)
+    $latestRun = Get-ChildItem (Join-Path $RepoRoot "AI\kb\runs") -Directory |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -First 1
+    if ($latestRun) {
+        Write-Host "asi-shadow run_id=$($latestRun.Name)"
+        python -m fema_ops asi-shadow --run-id $latestRun.Name
+    }
     python -m fema_ops gate-polish
     if ($DD -gt 0) {
         $metricsPath = Get-ChildItem (Join-Path $RepoRoot "AI\kb\runs") -Directory |

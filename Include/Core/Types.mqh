@@ -48,7 +48,8 @@ enum ENUM_FEMA_EXIT_REASON
    FEMA_EXIT_BASKET_SL    = 2,
    FEMA_EXIT_BASKET_TIME  = 3,
    FEMA_EXIT_RTE          = 4,
-   FEMA_EXIT_BASKET_TRAIL = 5
+   FEMA_EXIT_BASKET_TRAIL = 5,
+   FEMA_EXIT_MID_WARN     = 6   // ASI-P5 Mode B: early basket close on mid steamroller warn
   };
 
 struct SFemaGridLevel
@@ -111,6 +112,7 @@ string FemaExitReasonToString(const ENUM_FEMA_EXIT_REASON reason)
       case FEMA_EXIT_BASKET_TIME: return "BASKET_TIME";
       case FEMA_EXIT_RTE:         return "RTE";
       case FEMA_EXIT_BASKET_TRAIL: return "BASKET_TRAIL";
+      case FEMA_EXIT_MID_WARN:    return "MID_WARN";
      }
    return "NONE";
   }
