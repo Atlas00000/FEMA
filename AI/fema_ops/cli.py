@@ -571,6 +571,219 @@ def cmd_asi_mid_shadow(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_asi_rec_build(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.recovery import build_rec_dataset
+
+    default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2018_2025.csv"
+    if not default_baskets.is_file():
+        default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2020_2025_uid.csv"
+    baskets = Path(args.baskets) if args.baskets else default_baskets
+    if not baskets.is_file():
+        print(f"asi_rec_build_fail: baskets not found: {baskets}", file=sys.stderr)
+        return 1
+    out_dir = Path(args.out_dir) if args.out_dir else KB_DIR / "asi"
+    try:
+        report = build_rec_dataset(
+            baskets_path=baskets,
+            out_dir=out_dir,
+            split_profile=args.split_profile,
+            min_depth=int(args.min_depth),
+            max_warn=int(args.max_warn),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_rec_build_fail: {e}", file=sys.stderr)
+        return 1
+    print(
+        f"asi_rec_build ok rec_rows={report.get('n_rec_rows')} "
+        f"recover_rate={report.get('y_recover_rate')} "
+        f"counts={report.get('counts')}"
+    )
+    return 0
+
+
+def cmd_asi_rec_train(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.recovery import train_rec
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = train_rec(asi_dir=asi_dir, max_exit_rate=float(args.max_exit_rate))
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_rec_train_fail: {e}", file=sys.stderr)
+        return 1
+    cal = report.get("calibrate") or {}
+    print(
+        f"asi_rec_train ok exit_thr={report.get('exit_threshold')} "
+        f"auc={report.get('auc_calibrate')} "
+        f"exit_n={cal.get('exit_n')} fail_prec={cal.get('fail_precision')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_rec_review(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.recovery import write_rec_review
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        pack = write_rec_review(asi_dir)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_rec_review_fail: {e}", file=sys.stderr)
+        return 1
+    print(f"asi_rec_review: {pack.get('verdict_hint')}")
+    for k, v in (pack.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_rec_shadow(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.recovery import score_rec_baskets
+
+    if not args.baskets:
+        print("asi_rec_shadow_fail: need --baskets", file=sys.stderr)
+        return 1
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = score_rec_baskets(Path(args.baskets), asi_dir=asi_dir)
+        out = Path(args.out) if args.out else asi_dir / "asi_rec_shadow_ad_hoc.json"
+        out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        report.setdefault("paths", {})["ad_hoc"] = str(out)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_rec_shadow_fail: {e}", file=sys.stderr)
+        return 1
+
+    sh = report.get("shadow") or {}
+    print(
+        f"asi_rec_shadow ok exit_n={sh.get('exit_n')} rate={sh.get('exit_rate')} "
+        f"fail_prec={sh.get('fail_precision_rows')} net={sh.get('net_of_exit_baskets')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_regime_build(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.regime import build_regime_pack
+
+    default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2018_2025.csv"
+    if not default_baskets.is_file():
+        default_baskets = _AI_DIR / "data" / "EURUSD_baskets_2020_2025_uid.csv"
+    baskets = Path(args.baskets) if args.baskets else default_baskets
+    if not baskets.is_file():
+        print(f"asi_regime_build_fail: baskets not found: {baskets}", file=sys.stderr)
+        return 1
+    lock = Path(args.lock_baskets) if args.lock_baskets else _AI_DIR / "data" / "live" / "latest_baskets.csv"
+    if not lock.is_file():
+        lock = None
+    out_dir = Path(args.out_dir) if args.out_dir else KB_DIR / "asi"
+    try:
+        report = build_regime_pack(
+            baskets_path=baskets,
+            out_dir=out_dir,
+            lock_baskets_path=lock,
+            split_profile=args.split_profile,
+            deposit=float(args.deposit),
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_regime_build_fail: {e}", file=sys.stderr)
+        return 1
+    ps = report.get("policy_summary") or {}
+    print(
+        f"asi_regime_build ok n={report.get('n_baskets')} "
+        f"allow={ps.get('allow')} caution={ps.get('caution')} skip={ps.get('skip')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_regime_shadow(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.regime import score_regime_shadow
+
+    if not args.baskets:
+        print("asi_regime_shadow_fail: need --baskets", file=sys.stderr)
+        return 1
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = score_regime_shadow(
+            Path(args.baskets),
+            asi_dir=asi_dir,
+            deposit=float(args.deposit),
+        )
+        out = Path(args.out) if args.out else asi_dir / "asi_shadow_regime.json"
+        out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        report.setdefault("paths", {})["shadow"] = str(out)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_regime_shadow_fail: {e}", file=sys.stderr)
+        return 1
+
+    sh = report.get("shadow") or {}
+    print(
+        f"asi_regime_shadow ok skip_n={sh.get('skip_n')} rate={sh.get('skip_rate')} "
+        f"steam_prec={sh.get('steamroller_precision')} net={sh.get('net_skipped')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_regime_review(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.regime import write_regime_review
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        pack = write_regime_review(asi_dir)
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_regime_review_fail: {e}", file=sys.stderr)
+        return 1
+    print(f"asi_regime_review: {pack.get('verdict_hint')}")
+    for k, v in (pack.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    return 0
+
+
+def cmd_asi_export_regime_gate(args: argparse.Namespace) -> int:
+    from paths import KB_DIR
+
+    from fema_ops.asi.regime import export_regime_gate
+
+    asi_dir = Path(args.asi_dir) if args.asi_dir else KB_DIR / "asi"
+    try:
+        report = export_regime_gate(
+            asi_dir=asi_dir,
+            out_name=args.out_name,
+            include_caution=not args.skip_only,
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"asi_export_regime_gate_fail: {e}", file=sys.stderr)
+        return 1
+    print(
+        f"asi_export_regime_gate ok filters={report.get('filters')} "
+        f"n={report.get('n_filters')}"
+    )
+    for k, v in (report.get("paths") or {}).items():
+        print(f"wrote {k}: {v}")
+    print(
+        "copy regime gate to MT5 Common\\Files\\FEMA_AI\\regime_gate_v1.txt "
+        "(or path in InpAiRegimeGateFile) before enabling InpUseAiRegimeGate"
+    )
+    return 0
+
+
 def cmd_asi_shadow(args: argparse.Namespace) -> int:
     from fema_ops.asi.shadow import score_baskets, score_run
 
@@ -1063,6 +1276,96 @@ def main(argv: list[str] | None = None) -> int:
     ams.add_argument("--baskets", default=None)
     ams.add_argument("--out", default=None)
     ams.set_defaults(func=cmd_asi_mid_shadow)
+
+    arb = sub.add_parser(
+        "asi-rec-build",
+        help="ASI-P6: expand baskets into recovery-probability mid-depth rows",
+    )
+    arb.add_argument("--baskets", default=None)
+    arb.add_argument("--out-dir", default=None)
+    arb.add_argument(
+        "--split-profile",
+        choices=("default", "long"),
+        default="long",
+        help="long = train 2018-2024, calibrate 2025 (default for P6)",
+    )
+    arb.add_argument("--min-depth", type=int, default=2)
+    arb.add_argument("--max-warn", type=int, default=5)
+    arb.set_defaults(func=cmd_asi_rec_build)
+
+    art = sub.add_parser(
+        "asi-rec-train",
+        help="ASI-P6: train P(recover | open, warn_depth); calibrate low-P exit band",
+    )
+    art.add_argument("--asi-dir", default=None)
+    art.add_argument(
+        "--max-exit-rate",
+        type=float,
+        default=0.15,
+        help="Max early-exit recommend rate on calibrate mid-rows (default 0.15)",
+    )
+    art.set_defaults(func=cmd_asi_rec_train)
+
+    arr = sub.add_parser(
+        "asi-rec-review",
+        help="ASI-P6: recovery probability review pack",
+    )
+    arr.add_argument("--asi-dir", default=None)
+    arr.set_defaults(func=cmd_asi_rec_review)
+
+    ars = sub.add_parser(
+        "asi-rec-shadow",
+        help="ASI-P6: score baskets with recovery low-P exit recommend (shadow only)",
+    )
+    ars.add_argument("--baskets", required=True)
+    ars.add_argument("--asi-dir", default=None)
+    ars.add_argument("--out", default=None)
+    ars.set_defaults(func=cmd_asi_rec_shadow)
+
+    argb = sub.add_parser(
+        "asi-regime-build",
+        help="ASI-P8: classify regimes, scorecard PF/DD, write allow/caution/skip policy",
+    )
+    argb.add_argument("--baskets", default=None)
+    argb.add_argument(
+        "--lock-baskets",
+        default=None,
+        help="PRODUCTION/lock baskets CSV (default: data/live/latest_baskets.csv)",
+    )
+    argb.add_argument("--out-dir", default=None)
+    argb.add_argument("--split-profile", choices=("default", "long"), default="long")
+    argb.add_argument("--deposit", type=float, default=400.0)
+    argb.set_defaults(func=cmd_asi_regime_build)
+
+    args_ = sub.add_parser(
+        "asi-regime-shadow",
+        help="ASI-P8: shadow-skip baskets in policy skip regimes",
+    )
+    args_.add_argument("--baskets", required=True)
+    args_.add_argument("--asi-dir", default=None)
+    args_.add_argument("--out", default=None)
+    args_.add_argument("--deposit", type=float, default=400.0)
+    args_.set_defaults(func=cmd_asi_regime_shadow)
+
+    argr = sub.add_parser(
+        "asi-regime-review",
+        help="ASI-P8: regime intelligence review pack",
+    )
+    argr.add_argument("--asi-dir", default=None)
+    argr.set_defaults(func=cmd_asi_regime_review)
+
+    aerg = sub.add_parser(
+        "asi-export-regime-gate",
+        help="ASI-P8: export regime_gate_v1.txt (caution+skip filters) for MT5",
+    )
+    aerg.add_argument("--asi-dir", default=None)
+    aerg.add_argument("--out-name", default="regime_gate_v1.txt")
+    aerg.add_argument(
+        "--skip-only",
+        action="store_true",
+        help="Export skip regimes only (default includes caution)",
+    )
+    aerg.set_defaults(func=cmd_asi_export_regime_gate)
 
     ash = sub.add_parser(
         "asi-shadow",

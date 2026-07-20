@@ -1,0 +1,74 @@
+{
+  "schema": "fema_asi_p8_review_pack_v1",
+  "computed_at": "2026-07-19T21:26:53Z",
+  "philosophy": "live_filter_caution_and_skip",
+  "allow": [
+    "liquidity_vacuum",
+    "impulse",
+    "expansion",
+    "exhaustion",
+    "compression",
+    "pullback_trend"
+  ],
+  "caution": [
+    "false_breakout",
+    "grind",
+    "rotation"
+  ],
+  "skip": [],
+  "live_filter": [
+    "false_breakout",
+    "grind",
+    "rotation"
+  ],
+  "research_overall": {
+    "n": 1820,
+    "profit_factor": 1.0032,
+    "win_rate": 0.7137,
+    "net": 42.46,
+    "steamroller_rate": 0.2863,
+    "dd_pct": 96.56
+  },
+  "lock_overall": {
+    "n": 111,
+    "profit_factor": 1.4479,
+    "win_rate": 0.7838,
+    "net": 271.12,
+    "steamroller_rate": 0.2162,
+    "dd_pct": 18.14
+  },
+  "shadow": {
+    "skip_regimes": [
+      "false_breakout",
+      "grind",
+      "rotation"
+    ],
+    "filter_caution": true,
+    "skip_n": 470,
+    "skip_rate": 0.2582,
+    "skipped_steamrollers": 142,
+    "false_skip_winners": 328,
+    "steamroller_precision": 0.3021,
+    "net_skipped": -257.85,
+    "baseline": {
+      "n": 1820,
+      "profit_factor": 1.0032,
+      "win_rate": 0.7137,
+      "net": 42.46,
+      "steamroller_rate": 0.2863,
+      "dd_pct": 96.56
+    },
+    "kept": {
+      "n": 1350,
+      "profit_factor": 1.0316,
+      "win_rate": 0.7193,
+      "net": 300.31,
+      "steamroller_rate": 0.2807,
+      "dd_pct": 71.0
+    },
+    "dd_baseline_pct": 96.56,
+    "dd_kept_pct": 71.0
+  },
+  "verdict_hint": "REGIME OK - live filter Alternate (caution+skip)",
+  "policy": "InpUseAiRegimeGate"
+}

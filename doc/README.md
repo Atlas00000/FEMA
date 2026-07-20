@@ -15,9 +15,11 @@ High-level markdown that is **not** the lifecycle spine lives here so the repo r
 | [`EA_failure_assessment.md`](EA_failure_assessment.md) | Weaknesses · failure profile · loss assessment (post ERG) |
 | [`Edge_Rediscovery_guide.md`](Edge_Rediscovery_guide.md) | Isolate P1 edge · phased ERG tasks · context presets · quality/exits |
 | [`edge_rediscovery_system.md`](edge_rediscovery_system.md) | Discover-plane snapshot + changelog |
-| [`adaptive_selection_phases.md`](adaptive_selection_phases.md) | ASI tracks · `ASI-P5` Complete · Mode B Alternate |
+| [`adaptive_selection_phases.md`](adaptive_selection_phases.md) | ASI tracks · `ASI-P8` Complete · **AI preset** `aistack` |
 | [`ASI_P4_tep_guard_pack.md`](ASI_P4_tep_guard_pack.md) | TEP gate deploy · window review |
 | [`ASI_P5_midbasket_pack.md`](ASI_P5_midbasket_pack.md) | Mid-basket Mode A + Mode B (own presets) |
+| [`ASI_P6_recovery_pack.md`](ASI_P6_recovery_pack.md) | Basket recovery P(recover) · shadow Alternate |
+| [`ASI_P8_regime_pack.md`](ASI_P8_regime_pack.md) | Regime taxonomy · **AI preset** deploy · allow/caution/skip |
 | [`dual_lane_rediscovery_pipeline.md`](dual_lane_rediscovery_pipeline.md) | Hybrid dual-lane MVP · `DLR-P0`…`P3` **complete** |
 | [`localizaed_tuning.md`](localizaed_tuning.md) | Why localized retune vs full Discovery |
 

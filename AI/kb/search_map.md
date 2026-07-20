@@ -2,7 +2,7 @@
 
 **Machine:** [`search_map.json`](search_map.json) · **Playbook:** [`clone_playbook.md`](clone_playbook.md)  
 **Dual-lane:** [`../../doc/dual_lane_rediscovery_pipeline.md`](../../doc/dual_lane_rediscovery_pipeline.md) · **Lane B roster:** [`challenger_roster.md`](challenger_roster.md)  
-**Adaptive selection (ASI):** [`../../doc/adaptive_selection_phases.md`](../../doc/adaptive_selection_phases.md) (`ASI-P5` Complete · Mode B Alternate)
+**Adaptive selection (ASI):** [`../../doc/adaptive_selection_phases.md`](../../doc/adaptive_selection_phases.md) (`ASI-P8` Complete · **AI preset** `aistack`)
 
 ## Job (nutshell)
 
@@ -114,6 +114,8 @@ Trend Expansion Predictor and other ASI gates are **selection layers**, not a th
 | **P4 candidate** (live skip) | Preset `ASI_P4_TEP_GUARD_01` · `subsystem=regime_extra` · `InpUseAiTepGate` only · gate file `FEMA_AI\tep_gate_v1.txt` · **Alternate** |
 | **P5 Mode A** (mid warn log) | Preset `ASI_P5_TEP_MID_01` · TEP + `InpUseAiMidWarn` · keep separate from Mode B |
 | **P5 Mode B** (early close) | Preset `ASI_P5_TEP_MID_BSL_01` · + `InpUseAiMidEarlyBsl` · `asi_track=tep_mid_bsl` · **Alternate** (own preset) |
+| **P8 AI preset** (full stack) | Preset `aistack` (alias `ASI_P8_TEP_MID_BSL_01`) · TEP + mid + Mode B + regime · `asi_track=regime_tep_mid_bsl` · **AI preset** |
+| **P8 research** | Preset `ASI_P8_REGIME_01` · regime only — do not deploy long-term without stack |
 | **Promote bar** | Survival / guardrail holdout — **not** required to beat PRODUCTION PF on 2026 |
 
 **Do not:** mash TEP + mid-BSL + ADX + session in one unlogged candidate · fold Mode B into Mode A/P4 · treat ASI as license to edit lots/TP/SL · skip the permissive n/WR contract in [`adaptive_selection_phases.md`](../../doc/adaptive_selection_phases.md).

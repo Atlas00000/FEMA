@@ -26,6 +26,7 @@
 #include "../AI/AiEventLog.mqh"
 #include "../AI/AiTepGate.mqh"
 #include "../AI/AiMidWarn.mqh"
+#include "../AI/AiRegimeGate.mqh"
 
 #define FEMA_EXECUTION_FAILURE_LIMIT 3
 
@@ -74,9 +75,11 @@ private:
    CFemaAiEventLog       m_ai_log;
    CFemaAiTepGate        m_tep_gate;
    CFemaAiMidWarn        m_mid_warn;
+   CFemaAiRegimeGate     m_regime_gate;
+   int                   m_tep_pending_consec;
+   int                   m_regime_pending_consec;
    int                   m_prev_position_count;
    bool                  m_pause_new_active;
-   int                   m_tep_pending_consec;
 
    void              WireLoggers()
      {
@@ -94,6 +97,7 @@ private:
       m_ai_log.SetLogger(m_logger);
       m_tep_gate.SetLogger(m_logger);
       m_mid_warn.SetLogger(m_logger);
+      m_regime_gate.SetLogger(m_logger);
      }
 
    string            JsonEsc(const string s) const
@@ -140,7 +144,9 @@ private:
       j += "\"InpAiTepGateFile\":\"" + JsonEsc(InpAiTepGateFile) + "\",";
       j += "\"InpUseAiMidWarn\":" + (InpUseAiMidWarn ? "true" : "false") + ",";
       j += "\"InpAiMidGateFile\":\"" + JsonEsc(InpAiMidGateFile) + "\",";
-      j += "\"InpUseAiMidEarlyBsl\":" + (InpUseAiMidEarlyBsl ? "true" : "false");
+      j += "\"InpUseAiMidEarlyBsl\":" + (InpUseAiMidEarlyBsl ? "true" : "false") + ",";
+      j += "\"InpUseAiRegimeGate\":" + (InpUseAiRegimeGate ? "true" : "false") + ",";
+      j += "\"InpAiRegimeGateFile\":\"" + JsonEsc(InpAiRegimeGateFile) + "\"";
       j += "}\r\n";
       return j;
      }
@@ -326,6 +332,8 @@ private:
       m_ai_log.OnBasketClosed(profit, reason, age_bars);
       if(had_open && InpUseAiTepGate && m_tep_gate.Loaded())
          m_tep_gate.OnBasketClosed(closed_open, closed_dir, m_tep_pending_consec);
+      if(had_open && InpUseAiRegimeGate && m_regime_gate.Loaded())
+         m_regime_gate.OnBasketClosed(closed_open, closed_dir, m_regime_pending_consec);
       if(had_open && (InpUseAiMidWarn || InpUseAiMidEarlyBsl) && m_mid_warn.Loaded())
          m_mid_warn.OnBasketClosed(closed_open, closed_dir);
       m_basket.OnBasketClosed();
@@ -397,6 +405,20 @@ private:
                return;
               }
             m_tep_pending_consec = m_tep_gate.LastConsecutive();
+           }
+
+         if(InpUseAiRegimeGate && m_regime_gate.Loaded())
+           {
+            string reg_name = "";
+            if(m_regime_gate.ShouldSkip(features, reg_name))
+              {
+               const string reg_reason = "regime_gate;" + reg_name;
+               m_ai_log.LogSkip(features, reg_reason);
+               if(m_logger.IsDetailed())
+                  m_logger.LogInfo("Entry blocked: " + reg_reason);
+               return;
+              }
+            m_regime_pending_consec = m_regime_gate.LastConsecutive();
            }
         }
 
@@ -547,7 +569,8 @@ private:
      }
 
 public:
-                     CFemaEngine() : m_prev_position_count(0), m_pause_new_active(false), m_tep_pending_consec(1) {}
+                     CFemaEngine() : m_prev_position_count(0), m_pause_new_active(false),
+                                     m_tep_pending_consec(1), m_regime_pending_consec(1) {}
 
    int               OnInit()
      {
@@ -632,6 +655,8 @@ public:
          m_logger.LogWarn("Mid-warn/Mode B disabled — check mid_gate_v1.txt export");
       if(InpUseAiMidEarlyBsl && !InpUseAiMidWarn)
          m_logger.LogInfo("Mode B early BSL on — mid gate loaded for scoring (warn log optional)");
+      if(!m_regime_gate.Init(InpUseAiRegimeGate, InpAiRegimeGateFile) && InpUseAiRegimeGate)
+         m_logger.LogWarn("Regime gate disabled — check regime_gate_v1.txt export");
 
       m_pause_new_active = false;
       RefreshPauseNewFlag();
@@ -669,6 +694,7 @@ public:
                        " tep_gate=" + (InpUseAiTepGate ? (m_tep_gate.Loaded() ? "on" : "missing") : "off") +
                        " mid_warn=" + ((InpUseAiMidWarn || InpUseAiMidEarlyBsl) ? (m_mid_warn.Loaded() ? "on" : "missing") : "off") +
                        " mid_bsl=" + (InpUseAiMidEarlyBsl ? "on" : "off") +
+                       " regime_gate=" + (InpUseAiRegimeGate ? (m_regime_gate.Loaded() ? "on" : "missing") : "off") +
                        " pause_flag=" + (InpReadPauseNewFlag ? (m_pause_new_active ? "ON" : "armed") : "off") +
                        (InpUseHtfFilter ? " HTF=" + EnumToString(InpHtfTimeframe) : ""));
       m_logger.LogBarSummary(m_state.GetState(),

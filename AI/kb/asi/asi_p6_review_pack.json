@@ -1,0 +1,24 @@
+{
+  "schema": "fema_asi_p6_review_pack_v1",
+  "computed_at": "2026-07-19T20:40:55Z",
+  "philosophy": "recommend_before_act",
+  "exit_threshold": 0.340777,
+  "holdout": {
+    "exit_threshold": 0.340777,
+    "exit_rate": 0.0512,
+    "exit_n": 33,
+    "fail_precision": 0.5758,
+    "false_cut_recoveries": 14,
+    "true_non_recoveries": 19,
+    "net_of_exit_set": -332.43,
+    "score": -3.9394
+  },
+  "auc_calibrate": 0.612,
+  "policy": "shadow_recommend_only",
+  "action_map": {
+    "keep": "P(recover) >= 0.55 \u2192 KEEP (advisory)",
+    "caution": "0.340777 < P(recover) < 0.55 \u2192 CAUTION / stop-adds (not wired)",
+    "early_bsl": "P(recover) <= 0.340777 \u2192 recommend early BSL (shadow; human Mode B)"
+  },
+  "verdict_hint": "REC OK - proceed to policy ADR / shadow"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "fema_asi_rec_shadow_run_v1",
+  "computed_at": "2026-07-19T20:39:46Z",
+  "exit_threshold": 0.340777,
+  "n_baskets": 1820,
+  "n_rec_rows": 5531,
+  "baskets_path": "data/EURUSD_baskets_2018_2025.csv",
+  "shadow": {
+    "exit_n": 243,
+    "exit_rate": 0.0439,
+    "exit_baskets_n": 146,
+    "fail_precision_rows": 0.5926,
+    "false_cut_recoveries": 99,
+    "net_of_exit_baskets": -1341.27,
+    "method": "P(recover) <= 0.340777 \u2192 RECOMMEND early exit"
+  },
+  "policy": "shadow_recommend_only"
+}

@@ -92,6 +92,36 @@ python -m fema_ops asi-mid-review
 
 Policy default: **warn only** — [`mid_policy_adr.md`](mid_policy_adr.md) · pack [`../../doc/ASI_P5_midbasket_pack.md`](../../doc/ASI_P5_midbasket_pack.md).
 
+## Recovery target: `y_recover` (`ASI-P6-01`)
+
+| Value | Meaning |
+| ----- | ------- |
+| **1** | Basket eventually recovers — `hit_tp=1` or `profit > 0` |
+| **0** | Basket fails to recover (BSL / loss) |
+
+**Expansion:** same depth milestones as mid-warn (`warn_depth ∈ [2 … min(max_depth, 5)]`). Features identical anti-leakage set (open + `warn_depth` + `is_sell`). Low `P(recover)` → recommend early exit (shadow); high → KEEP.
+
+**Build / train / review:**
+
+```powershell
+python -m fema_ops asi-rec-build --split-profile long
+python -m fema_ops asi-rec-train --max-exit-rate 0.15
+python -m fema_ops asi-rec-review
+```
+
+Policy default: **shadow recommend only** — [`rec_policy_adr.md`](rec_policy_adr.md) · pack [`../../doc/ASI_P6_recovery_pack.md`](../../doc/ASI_P6_recovery_pack.md).
+
+## Regime labels (`ASI-P8-01`)
+
+Open-time rule taxonomy (no outcome leakage): `liquidity_vacuum` · `impulse` · `expansion` · `exhaustion` · `false_breakout` · `compression` · `grind` · `pullback_trend` · `rotation`.
+
+```powershell
+python -m fema_ops asi-regime-build --split-profile long
+python -m fema_ops asi-regime-review
+```
+
+Policy: allow / caution / skip — [`regime_policy_adr.md`](regime_policy_adr.md) · pack [`../../doc/ASI_P8_regime_pack.md`](../../doc/ASI_P8_regime_pack.md).
+
 ## Shadow v0 (`ASI-P1-05`)
 
 Provisional skip rule until P2 model: skip if `impulse_score ≥ train p90`. Report counts skipped steamrollers vs false-skip winners.

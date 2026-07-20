@@ -104,4 +104,8 @@ input bool   InpUseAiMidWarn = false;  // Log mid_warn when P(eventual steamroll
 input string InpAiMidGateFile = "FEMA_AI\\mid_gate_v1.txt";  // Common\\Files or MQL5\\Files
 input bool   InpUseAiMidEarlyBsl = false;  // Mode B: close basket early when mid_warn fires (requires MidWarn)
 
+input group "=== ASI-P8: Regime filter (opt-in) ==="
+input bool   InpUseAiRegimeGate = false;  // Skip new basket when regime in caution/skip filter list
+input string InpAiRegimeGateFile = "FEMA_AI\\regime_gate_v1.txt";  // Common\\Files or MQL5\\Files
+
 #endif

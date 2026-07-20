@@ -1,0 +1,18 @@
+{
+  "impulse_score_hi": 24.5985,
+  "atr_expand_hi": 0.5789,
+  "atr_expand_lo": -0.3684,
+  "adx_hi": 27.18,
+  "adx_mid": 23.67,
+  "adx_lo": 21.45,
+  "adx_accel_hi": 3.486,
+  "adx_accel_lo": -3.526,
+  "dist_hi": 4.077,
+  "dist_mid": 2.0729,
+  "dist_lo": 1.6109,
+  "spread_hi": 8.0,
+  "slope_hi": 3e-05,
+  "slope_lo": 1e-05,
+  "consec_hi": 4.0,
+  "thin_hour_end": 7.0
+}

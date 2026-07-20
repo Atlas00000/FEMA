@@ -1,0 +1,249 @@
+{
+  "schema": "fema_asi_regime_policy_v1",
+  "computed_at": "2026-07-19T20:53:48Z",
+  "phase": "ASI-P8",
+  "philosophy": "permissive \u2014 prefer missed skips; skip only toxic regimes; lock can upgrade",
+  "baseline_steamroller_rate": 0.2863,
+  "min_n": 40,
+  "skip_pf_max": 0.85,
+  "caution_pf_max": 1.0,
+  "steam_mult": 1.25,
+  "allow": [
+    "liquidity_vacuum",
+    "impulse",
+    "expansion",
+    "exhaustion",
+    "compression",
+    "pullback_trend"
+  ],
+  "caution": [
+    "false_breakout",
+    "grind",
+    "rotation"
+  ],
+  "skip": [],
+  "table": {
+    "liquidity_vacuum": {
+      "action": "allow",
+      "reason": "default allow (permissive)",
+      "research": {
+        "n": 588,
+        "profit_factor": 1.0281,
+        "steamroller_rate": 0.2823,
+        "net": 117.16,
+        "dd_pct": 62.26,
+        "win_rate": 0.7177
+      },
+      "calibrate": {
+        "n": 142,
+        "profit_factor": 1.022,
+        "steamroller_rate": 0.2887,
+        "net": 22.63
+      },
+      "lock": {
+        "n": 17,
+        "profit_factor": 1.298,
+        "steamroller_rate": 0.2353,
+        "net": 29.94
+      }
+    },
+    "impulse": {
+      "action": "allow",
+      "reason": "default allow (permissive)",
+      "research": {
+        "n": 197,
+        "profit_factor": 1.3259,
+        "steamroller_rate": 0.2335,
+        "net": 375.61,
+        "dd_pct": 18.86,
+        "win_rate": 0.7665
+      },
+      "calibrate": {
+        "n": 11,
+        "profit_factor": 1.0708,
+        "steamroller_rate": 0.2727,
+        "net": 5.33
+      },
+      "lock": {
+        "n": 13,
+        "profit_factor": 4.8278,
+        "steamroller_rate": 0.0769,
+        "net": 95.81
+      }
+    },
+    "expansion": {
+      "action": "allow",
+      "reason": "default allow (permissive)",
+      "research": {
+        "n": 75,
+        "profit_factor": 1.1061,
+        "steamroller_rate": 0.2667,
+        "net": 53.13,
+        "dd_pct": 20.2,
+        "win_rate": 0.7333
+      },
+      "calibrate": {
+        "n": 4,
+        "profit_factor": 0.4013,
+        "steamroller_rate": 0.5,
+        "net": -29.97
+      },
+      "lock": {
+        "n": 8,
+        "profit_factor": 99.0,
+        "steamroller_rate": 0.0,
+        "net": 80.34
+      }
+    },
+    "exhaustion": {
+      "action": "allow",
+      "reason": "no samples \u2014 allow by default",
+      "research": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "steamroller_rate": 0.0,
+        "net": 0.0,
+        "dd_pct": 0.0,
+        "win_rate": 0.0
+      },
+      "calibrate": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "steamroller_rate": 0.0,
+        "net": 0.0
+      },
+      "lock": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "steamroller_rate": 0.0,
+        "net": 0.0
+      }
+    },
+    "false_breakout": {
+      "action": "caution",
+      "reason": "mixed research: PF=0.8743, steam=0.3143, net=-104.08",
+      "research": {
+        "n": 105,
+        "profit_factor": 0.8743,
+        "steamroller_rate": 0.3143,
+        "net": -104.08,
+        "dd_pct": 56.12,
+        "win_rate": 0.6857
+      },
+      "calibrate": {
+        "n": 9,
+        "profit_factor": 1.3994,
+        "steamroller_rate": 0.2222,
+        "net": 20.05
+      },
+      "lock": {
+        "n": 5,
+        "profit_factor": 1.5985,
+        "steamroller_rate": 0.2,
+        "net": 15.01
+      }
+    },
+    "compression": {
+      "action": "allow",
+      "reason": "default allow (permissive)",
+      "research": {
+        "n": 87,
+        "profit_factor": 1.117,
+        "steamroller_rate": 0.2644,
+        "net": 67.46,
+        "dd_pct": 30.84,
+        "win_rate": 0.7356
+      },
+      "calibrate": {
+        "n": 4,
+        "profit_factor": 1.2007,
+        "steamroller_rate": 0.25,
+        "net": 5.03
+      },
+      "lock": {
+        "n": 6,
+        "profit_factor": 0.801,
+        "steamroller_rate": 0.3333,
+        "net": -9.97
+      }
+    },
+    "grind": {
+      "action": "caution",
+      "reason": "mixed research: PF=0.9041, steam=0.3077, net=-76.85",
+      "research": {
+        "n": 104,
+        "profit_factor": 0.9041,
+        "steamroller_rate": 0.3077,
+        "net": -76.85,
+        "dd_pct": 54.24,
+        "win_rate": 0.6923
+      },
+      "calibrate": {
+        "n": 10,
+        "profit_factor": 1.6018,
+        "steamroller_rate": 0.2,
+        "net": 30.14
+      },
+      "lock": {
+        "n": 9,
+        "profit_factor": 1.4496,
+        "steamroller_rate": 0.2222,
+        "net": 22.5
+      }
+    },
+    "pullback_trend": {
+      "action": "allow",
+      "reason": "mixed research: PF=0.8995, steam=0.3077, net=-313.05 | lock upgrade PF=1.4705 n=28 \u2192 allow",
+      "research": {
+        "n": 403,
+        "profit_factor": 0.8995,
+        "steamroller_rate": 0.3077,
+        "net": -313.05,
+        "dd_pct": 103.14,
+        "win_rate": 0.6923
+      },
+      "calibrate": {
+        "n": 20,
+        "profit_factor": 0.936,
+        "steamroller_rate": 0.3,
+        "net": -9.62
+      },
+      "lock": {
+        "n": 28,
+        "profit_factor": 1.4705,
+        "steamroller_rate": 0.2143,
+        "net": 70.83
+      }
+    },
+    "rotation": {
+      "action": "caution",
+      "reason": "mixed research: PF=0.9602, steam=0.295, net=-76.92",
+      "research": {
+        "n": 261,
+        "profit_factor": 0.9602,
+        "steamroller_rate": 0.295,
+        "net": -76.92,
+        "dd_pct": 56.64,
+        "win_rate": 0.705
+      },
+      "calibrate": {
+        "n": 17,
+        "profit_factor": 1.3062,
+        "steamroller_rate": 0.2353,
+        "net": 30.71
+      },
+      "lock": {
+        "n": 25,
+        "profit_factor": 0.8366,
+        "steamroller_rate": 0.32,
+        "net": -33.34
+      }
+    }
+  },
+  "non_goals": [
+    "no MQL wire in P8 MVP",
+    "no hard blacklist of sessions alone",
+    "no threshold tune on 2026 canon",
+    "do not mash with TEP/mid in one unlogged candidate"
+  ]
+}

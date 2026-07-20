@@ -72,4 +72,4 @@ Profile: [`../AI/kb/profiles/prof_ASI_P5_TEP_MID_BSL_01.json`](../AI/kb/profiles
 
 - Optional: Mode A 2018–25 @ 400 for clean A-vs-B table  
 - Do **not** replace PRODUCTION  
-- Next track: `ASI-P6` when ready  
+- Next track: `ASI-P6` recovery — see [`ASI_P6_recovery_pack.md`](ASI_P6_recovery_pack.md)  

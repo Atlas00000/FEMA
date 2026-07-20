@@ -1,12 +1,12 @@
 # Adaptive Selection Intelligence — Implementation Phases
 
-**Status:** **`ASI-P5` COMPLETE (MVP)** (2026-07-19) · Mode A + Mode B **Alternate** presets (kept separate) · **`ASI-P4` Alternate** · PRODUCTION unchanged  
+**Status:** **`ASI-P8` COMPLETE** (2026-07-20) · **`aistack` (alias `ASI_P8_TEP_MID_BSL_01`) = AI preset** · PRODUCTION unchanged · **`ASI-P7` still pending**  
 **IDs:** `ASI-*` (Adaptive Selection Intelligence)  
 **Parent thesis:** [`failureimprove.md`](failureimprove.md)  
 **Failure forensics:** [`EA_failure_assessment.md`](EA_failure_assessment.md)  
 **Containment:** [`../AI/kb/search_map.md`](../AI/kb/search_map.md) · dual-lane [`dual_lane_rediscovery_pipeline.md`](dual_lane_rediscovery_pipeline.md)  
 **Charter:** MT5 executes · Python scores · Human promotes  
-**P5 pack:** [`ASI_P5_midbasket_pack.md`](ASI_P5_midbasket_pack.md)
+**P5 pack:** [`ASI_P5_midbasket_pack.md`](ASI_P5_midbasket_pack.md) · **P6:** [`ASI_P6_recovery_pack.md`](ASI_P6_recovery_pack.md) · **P8:** [`ASI_P8_regime_pack.md`](ASI_P8_regime_pack.md)
 
 ### Adopted way forward
 
@@ -21,7 +21,7 @@
 | Decision | **ADOPT** adaptive selection charter |
 | Date | 2026-07-17 |
 | Code | None in P0 — labels/model start at `ASI-P1` |
-| Next ID | **ASI-P6** basket recovery **or** park |
+| Next ID | **ASI-P7** compatibility · **ASI-P9** edge health · **or** park |
 
 ### Guardrail candidate (`long_train`) + window review
 
@@ -208,18 +208,32 @@ Depends on P1 features; TEP open-gate decided (**Alternate**). Pack: [`ASI_P5_mi
 ASI-P0 charter
   └─► … ASI-P4 guardrail  ◄ Alternate
         └─► ASI-P5 mid-basket  ◄ COMPLETE — Mode A + Mode B Alternate (own presets)
-              └─► ASI-P6 recovery  ◄ next (optional)
+              └─► ASI-P6 recovery  ◄ COMPLETE — shadow Alternate (no MQL)
 ```
 
 ---
 
-### Phase 6 — Basket recovery probability · `ASI-P6` · **PENDING**
+### Phase 6 — Basket recovery probability · `ASI-P6` · **COMPLETE** (MVP offline)
+
+Depends on P5 depth milestones. Pack: [`ASI_P6_recovery_pack.md`](ASI_P6_recovery_pack.md).
 
 | ID | Task | Status | Done when |
 | -- | ---- | ------ | --------- |
-| `ASI-P6-01` | P(recover \| current basket state) | **pending** | Model + calibration |
-| `ASI-P6-02` | Actions: keep · reduce depth · accept BSL early | **pending** | Policy map |
-| `ASI-P6-03` | Shadow → Tester → G1 | **pending** | Decision pack |
+| `ASI-P6-01` | P(recover \| current basket state) | **done** | `fema_ops/asi/recovery.py` · thr ~**0.341** · AUC **0.612** |
+| `ASI-P6-02` | Actions: keep · reduce depth · accept BSL early | **done** | [`rec_policy_adr.md`](../AI/kb/asi/rec_policy_adr.md) |
+| `ASI-P6-03` | Shadow → (optional Tester) → G1 | **done** | Offline shadow + **Alternate** decision — **no MQL / no Tester** |
+
+**Holdout / shadow:** calibrate fail prec **0.58** · 2018–25 exit baskets net **−$1341**. Promote-frozen weak → keep shadow-only.
+
+**Decision (2026-07-19):** **Alternate** — [`20260719_ASI_P6_REC_SHADOW_Alternate.md`](../AI/kb/decisions/20260719_ASI_P6_REC_SHADOW_Alternate.md). Do not wire `InpUseAiRec*`. Early BSL stays Mode B.
+
+**Exit:** Track B MVP closed offline. Next: `ASI-P7` or park. Optional later: AND mid-warn + low recover before Mode B.
+
+```text
+… ASI-P5 mid-basket  ◄ COMPLETE
+      └─► ASI-P6 recovery  ◄ COMPLETE — shadow Alternate
+            └─► ASI-P7 market compatibility  ◄ next (optional)
+```
 
 ---
 
@@ -233,14 +247,36 @@ ASI-P0 charter
 
 ---
 
-### Phase 8 — Regime intelligence · `ASI-P8` · **PENDING**
+### Phase 8 — Regime intelligence · `ASI-P8` · **COMPLETE**
+
+Pack: [`ASI_P8_regime_pack.md`](ASI_P8_regime_pack.md).
 
 | ID | Task | Status | Done when |
 | -- | ---- | ------ | --------- |
-| `ASI-P8-01` | Regime taxonomy (pullback trend, grind, impulse, exhaustion, expansion, …) | **pending** | Label set |
-| `ASI-P8-02` | Historical PF/DD per regime on lock data | **pending** | Regime scorecard |
-| `ASI-P8-03` | Map regimes → allow / caution / skip (permissive) | **pending** | Policy table |
-| `ASI-P8-04` | Shadow → Tester → G1 | **pending** | Decision pack |
+| `ASI-P8-01` | Regime taxonomy (pullback trend, grind, impulse, exhaustion, expansion, …) | **done** | `fema_ops/asi/regime.py` · 9 labels |
+| `ASI-P8-02` | Historical PF/DD per regime on lock data | **done** | [`regime_scorecard.md`](../AI/kb/asi/regime_scorecard.md) |
+| `ASI-P8-03` | Map regimes → allow / caution / skip (permissive) | **done** | [`regime_policy_adr.md`](../AI/kb/asi/regime_policy_adr.md) |
+| `ASI-P8-04` | Shadow → Tester → G1 → AI preset | **done** | **`aistack` = AI preset** · P8-only research |
+
+**Policy summary:** live filter = caution∪skip (`false_breakout` / `grind` / `rotation`); allow includes `pullback_trend`.
+
+**AI preset:** [`aistack`](../Presets/aistack.set) (alias of `ASI_P8_TEP_MID_BSL_01`) — full guardrail stack (TEP + mid + Mode B + regime). PRODUCTION lock unchanged.
+
+| Preset | 2026 G1 | 2018–25 | Role |
+| ------ | ------- | ------- | ---- |
+| **`aistack`** | PF **1.27** / DD **14.2%** / +$175 / n437 | PF **1.55** / DD **14.1%** / +$134 / n361 | **AI preset** (opt-in deploy) |
+| `ASI_P8_REGIME_01` | PF 1.40 / DD 17.5% / +$246 / n445 | PF **1.01** / DD **66.3%** / +$91 / n7021 | Research — do not deploy naked |
+| PRODUCTION (ref) | PF 1.36 / DD ~18% / +$221 | — | Birth lock |
+
+**Decision (2026-07-20):** promote stack as **AI preset (`aistack`)** — [`20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md`](../AI/kb/decisions/20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md). G1 review: [`20260719_ASI_P8_REGIME_01_G1_Alternate.md`](../AI/kb/decisions/20260719_ASI_P8_REGIME_01_G1_Alternate.md).
+
+**Exit:** Track G closed with AI preset. Next: `ASI-P7`, `ASI-P9`, or park.
+
+```text
+… ASI-P6 recovery  ◄ COMPLETE
+      └─► ASI-P8 regime  ◄ COMPLETE — AI preset aistack
+            └─► ASI-P7 or ASI-P9  ◄ next (optional)
+```
 
 ---
 
@@ -326,12 +362,12 @@ Fail hard lock rows → **Reject** as PRODUCTION successor. Soft-band fail with 
 
 | Field | Value |
 | ----- | ----- |
-| Now | **ASI-P6** basket recovery **or** park |
-| Keep | `ASI_P4_TEP_GUARD_01` · `ASI_P5_TEP_MID_01` · `ASI_P5_TEP_MID_BSL_01` as **separate** Alternates |
-| Never | Merge Mode B into Mode A / P4 / PRODUCTION without new decision |
+| Now | **ASI-P7** compatibility · **ASI-P9** edge health · **or** park |
+| Keep | P4/P5 layer presets separate · P6 recovery shadow only · **AI preset** = `aistack` |
+| Never | Replace PRODUCTION lock without Discovery promote · deploy P8-only naked long-term |
 
 ```text
-ASI-P0…P4 · COMPLETE (P4 Alternate)
-  └─► ASI-P5 mid-basket · COMPLETE — Mode A + Mode B Alternate (own presets)
-        └─► ASI-P6 recovery  ◄ next (optional)
+ASI-P0…P6 · COMPLETE
+  └─► ASI-P8 regime · COMPLETE — AI preset aistack (PRODUCTION unchanged)
+        └─► ASI-P7 or ASI-P9  ◄ next (optional)
 ```

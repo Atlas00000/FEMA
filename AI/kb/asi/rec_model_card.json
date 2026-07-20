@@ -1,0 +1,108 @@
+{
+  "schema": "fema_asi_rec_model_card_v1",
+  "computed_at": "2026-07-19T20:39:49Z",
+  "phase": "ASI-P6",
+  "label": "y_recover",
+  "model_kind": "logistic_regression",
+  "feature_names": [
+    "ema_sep_atr",
+    "ema_slope",
+    "atr",
+    "adx",
+    "dist_ema_trend_atr",
+    "spread_points",
+    "hour",
+    "dow",
+    "roll_wr",
+    "roll_pf",
+    "roll_n",
+    "ema_slope_accel",
+    "adx_accel",
+    "atr_expansion_rate",
+    "consecutive_same_dir",
+    "dist_ema_abs",
+    "impulse_score",
+    "warn_depth",
+    "is_sell"
+  ],
+  "exit_threshold": 0.340777,
+  "keep_threshold_advisory": 0.55,
+  "max_exit_rate": 0.15,
+  "auc_train": 0.6091,
+  "auc_calibrate": 0.612,
+  "calibrate_eval": {
+    "exit_threshold": 0.340777,
+    "exit_rate": 0.0512,
+    "exit_n": 33,
+    "fail_precision": 0.5758,
+    "false_cut_recoveries": 14,
+    "true_non_recoveries": 19,
+    "net_of_exit_set": -332.43,
+    "score": -3.9394
+  },
+  "calibrate_candidates": [
+    {
+      "exit_threshold": 0.340777,
+      "exit_rate": 0.0512,
+      "exit_n": 33,
+      "fail_precision": 0.5758,
+      "false_cut_recoveries": 14,
+      "true_non_recoveries": 19,
+      "net_of_exit_set": -332.43,
+      "score": -3.9394
+    },
+    {
+      "exit_threshold": 0.373222,
+      "exit_rate": 0.0807,
+      "exit_n": 52,
+      "fail_precision": 0.5,
+      "false_cut_recoveries": 26,
+      "true_non_recoveries": 26,
+      "net_of_exit_set": -384.24,
+      "score": -70.0
+    },
+    {
+      "exit_threshold": 0.387385,
+      "exit_rate": 0.1009,
+      "exit_n": 65,
+      "fail_precision": 0.5077,
+      "false_cut_recoveries": 32,
+      "true_non_recoveries": 33,
+      "net_of_exit_set": -499.47,
+      "score": -99.3846
+    },
+    {
+      "exit_threshold": 0.400833,
+      "exit_rate": 0.1211,
+      "exit_n": 78,
+      "fail_precision": 0.4872,
+      "false_cut_recoveries": 40,
+      "true_non_recoveries": 38,
+      "net_of_exit_set": -544.65,
+      "score": -141.0256
+    },
+    {
+      "exit_threshold": 0.413921,
+      "exit_rate": 0.1506,
+      "exit_n": 97,
+      "fail_precision": 0.4845,
+      "false_cut_recoveries": 50,
+      "true_non_recoveries": 47,
+      "net_of_exit_set": -666.41,
+      "score": -191.2371
+    }
+  ],
+  "policy": "shadow_recommend_only",
+  "action_map": {
+    "keep": "P(recover) >= 0.55 \u2192 KEEP (advisory)",
+    "caution": "0.340777 < P(recover) < 0.55 \u2192 CAUTION / stop-adds (not wired)",
+    "early_bsl": "P(recover) <= 0.340777 \u2192 recommend early BSL (shadow; human Mode B)"
+  },
+  "non_goals": [
+    "no silent lot change",
+    "no auto early-BSL until human stacks with Mode B",
+    "no threshold tune on 2026 canon",
+    "do not replace mid-warn; complementary score"
+  ],
+  "next": "ASI-P6 shadow / optional combine with ASI_P5_TEP_MID_BSL_01"
+}

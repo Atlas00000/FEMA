@@ -1,0 +1,59 @@
+{
+  "schema": "fema_asi_rec_build_v1",
+  "profile": "long_train",
+  "philosophy": "guardrails_not_gates",
+  "train": {
+    "start": "2018.01.01",
+    "end": "2024.12.31",
+    "purpose": "model fit (extended 2018+)"
+  },
+  "calibrate": {
+    "start": "2025.01.01",
+    "end": "2025.12.31",
+    "purpose": "threshold tune + guardrail holdout"
+  },
+  "promote_frozen": {
+    "start": "2026.01.01",
+    "end": "2026.07.31",
+    "purpose": "optional live slice \u2014 not a production parity target"
+  },
+  "rule": "Disjoint spans; no random shuffle; calibrate is guardrail holdout.",
+  "computed_at": "2026-07-19T20:39:37Z",
+  "phase": "ASI-P6",
+  "source_baskets": "C:/Users/emili/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Experts/FEMA/AI/data/EURUSD_baskets_2018_2025.csv",
+  "split_profile": "long_train",
+  "min_depth": 2,
+  "max_warn": 5,
+  "n_baskets": 1820,
+  "n_rec_rows": 5531,
+  "y_recover_rate": 0.6462,
+  "counts": {
+    "train": 4546,
+    "calibrate": 644,
+    "promote_frozen": 341,
+    "other": 0
+  },
+  "feature_names": [
+    "ema_sep_atr",
+    "ema_slope",
+    "atr",
+    "adx",
+    "dist_ema_trend_atr",
+    "spread_points",
+    "hour",
+    "dow",
+    "roll_wr",
+    "roll_pf",
+    "roll_n",
+    "ema_slope_accel",
+    "adx_accel",
+    "atr_expansion_rate",
+    "consecutive_same_dir",
+    "dist_ema_abs",
+    "impulse_score",
+    "warn_depth",
+    "is_sell"
+  ],
+  "leakage_rule": "warn_depth known when level fills; no mae/mfe/profit as features",
+  "label": "y_recover = hit_tp or profit>0"
+}

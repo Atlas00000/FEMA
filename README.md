@@ -12,13 +12,14 @@
 | | |
 | --- | --- |
 | **Locked stack** | `FEMA_EURUSD_M5_PRODUCTION` · alias `P2C-001_REG_ADX30` |
-| **EA build** | v1.28 |
+| **AI preset** | `aistack` — TEP + mid + Mode B + regime · G1 PF **1.27**/DD **14.2%** · 2018–25 PF **1.55**/DD **~14%** (opt-in; PRODUCTION unchanged) |
+| **EA build** | v1.29 |
 | **Strategy** | Pullback continuation · floating ATR grid · basket TP/SL |
 | **Lock window** | 2026.01.01 → 2026.07.31 · EURUSD M5 · $400 · every tick |
 | **Birth** | PF **1.36** · WR **~71%** · DD **~18%** bal · lock `20260101_PRODUCTION_13c52cd9` |
-| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` · **DLR `P0`–`P3`** · **ASI-P5 Complete** (Alternates opt-in) · `fema_ops` |
+| **Ops** | Waves 0–5 shipped · Wave 6 park-freeze · AER `P0`–`P6` · **DLR `P0`–`P3`** · **ASI-P8 Complete** · **AI preset** `aistack` · `fema_ops` |
 
-**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · audit [`system_audit.md`](system_audit.md) · backtesting [`doc/backtesting_guide.md`](doc/backtesting_guide.md) · rediscovery [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · dual-lane [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · adaptive selection [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) · phases [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · ops [`infrascaleup.md`](infrascaleup.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
+**Start here:** [`AI/STATUS.md`](AI/STATUS.md) · spine [`edgelifecycle.md`](edgelifecycle.md) · audit [`system_audit.md`](system_audit.md) · AI inventory [`AI_Infra.md`](AI_Infra.md) · backtesting [`doc/backtesting_guide.md`](doc/backtesting_guide.md) · rediscovery [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · dual-lane [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · adaptive selection [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) · phases [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · ops [`infrascaleup.md`](infrascaleup.md) · edge [`System Profile EURUSD.md`](System%20Profile%20EURUSD.md)
 
 **Docs layout:** new high-level MDs go under [`doc/`](doc/README.md); root keeps spine + README.
 
@@ -66,7 +67,7 @@
 ## Architecture — three layers (do not mix jobs)
 
 **Hardware:** two **local** MT5 terminals — **A** = PRODUCTION chart, **B** = Discovery Tester. No VPS.  
-**Re-Discovery status (2026-07-19):** AER `P0`–`P6` + hybrid dual-lane **`DLR-P0`…`P3`** + **ASI-P5 Complete** (TEP + mid Mode A/B Alternates); PRODUCTION lock unchanged.
+**Re-Discovery status (2026-07-20):** AER `P0`–`P6` + hybrid dual-lane **`DLR-P0`…`P3`** + **ASI-P8 Complete** · **AI preset** `aistack`; PRODUCTION lock unchanged.
 Snapshot: [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · dual-lane: [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) · ASI: [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) · Lane A runbook: [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md).
 
 ```mermaid
@@ -321,7 +322,8 @@ Details: [`ops/README.md`](ops/README.md) · [`AI/README.md`](AI/README.md)
 | [`system_audit.md`](system_audit.md) | Main systems · subsystems · status · improvement backlog |
 | [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) | Discover-plane snapshot + changelog |
 | [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) | Hybrid dual-lane · **`DLR-P3` MVP complete** (2026-07-14) |
-| [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) | ASI selection · **`ASI-P5` Complete** · Mode B Alternate (own preset) |
+| [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) | ASI selection · **`ASI-P8` Complete** · **AI preset** `aistack` |
+| [`doc/ASI_P8_regime_pack.md`](doc/ASI_P8_regime_pack.md) | P8 regime + AI preset deploy |
 | [`doc/ASI_P4_tep_guard_pack.md`](doc/ASI_P4_tep_guard_pack.md) | TEP open-skip guardrail |
 | [`doc/ASI_P5_midbasket_pack.md`](doc/ASI_P5_midbasket_pack.md) | Mid-basket Mode A warn + Mode B early close |
 | [`doc/README.md`](doc/README.md) | Convention: new MDs under `doc/` |

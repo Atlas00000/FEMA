@@ -1,0 +1,60 @@
+{
+  "schema": "fema_asi_regime_build_v1",
+  "computed_at": "2026-07-19T20:53:48Z",
+  "phase": "ASI-P8",
+  "source_baskets": "C:/Users/emili/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Experts/FEMA/AI/data/EURUSD_baskets_2018_2025.csv",
+  "lock_baskets": "C:/Users/emili/AppData/Roaming/MetaQuotes/Terminal/D0E8209F77C8CF37AD8BF550E51FF075/MQL5/Experts/FEMA/AI/data/live/latest_baskets.csv",
+  "split_profile": "long_train",
+  "n_baskets": 1820,
+  "regime_counts": {
+    "liquidity_vacuum": 588,
+    "impulse": 197,
+    "expansion": 75,
+    "exhaustion": 0,
+    "false_breakout": 105,
+    "compression": 87,
+    "grind": 104,
+    "pullback_trend": 403,
+    "rotation": 261
+  },
+  "thresholds": {
+    "impulse_score_hi": 24.5985,
+    "atr_expand_hi": 0.5789,
+    "atr_expand_lo": -0.3684,
+    "adx_hi": 27.18,
+    "adx_mid": 23.67,
+    "adx_lo": 21.45,
+    "adx_accel_hi": 3.486,
+    "adx_accel_lo": -3.526,
+    "dist_hi": 4.077,
+    "dist_mid": 2.0729,
+    "dist_lo": 1.6109,
+    "spread_hi": 8.0,
+    "slope_hi": 3e-05,
+    "slope_lo": 1e-05,
+    "consec_hi": 4.0,
+    "thin_hour_end": 7.0
+  },
+  "taxonomy": [
+    "liquidity_vacuum",
+    "impulse",
+    "expansion",
+    "exhaustion",
+    "false_breakout",
+    "compression",
+    "grind",
+    "pullback_trend",
+    "rotation"
+  ],
+  "descriptions": {
+    "liquidity_vacuum": "Thin hours and/or wide spread \u2014 microstructure hostile",
+    "impulse": "Strong impulse / acceleration \u2014 breakout-like path risk",
+    "expansion": "ATR expanding with elevated ADX \u2014 steamroller climate",
+    "exhaustion": "High ADX but decelerating after long same-dir run",
+    "false_breakout": "Far from EMA with weak/falling ADX \u2014 extension without trend fuel",
+    "compression": "ATR contracting, quiet ADX \u2014 coiled / low energy",
+    "grind": "Modest slope, mid ADX, shallow pullback \u2014 slow trend grind",
+    "pullback_trend": "FEMA home: mid ADX, pullback-to-EMA geometry",
+    "rotation": "Low ADX chop / residual \u2014 range rotation"
+  }
+}

@@ -1,0 +1,385 @@
+{
+  "schema": "fema_asi_regime_scorecard_v1",
+  "computed_at": "2026-07-19T20:53:48Z",
+  "deposit": 400.0,
+  "research": {
+    "label": "research_full",
+    "n": 1820,
+    "overall": {
+      "n": 1820,
+      "profit_factor": 1.0032,
+      "win_rate": 0.7137,
+      "net": 42.46,
+      "steamroller_rate": 0.2863,
+      "dd_pct": 96.56
+    },
+    "regimes": {
+      "liquidity_vacuum": {
+        "n": 588,
+        "profit_factor": 1.0281,
+        "win_rate": 0.7177,
+        "net": 117.16,
+        "steamroller_rate": 0.2823,
+        "dd_pct": 62.26,
+        "description": "Thin hours and/or wide spread \u2014 microstructure hostile"
+      },
+      "impulse": {
+        "n": 197,
+        "profit_factor": 1.3259,
+        "win_rate": 0.7665,
+        "net": 375.61,
+        "steamroller_rate": 0.2335,
+        "dd_pct": 18.86,
+        "description": "Strong impulse / acceleration \u2014 breakout-like path risk"
+      },
+      "expansion": {
+        "n": 75,
+        "profit_factor": 1.1061,
+        "win_rate": 0.7333,
+        "net": 53.13,
+        "steamroller_rate": 0.2667,
+        "dd_pct": 20.2,
+        "description": "ATR expanding with elevated ADX \u2014 steamroller climate"
+      },
+      "exhaustion": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "win_rate": 0.0,
+        "net": 0.0,
+        "steamroller_rate": 0.0,
+        "dd_pct": 0.0,
+        "description": "High ADX but decelerating after long same-dir run"
+      },
+      "false_breakout": {
+        "n": 105,
+        "profit_factor": 0.8743,
+        "win_rate": 0.6857,
+        "net": -104.08,
+        "steamroller_rate": 0.3143,
+        "dd_pct": 56.12,
+        "description": "Far from EMA with weak/falling ADX \u2014 extension without trend fuel"
+      },
+      "compression": {
+        "n": 87,
+        "profit_factor": 1.117,
+        "win_rate": 0.7356,
+        "net": 67.46,
+        "steamroller_rate": 0.2644,
+        "dd_pct": 30.84,
+        "description": "ATR contracting, quiet ADX \u2014 coiled / low energy"
+      },
+      "grind": {
+        "n": 104,
+        "profit_factor": 0.9041,
+        "win_rate": 0.6923,
+        "net": -76.85,
+        "steamroller_rate": 0.3077,
+        "dd_pct": 54.24,
+        "description": "Modest slope, mid ADX, shallow pullback \u2014 slow trend grind"
+      },
+      "pullback_trend": {
+        "n": 403,
+        "profit_factor": 0.8995,
+        "win_rate": 0.6923,
+        "net": -313.05,
+        "steamroller_rate": 0.3077,
+        "dd_pct": 103.14,
+        "description": "FEMA home: mid ADX, pullback-to-EMA geometry"
+      },
+      "rotation": {
+        "n": 261,
+        "profit_factor": 0.9602,
+        "win_rate": 0.705,
+        "net": -76.92,
+        "steamroller_rate": 0.295,
+        "dd_pct": 56.64,
+        "description": "Low ADX chop / residual \u2014 range rotation"
+      }
+    }
+  },
+  "train": {
+    "label": "train",
+    "n": 1489,
+    "overall": {
+      "n": 1489,
+      "profit_factor": 0.9762,
+      "win_rate": 0.7085,
+      "net": -258.66,
+      "steamroller_rate": 0.2915,
+      "dd_pct": 83.86
+    },
+    "regimes": {
+      "liquidity_vacuum": {
+        "n": 428,
+        "profit_factor": 1.0312,
+        "win_rate": 0.7196,
+        "net": 93.97,
+        "steamroller_rate": 0.2804,
+        "dd_pct": 41.96,
+        "description": "Thin hours and/or wide spread \u2014 microstructure hostile"
+      },
+      "impulse": {
+        "n": 173,
+        "profit_factor": 1.2608,
+        "win_rate": 0.7572,
+        "net": 274.47,
+        "steamroller_rate": 0.2428,
+        "dd_pct": 18.86,
+        "description": "Strong impulse / acceleration \u2014 breakout-like path risk"
+      },
+      "expansion": {
+        "n": 62,
+        "profit_factor": 1.0652,
+        "win_rate": 0.7258,
+        "net": 27.76,
+        "steamroller_rate": 0.2742,
+        "dd_pct": 14.99,
+        "description": "ATR expanding with elevated ADX \u2014 steamroller climate"
+      },
+      "exhaustion": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "win_rate": 0.0,
+        "net": 0.0,
+        "steamroller_rate": 0.0,
+        "dd_pct": 0.0,
+        "description": "High ADX but decelerating after long same-dir run"
+      },
+      "false_breakout": {
+        "n": 91,
+        "profit_factor": 0.8152,
+        "win_rate": 0.6703,
+        "net": -139.14,
+        "steamroller_rate": 0.3297,
+        "dd_pct": 56.12,
+        "description": "Far from EMA with weak/falling ADX \u2014 extension without trend fuel"
+      },
+      "compression": {
+        "n": 76,
+        "profit_factor": 1.1243,
+        "win_rate": 0.7368,
+        "net": 62.32,
+        "steamroller_rate": 0.2632,
+        "dd_pct": 30.84,
+        "description": "ATR contracting, quiet ADX \u2014 coiled / low energy"
+      },
+      "grind": {
+        "n": 84,
+        "profit_factor": 0.8012,
+        "win_rate": 0.6667,
+        "net": -139.49,
+        "steamroller_rate": 0.3333,
+        "dd_pct": 54.24,
+        "description": "Modest slope, mid ADX, shallow pullback \u2014 slow trend grind"
+      },
+      "pullback_trend": {
+        "n": 355,
+        "profit_factor": 0.867,
+        "win_rate": 0.6845,
+        "net": -374.27,
+        "steamroller_rate": 0.3155,
+        "dd_pct": 94.35,
+        "description": "FEMA home: mid ADX, pullback-to-EMA geometry"
+      },
+      "rotation": {
+        "n": 220,
+        "profit_factor": 0.9605,
+        "win_rate": 0.7045,
+        "net": -64.28,
+        "steamroller_rate": 0.2955,
+        "dd_pct": 42.4,
+        "description": "Low ADX chop / residual \u2014 range rotation"
+      }
+    }
+  },
+  "calibrate": {
+    "label": "calibrate",
+    "n": 217,
+    "overall": {
+      "n": 217,
+      "profit_factor": 1.0486,
+      "win_rate": 0.7189,
+      "net": 74.3,
+      "steamroller_rate": 0.2811,
+      "dd_pct": 48.93
+    },
+    "regimes": {
+      "liquidity_vacuum": {
+        "n": 142,
+        "profit_factor": 1.022,
+        "win_rate": 0.7113,
+        "net": 22.63,
+        "steamroller_rate": 0.2887,
+        "dd_pct": 56.58,
+        "description": "Thin hours and/or wide spread \u2014 microstructure hostile"
+      },
+      "impulse": {
+        "n": 11,
+        "profit_factor": 1.0708,
+        "win_rate": 0.7273,
+        "net": 5.33,
+        "steamroller_rate": 0.2727,
+        "dd_pct": 13.84,
+        "description": "Strong impulse / acceleration \u2014 breakout-like path risk"
+      },
+      "expansion": {
+        "n": 4,
+        "profit_factor": 0.4013,
+        "win_rate": 0.5,
+        "net": -29.97,
+        "steamroller_rate": 0.5,
+        "dd_pct": 12.21,
+        "description": "ATR expanding with elevated ADX \u2014 steamroller climate"
+      },
+      "exhaustion": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "win_rate": 0.0,
+        "net": 0.0,
+        "steamroller_rate": 0.0,
+        "dd_pct": 0.0,
+        "description": "High ADX but decelerating after long same-dir run"
+      },
+      "false_breakout": {
+        "n": 9,
+        "profit_factor": 1.3994,
+        "win_rate": 0.7778,
+        "net": 20.05,
+        "steamroller_rate": 0.2222,
+        "dd_pct": 10.68,
+        "description": "Far from EMA with weak/falling ADX \u2014 extension without trend fuel"
+      },
+      "compression": {
+        "n": 4,
+        "profit_factor": 1.2007,
+        "win_rate": 0.75,
+        "net": 5.03,
+        "steamroller_rate": 0.25,
+        "dd_pct": 6.27,
+        "description": "ATR contracting, quiet ADX \u2014 coiled / low energy"
+      },
+      "grind": {
+        "n": 10,
+        "profit_factor": 1.6018,
+        "win_rate": 0.8,
+        "net": 30.14,
+        "steamroller_rate": 0.2,
+        "dd_pct": 6.26,
+        "description": "Modest slope, mid ADX, shallow pullback \u2014 slow trend grind"
+      },
+      "pullback_trend": {
+        "n": 20,
+        "profit_factor": 0.936,
+        "win_rate": 0.7,
+        "net": -9.62,
+        "steamroller_rate": 0.3,
+        "dd_pct": 10.01,
+        "description": "FEMA home: mid ADX, pullback-to-EMA geometry"
+      },
+      "rotation": {
+        "n": 17,
+        "profit_factor": 1.3062,
+        "win_rate": 0.7647,
+        "net": 30.71,
+        "steamroller_rate": 0.2353,
+        "dd_pct": 15.5,
+        "description": "Low ADX chop / residual \u2014 range rotation"
+      }
+    }
+  },
+  "lock": {
+    "label": "lock_production",
+    "n": 111,
+    "overall": {
+      "n": 111,
+      "profit_factor": 1.4479,
+      "win_rate": 0.7838,
+      "net": 271.12,
+      "steamroller_rate": 0.2162,
+      "dd_pct": 18.14
+    },
+    "regimes": {
+      "liquidity_vacuum": {
+        "n": 17,
+        "profit_factor": 1.298,
+        "win_rate": 0.7647,
+        "net": 29.94,
+        "steamroller_rate": 0.2353,
+        "dd_pct": 10.7,
+        "description": "Thin hours and/or wide spread \u2014 microstructure hostile"
+      },
+      "impulse": {
+        "n": 13,
+        "profit_factor": 4.8278,
+        "win_rate": 0.9231,
+        "net": 95.81,
+        "steamroller_rate": 0.0769,
+        "dd_pct": 5.0,
+        "description": "Strong impulse / acceleration \u2014 breakout-like path risk"
+      },
+      "expansion": {
+        "n": 8,
+        "profit_factor": 99.0,
+        "win_rate": 1.0,
+        "net": 80.34,
+        "steamroller_rate": 0.0,
+        "dd_pct": 0.0,
+        "description": "ATR expanding with elevated ADX \u2014 steamroller climate"
+      },
+      "exhaustion": {
+        "n": 0,
+        "profit_factor": 0.0,
+        "win_rate": 0.0,
+        "net": 0.0,
+        "steamroller_rate": 0.0,
+        "dd_pct": 0.0,
+        "description": "High ADX but decelerating after long same-dir run"
+      },
+      "false_breakout": {
+        "n": 5,
+        "profit_factor": 1.5985,
+        "win_rate": 0.8,
+        "net": 15.01,
+        "steamroller_rate": 0.2,
+        "dd_pct": 6.12,
+        "description": "Far from EMA with weak/falling ADX \u2014 extension without trend fuel"
+      },
+      "compression": {
+        "n": 6,
+        "profit_factor": 0.801,
+        "win_rate": 0.6667,
+        "net": -9.97,
+        "steamroller_rate": 0.3333,
+        "dd_pct": 9.32,
+        "description": "ATR contracting, quiet ADX \u2014 coiled / low energy"
+      },
+      "grind": {
+        "n": 9,
+        "profit_factor": 1.4496,
+        "win_rate": 0.7778,
+        "net": 22.5,
+        "steamroller_rate": 0.2222,
+        "dd_pct": 11.6,
+        "description": "Modest slope, mid ADX, shallow pullback \u2014 slow trend grind"
+      },
+      "pullback_trend": {
+        "n": 28,
+        "profit_factor": 1.4705,
+        "win_rate": 0.7857,
+        "net": 70.83,
+        "steamroller_rate": 0.2143,
+        "dd_pct": 13.71,
+        "description": "FEMA home: mid ADX, pullback-to-EMA geometry"
+      },
+      "rotation": {
+        "n": 25,
+        "profit_factor": 0.8366,
+        "win_rate": 0.68,
+        "net": -33.34,
+        "steamroller_rate": 0.32,
+        "dd_pct": 27.74,
+        "description": "Low ADX chop / residual \u2014 range rotation"
+      }
+    }
+  }
+}

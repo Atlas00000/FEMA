@@ -1,0 +1,49 @@
+{
+  "schema": "fema_asi_p8_profile_v1",
+  "profile_id": "prof_aistack",
+  "preset": "aistack",
+  "parent": "ASI_P8_TEP_MID_BSL_01",
+  "lane_origin": "A",
+  "role": "ai_preset",
+  "asi_track": "regime_tep_mid_bsl",
+  "asi_phase": "ASI-P8",
+  "symbol": "EURUSD",
+  "subsystem": "regime_extra",
+  "stack": "PRODUCTION + TEP gate + mid_warn + Mode B early close + regime gate",
+  "tep_gate": "AI/kb/asi/tep_gate_v1.txt",
+  "mid_gate": "AI/kb/asi/mid_gate_v1.txt",
+  "regime_gate": "AI/kb/asi/regime_gate_v1.txt",
+  "ea_build_min": "1.29",
+  "promote_bar": "guardrails_plus_profitable_survival",
+  "tester": {
+    "2026_g1": {
+      "window": "2026.01.01-2026.07.31",
+      "deposit": 400,
+      "trades": 437,
+      "net": 175,
+      "profit_factor": 1.27,
+      "dd_pct": 14.2,
+      "win_rate": 0.68
+    },
+    "2018_2025": {
+      "window": "2018.01.01-2025.12.31",
+      "deposit": 400,
+      "trades": 361,
+      "net": 134,
+      "profit_factor": 1.55,
+      "dd_pct": 14.1,
+      "balance_dd_pct": 10.4,
+      "win_rate": 0.30,
+      "sharpe": 2.84
+    }
+  },
+  "g1_pass": false,
+  "status": "ai_preset",
+  "eligible_lane_b": false,
+  "failure_reason": null,
+  "decision": "AI preset",
+  "decision_path": "AI/kb/decisions/20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md",
+  "notes": "Official AI preset alias for the guardrail stack. G1 PF1.27/DD14.2%; 2018-25 PF1.55/DD14.1%. PRODUCTION lock unchanged.",
+  "pack": "doc/ASI_P8_regime_pack.md",
+  "updated_utc": "2026-07-20T11:20:00Z"
+}

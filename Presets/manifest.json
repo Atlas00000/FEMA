@@ -1,7 +1,8 @@
 {
   "schema": "fema_preset_manifest_v1",
   "parent_lock": "PRODUCTION",
-  "updated": "2026-07-19",
+  "ai_preset": "aistack",
+  "updated": "2026-07-20",
   "presets": [
     {
       "id": "PRODUCTION",
@@ -277,6 +278,45 @@
       "notes": "ASI-P5 Mode B Alternate — own preset; survival 2018-25 PF1.35/DD~23%; do not merge into Mode A",
       "asi_phase": "ASI-P5",
       "asi_track": "tep_mid_bsl"
+    },
+    {
+      "id": "ASI_P8_REGIME_01",
+      "file": "ASI_P8_REGIME_01.set",
+      "parent": "PRODUCTION",
+      "alias_of": null,
+      "subsystem": "regime_extra",
+      "diff_summary": "InpUseAiRegimeGate=true (skip caution+skip regimes at open)",
+      "status": "research_centre",
+      "run_id": null,
+      "notes": "P8-only — G1 PF 1.40 misleading; 2018-25 PF 1.01/DD~66%. Do not deploy without full stack.",
+      "asi_phase": "ASI-P8",
+      "asi_track": "regime"
+    },
+    {
+      "id": "ASI_P8_TEP_MID_BSL_01",
+      "file": "ASI_P8_TEP_MID_BSL_01.set",
+      "parent": "ASI_P5_TEP_MID_BSL_01",
+      "alias_of": null,
+      "subsystem": "regime_extra",
+      "diff_summary": "Mode B stack + InpUseAiRegimeGate=true",
+      "status": "ai_preset",
+      "run_id": null,
+      "notes": "Official AI preset — TEP+mid+Mode B+regime; G1 PF1.27/DD14.2%; 2018-25 PF1.55/DD~14%; PRODUCTION unchanged",
+      "asi_phase": "ASI-P8",
+      "asi_track": "regime_tep_mid_bsl"
+    },
+    {
+      "id": "aistack",
+      "file": "aistack.set",
+      "parent": "ASI_P8_TEP_MID_BSL_01",
+      "alias_of": null,
+      "subsystem": "regime_extra",
+      "diff_summary": "Alias of AI stack preset (TEP + mid + Mode B + regime gates).",
+      "status": "ai_preset",
+      "run_id": null,
+      "notes": "Official AI preset alias — TEP+mid+Mode B+regime; G1 PF1.27/DD14.2%/+175; 2018-25 PF1.55/DD~14%/+134; PRODUCTION unchanged",
+      "asi_phase": "ASI-P8",
+      "asi_track": "regime_tep_mid_bsl"
     }
   ]
 }

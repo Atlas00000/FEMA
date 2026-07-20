@@ -3,7 +3,7 @@
 **Purpose:** Track every **main system** and **subsystem** — what it does, where it lives, status, and improvement backlog.  
 **Charter:** MT5 executes · Python scores · Human promotes  
 **Updated:** 2026-07-19  
-**Related:** [`edgelifecycle.md`](edgelifecycle.md) · [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) (`DLR-P3` complete · hybrid MVP) · [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) (`ASI-P5` Complete · Mode B Alternate) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/kb/platform_modules.md`](AI/kb/platform_modules.md) · [`AI/STATUS.md`](AI/STATUS.md)
+**Related:** [`edgelifecycle.md`](edgelifecycle.md) · [`doc/edge_rediscovery_system.md`](doc/edge_rediscovery_system.md) · [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md) (`DLR-P3` complete · hybrid MVP) · [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md) (`ASI-P8` Complete · **AI preset** `aistack`) · [`automated_edge_rediscovery_pipeline.md`](automated_edge_rediscovery_pipeline.md) · [`infrascaleup.md`](infrascaleup.md) · [`AI/kb/platform_modules.md`](AI/kb/platform_modules.md) · [`AI/STATUS.md`](AI/STATUS.md)
 
 ---
 
@@ -173,8 +173,8 @@ flowchart TB
 
 | Main | Overall | Notes |
 | ---- | ------- | ----- |
-| **1. Execution Engine** | `live` | PRODUCTION lock `20260101_PRODUCTION_13c52cd9` · EA **v1.28** |
-| **2. Edge Re-Discovery** | `tooling` / `live` | AER `P0`–`P6` · **DLR `P0`–`P3`** · **ASI-P5 Complete** (P4/P5 Alternates) · PRODUCTION unchanged |
+| **1. Execution Engine** | `live` | PRODUCTION lock `20260101_PRODUCTION_13c52cd9` · EA **v1.29** · AI preset `aistack` (opt-in) |
+| **2. Edge Re-Discovery** | `tooling` / `live` | AER `P0`–`P6` · **DLR `P0`–`P3`** · **ASI-P8 Complete** · **AI preset** `aistack` · PRODUCTION unchanged |
 | **3. Ops Plane** | `live` / `shadow` | Health + Observatory live · pause wire **not signed** · Wave 6 parks hold |
 
 ---
@@ -201,15 +201,16 @@ flowchart TB
 | `EX-12` | State machine | Basket lifecycle / engine core | `live` | `StateMachine` · `Engine` | Frozen architecture |
 | `EX-13` | Telemetry / AI0 log | Baskets + events CSV | `live` | `AiEventLog` | Mirror path = Common `FEMA_AI` |
 | `EX-14` | Config / presets | Locked `.set` + manifest | `live` | `Presets/` · `Config.mqh` | One-subsystem diffs on candidates |
-| `EX-15` | TEP guardrail (opt-in) | Skip new basket when P(steamroller)≥thr | `alternate` | `AiTepGate.mqh` · `ASI_P4_TEP_GUARD_01` | Not PRODUCTION default |
-| `EX-16` | Mid-basket warn / Mode B | Log mid_warn · optional early `MID_WARN` close | `alternate` | `AiMidWarn.mqh` · `ASI_P5_TEP_MID_*` | Keep Mode A/B as separate presets |
+| `EX-15` | TEP guardrail (opt-in) | Skip new basket when P(steamroller)≥thr | `alternate` | `AiTepGate.mqh` · `ASI_P4_TEP_GUARD_01` | Layer in `aistack` |
+| `EX-16` | Mid-basket warn / Mode B | Log mid_warn · optional early `MID_WARN` close | `alternate` | `AiMidWarn.mqh` · `ASI_P5_TEP_MID_*` | Layer in `aistack` |
+| `EX-17` | Regime gate (opt-in) | Skip caution∪skip regimes at open | `ai_preset` | `AiRegimeGate.mqh` · **`aistack`** | Full stack AI preset; P8-only research |
 
 **Improve (engine-level):**
 
 1. Keep remote PRODUCTION as sole capital path; this box = mirror only.  
-2. Fingerprint journal on every build (`adx_gate=on` · `bsl=25` · v1.28).  
+2. Fingerprint journal on every build (`adx_gate=on` · `bsl=25` · v1.29).  
 3. No live input writes from Python (Wave 6 `PARK-02`).
-4. ASI opt-in only — never silent wire on Terminal A.
+4. ASI: PRODUCTION stays lock; load **`aistack`** only when opting into the AI guardrail stack.
 ---
 
 ## MAIN 2 — Edge Re-Discovery
@@ -233,7 +234,7 @@ flowchart TB
 | `RD-11` | EL7 trigger / Lane A enqueue | Ladder → factory → A-only queue | `shadow` | `el7-dry-run` · `el7_enqueue.ps1` | `-Force` only when human opens |
 | `RD-12` | Challenger roster (Lane B) | Bases + profile cards · no amnesia | `live` | `kb/challenger_roster.*` · `kb/profiles/` · `enqueue_lane_b.ps1` | Grow roster only with evidence |
 | `RD-13` | Dual-lane EL7 policy | Default A; escalate B after ≥2 A fails | `live` | `kb/dlr_policy.json` · `el7_policy.ps1` | Human still enqueues B |
-| `RD-14` | Adaptive selection (ASI) | TEP open-skip + mid warn/Mode B | `alternate` | `doc/adaptive_selection_phases.md` · `kb/asi/` · `asi-*` CLI | **P5 Complete** · next P6 or park |
+| `RD-14` | Adaptive selection (ASI) | TEP + mid + Mode B + regime → **`aistack`** | `ai_preset` | `doc/adaptive_selection_phases.md` · `Presets/aistack.set` · `asi-*` CLI | **P8 Complete** · next P7/P9 or park |
 
 **Recent evidence (2026-07-13 AER cycle):**
 
@@ -244,7 +245,7 @@ flowchart TB
 
 **Hybrid MVP (2026-07-14):** `DLR-P0`…`P3` complete — Lane A tagged; Lane B roster/enqueue; policy advisor; A+B scorecard smoke. PRODUCTION lock unchanged.
 
-**ASI (2026-07-19):** `ASI-P0`…`P5` Complete (MVP). Presets kept separate: `ASI_P4_TEP_GUARD_01` · `ASI_P5_TEP_MID_01` (Mode A) · `ASI_P5_TEP_MID_BSL_01` (Mode B Alternate). Survival: Mode B 2018–25 PF~1.35/DD~23% vs TEP-only long ~PF1/DD~55%; 2026 G1 near-miss vs PRODUCTION (PF↑ DD~parity). **PRODUCTION unchanged.**
+**ASI (2026-07-20):** `ASI-P0`…`P8` Complete (P7 skipped). **AI preset** = [`aistack`](Presets/aistack.set) (TEP + mid + Mode B + regime). Results ($400): **2026 G1** PF **1.27** / DD **14.2%** / +$175 · **2018–25** PF **1.55** / DD **~14%**. P8-only long run PF 1.01 / DD ~66% = research only. Layer presets (`ASI_P4_*` / `ASI_P5_*` / `ASI_P8_REGIME_01`) stay separate. **PRODUCTION unchanged.**
 
 **Improve (rediscovery-level):**
 
@@ -253,7 +254,7 @@ flowchart TB
 3. Re-enable overnight `drain.ps1` only when Discovery is intentionally open.  
 4. Keep TradingView (if any) **upstream of enqueue only** — never G1 authority.  
 5. Promote remains human AER-P6 only — [`doc/dual_lane_rediscovery_pipeline.md`](doc/dual_lane_rediscovery_pipeline.md).  
-6. ASI: keep Alternates opt-in · optional `ASI-P6` recovery · do not merge Mode B into Mode A/P4 — [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md).
+6. ASI: load **`aistack`** for guardrailed ops · keep layer presets separate · optional P7/P9 — [`doc/adaptive_selection_phases.md`](doc/adaptive_selection_phases.md).
 
 ---
 

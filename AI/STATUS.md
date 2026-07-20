@@ -1,15 +1,15 @@
 # FEMA STATUS
 
-_Generated: `2026-07-13` (AER cycle) - refresh health with `cd AI && python -m fema_ops status`_
+_Generated: `2026-07-20` (ASI AI preset) - refresh health with `cd AI && python -m fema_ops status`_
 
 ## At a glance
 
 | Field | Value |
 | ----- | ----- |
-| **Phase** | Wave 6 park freeze · AER `P0`–`P6` · **`DLR-P3` complete** · **`ASI-P5` COMPLETE** (Mode A + Mode B Alternate) · **`ASI-P4` Alternate** |
+| **Phase** | Wave 6 park freeze · **AI preset** `aistack` (alias `ASI_P8_TEP_MID_BSL_01`) · EA **v1.29** · PRODUCTION lock unchanged · P7 pending |
 | **Open ESR** | Wave 6 park-freeze; after demo basket close run pipeline for `on_demo_path` |
-| **EA build** | v1.28 |
-| **Preset** | `FEMA_EURUSD_M5_PRODUCTION` |
+| **EA build** | v1.29 |
+| **Preset** | `FEMA_EURUSD_M5_PRODUCTION` (lock) · **AI preset** `aistack` |
 | **Lineage lock** | `20260101_PRODUCTION_13c52cd9` · parent=`P2A-002_BSL_25` |
 | **Re-Discovery** | Terminal B · Lane A default · Lane B after ≥2 A fails · human promote only |
 | **Pause wire** | false (default - do not wire yet) |
@@ -20,7 +20,8 @@ _Generated: `2026-07-13` (AER cycle) - refresh health with `cd AI && python -m f
 2. [`../system_audit.md`](../system_audit.md) - main/subsystem map
 3. [`../doc/edge_rediscovery_system.md`](../doc/edge_rediscovery_system.md) - Discover snapshot + changelog
 4. [`../doc/dual_lane_rediscovery_pipeline.md`](../doc/dual_lane_rediscovery_pipeline.md) - Hybrid dual-lane (`DLR-P3` complete · MVP)
-5. [`../doc/adaptive_selection_phases.md`](../doc/adaptive_selection_phases.md) - Adaptive selection (`ASI-P5` Complete · Mode B Alternate own preset)
+5. [`../doc/adaptive_selection_phases.md`](../doc/adaptive_selection_phases.md) - Adaptive selection (`ASI-P8` Complete · **AI preset** `aistack`)
+5b. [`../AI_Infra.md`](../AI_Infra.md) - Flat inventory of every AI system (unique IDs)
 6. [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) - AER phases (`P0`…`P6`)
 7. [`../infrascaleup.md`](../infrascaleup.md) - Ops Plane / §16 roadmap
 8. This file - glance
@@ -28,6 +29,19 @@ _Generated: `2026-07-13` (AER cycle) - refresh health with `cd AI && python -m f
 10. [`certificate_PRODUCTION_EURUSD.json`](certificate_PRODUCTION_EURUSD.json) - bands
 11. [`data/live/observatory_daily.md`](data/live/observatory_daily.md) - daily note
 12. [`../System Profile EURUSD.md`](../System%20Profile%20EURUSD.md) - lock profile
+
+## AI preset results (`aistack` · 2026-07-20)
+
+| Window | Preset | PF | Net | Eq DD | Trades | Role |
+| ------ | ------ | --: | ---: | ----: | -----: | ---- |
+| **2026 G1** | **`aistack`** | **1.27** | +$175 | **14.2%** | 437 | **AI preset** |
+| **2026 G1** | `ASI_P8_REGIME_01` | 1.40 | +$246 | 17.5% | 445 | research only |
+| **2026 G1** | PRODUCTION lock | 1.36 | +$221 | ~18% | ~424 | birth lock |
+| **2018–25** | **`aistack`** | **1.55** | +$134 | **~14%** | 361 | **survives** |
+| **2018–25** | `ASI_P8_REGIME_01` | 1.01 | +$91 | **~66%** | 7021 | fails survival |
+
+Promote bar = guardrails + profitable survival — not G1 PF alone. PRODUCTION unchanged.  
+Pack: [`../doc/ASI_P8_regime_pack.md`](../doc/ASI_P8_regime_pack.md) · decision: [`kb/decisions/20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md`](kb/decisions/20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md)
 
 ## Recent Discovery (AER 2026-07-13)
 
@@ -62,7 +76,8 @@ powershell -File ops\tester_queue\scorecard.ps1
 | [`system_audit.md`](../system_audit.md) | Main systems · subsystems · status |
 | [`doc/edge_rediscovery_system.md`](../doc/edge_rediscovery_system.md) | Discover snapshot + changelog |
 | [`doc/dual_lane_rediscovery_pipeline.md`](../doc/dual_lane_rediscovery_pipeline.md) | Hybrid dual-lane · `DLR-P3` complete (MVP) |
-| [`doc/adaptive_selection_phases.md`](../doc/adaptive_selection_phases.md) | Adaptive selection · `ASI-P5` Complete · Mode B Alternate |
+| [`doc/adaptive_selection_phases.md`](../doc/adaptive_selection_phases.md) | Adaptive selection · `ASI-P8` Complete · **AI preset** |
+| [`doc/ASI_P8_regime_pack.md`](../doc/ASI_P8_regime_pack.md) | P8 regime + AI preset deploy |
 | [`doc/ASI_P4_tep_guard_pack.md`](../doc/ASI_P4_tep_guard_pack.md) | P4 deploy + window review |
 | [`doc/ASI_P5_midbasket_pack.md`](../doc/ASI_P5_midbasket_pack.md) | P5 Mode A + Mode B (own presets) |
 | [`doc/failureimprove.md`](../doc/failureimprove.md) | Structural vs adaptive failure thesis |

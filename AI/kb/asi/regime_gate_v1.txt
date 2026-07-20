@@ -1,0 +1,22 @@
+fema_regime_gate_v1
+exported_at	2026-07-19T21:26:48Z
+filter_mode	caution_and_skip
+filter	false_breakout
+filter	grind
+filter	rotation
+thr.adx_accel_hi	3.486
+thr.adx_accel_lo	-3.526
+thr.adx_hi	27.18
+thr.adx_lo	21.45
+thr.adx_mid	23.67
+thr.atr_expand_hi	0.5789
+thr.atr_expand_lo	-0.3684
+thr.consec_hi	4.0
+thr.dist_hi	4.077
+thr.dist_lo	1.6109
+thr.dist_mid	2.0729
+thr.impulse_score_hi	24.5985
+thr.slope_hi	3e-05
+thr.slope_lo	1e-05
+thr.spread_hi	8.0
+thr.thin_hour_end	7.0

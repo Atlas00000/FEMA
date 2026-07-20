@@ -2,10 +2,10 @@
 
 **Role:** Snapshot + high-level changelog for the Discover plane (not the phase runbook).  
 **Charter:** MT5 executes · Python scores · Human promotes  
-**Updated:** 2026-07-19  
+**Updated:** 2026-07-20  
 **Phase detail (Lane A):** [`../automated_edge_rediscovery_pipeline.md`](../automated_edge_rediscovery_pipeline.md) (`AER-P0`…`P6`)  
 **Dual-lane MVP:** [`dual_lane_rediscovery_pipeline.md`](dual_lane_rediscovery_pipeline.md) (`DLR-P0`…`P3` **complete**)  
-**Adaptive selection:** [`adaptive_selection_phases.md`](adaptive_selection_phases.md) (`ASI-P5` **COMPLETE** · Mode B Alternate · `ASI-P4` Alternate)
+**Adaptive selection:** [`adaptive_selection_phases.md`](adaptive_selection_phases.md) (`ASI-P8` **COMPLETE** · **AI preset** `aistack` · PRODUCTION unchanged)
 **Subsystem audit:** [`../system_audit.md`](../system_audit.md) · MAIN 2  
 **EL7 runbook:** [`../AI/kb/el7_rediscovery_runbook.md`](../AI/kb/el7_rediscovery_runbook.md)  
 **Policy:** [`../AI/kb/dlr_policy.json`](../AI/kb/dlr_policy.json) · roster [`../AI/kb/challenger_roster.md`](../AI/kb/challenger_roster.md)
@@ -185,6 +185,20 @@ Append a dated bullet when the Discover plane's shape or status changes (not eve
 - Decision: **Alternate** — keep `ASI_P5_TEP_MID_BSL_01` separate from Mode A / P4 / PRODUCTION.
 - Profile `prof_ASI_P5_TEP_MID_BSL_01` · decision `AI/kb/decisions/20260719_ASI_P5_TEP_MID_BSL_01_Alternate.md`.
 
+### 2026-07-19 — ASI-P8 regime filter + G1
+
+- Live filter: skip caution∪skip (`false_breakout` / `grind` / `rotation`); EA v1.29 · `AiRegimeGate.mqh`.
+- G1 (2026.01–07 · $400): P8-only PF **1.40** / DD 17.5%; stack (Mode B+P8) PF **1.27** / DD **14.2%**.
+- Pack: [`ASI_P8_regime_pack.md`](ASI_P8_regime_pack.md).
+
+### 2026-07-20 — AI preset `aistack` (survival + promote)
+
+- Promote bar: **guardrails + profitable survival** (not beat PRODUCTION G1 PF).
+- **`aistack`** = alias of full stack (`ASI_P8_TEP_MID_BSL_01`: TEP + mid + Mode B + regime).
+- Tester ($400): **2026 G1** PF **1.27** / DD **14.2%** / +$175 · **2018–25** PF **1.55** / DD **~14%** / +$134.
+- P8-only long run: PF **1.01** / DD **~66%** — research only; do not deploy naked.
+- Decision: **AI preset** — [`20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md`](../AI/kb/decisions/20260720_ASI_P8_TEP_MID_BSL_01_AI_Preset.md). PRODUCTION lock unchanged.
+
 ### 2026-07-13 — Initial AER MVP live
 
 - Two-terminal topology documented and smoked (A = PRODUCTION/mirror, B = Discovery).
@@ -211,9 +225,11 @@ Append a dated bullet when the Discover plane's shape or status changes (not eve
 
 | Path | Role |
 | ---- | ---- |
-| `doc/adaptive_selection_phases.md` | ASI tracks · P5 Complete · Mode B Alternate |
+| `doc/adaptive_selection_phases.md` | ASI tracks · P8 Complete · AI preset `aistack` |
 | `doc/ASI_P4_tep_guard_pack.md` | TEP guardrail gate |
 | `doc/ASI_P5_midbasket_pack.md` | Mid-basket Mode A + Mode B (own presets) |
+| `doc/ASI_P8_regime_pack.md` | Regime filter · G1 + survival · AI preset deploy |
+| `Presets/aistack.set` | Official AI preset (TEP + mid + Mode B + regime) |
 | `doc/backtesting_guide.md` | Systematic backtesting · anti-overfitting · time splits · FEMA gates |
 | `doc/dual_lane_rediscovery_pipeline.md` | Hybrid dual-lane · `DLR-P0`…`P3` MVP |
 | `AI/kb/challenger_roster.md` | Lane B bases + naming |
