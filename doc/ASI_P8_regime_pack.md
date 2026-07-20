@@ -48,6 +48,20 @@ Gate: `Common\Files\FEMA_AI\regime_gate_v1.txt`
 **Load for AI ops:** `Presets/aistack.set` + gate files in `Common\Files\FEMA_AI\`.  
 **Do not** rank by G1 PF alone. Beat-the-lock on one window ≠ guardrailed long-term edge.
 
+## Discovery Tester profile (Terminal B)
+
+Copied to:
+
+`C:\Users\emili\AppData\Roaming\MetaQuotes\Terminal\158041E5204719DC59E8E86EAAE9D56B\MQL5\Profiles\Tester\`
+
+| File | Role |
+| ---- | ---- |
+| `aistack.set` | AI preset (load this) |
+| `FEMA_EURUSD_M5_aistack.set` | Same stack · FEMA naming alias |
+| `ASI_P8_TEP_MID_BSL_01.set` | Underlying stack id (same params) |
+
+Also copy gates → `%APPDATA%\MetaQuotes\Terminal\Common\Files\FEMA_AI\` (`tep_gate_v1.txt` · `mid_gate_v1.txt` · `regime_gate_v1.txt`).
+
 ## Offline shadow (2018–25)
 
 skip ~**26%** · net skipped **−$258** · steam prec ~0.30
